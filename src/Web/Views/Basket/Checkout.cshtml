@@ -1,0 +1,31 @@
+@*
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.   
+*@
+
+@using Contoso.FraudProtection.Web.ViewModels
+@using Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate
+@{
+    ViewData["Title"] = "Checkout Complete";
+    @model BasketViewModel
+}
+@section TopBanner {
+    <div class="container">
+        <img class="esh-catalog-title" src="~/images/main_banner_text.png" />
+    </div>
+}
+
+    <div class="container">
+        @if (((OrderStatus)ViewData["OrderResult"]) == OrderStatus.Received)
+        {
+            <h1>Thanks for your Order!</h1>
+
+            <a asp-controller="Catalog" asp-action="Index">Continue Shopping...</a>
+        }
+        else
+        {
+            <h1>Your order is rejected!</h1>
+            <a asp-controller="Catalog" asp-action="Index">Continue Shopping...</a>
+        }
+
+    </div>

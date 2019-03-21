@@ -1,0 +1,21 @@
+@*
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.   
+*@
+
+@using Contoso.FraudProtection.Web.ViewModels
+@{
+    ViewData["Title"] = "Return Initiated";
+    @model OrderViewModel
+}
+@section TopBanner {
+    <div class="container">
+        <img class="esh-catalog-title" src="~/images/main_banner_text.png" />
+    </div>
+}
+
+<div class="container">
+    <h1>Your return has been initiated!</h1>
+    <p>We will let you know once we have more updates</p>
+    <a asp-controller="Catalog" asp-action="Index">Continue Shopping...</a>
+</div>

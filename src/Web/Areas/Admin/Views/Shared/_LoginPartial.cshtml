@@ -1,0 +1,75 @@
+@*
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.   
+*@
+
+@using Microsoft.AspNetCore.Identity
+@if (Context.User.Identity.IsAuthenticated)
+{
+    <section class="col-lg-4 col-md-5 col-xs-12">
+        <div class="esh-identity">
+            <form asp-area="" asp-controller="Account" asp-action="SignOut" method="post" id="logoutForm" class="navbar-right">
+                <div class="dropdown">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">@Context.User.Identity.Name <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="esh-identity-item"
+                               asp-action="/">
+                                <img class="esh-identity-image" src="~/images/my_orders.png">
+                                <span class="esh-identity-name esh-identity-name--upper">Customer Orders</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="esh-identity-item"
+                               asp-action="/types">
+                                <img class="esh-identity-image" src="~/images/my_orders.png">
+                                <span class="esh-identity-name esh-identity-name--upper">Catalog Types</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="esh-identity-item"
+                               asp-action="/brands">
+                                <img class="esh-identity-image" src="~/images/my_orders.png">
+                                <span class="esh-identity-name esh-identity-name--upper">Catalog Brands</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="esh-identity-item"
+                               asp-action="/catalogs">
+                                <img class="esh-identity-image" src="~/images/my_orders.png">
+                                <span class="esh-identity-name esh-identity-name--upper">Catalogs</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="esh-identity-item"
+                               href="javascript:document.getElementById('logoutForm').submit()">
+                                <img class="esh-identity-image" src="~/images/logout.png">
+                                <span class="esh-identity-name esh-identity-name--upper">Log Out</span>
+                            </a>
+                        </li>
+                       
+                    </ul>
+                </div>
+            </form>
+        </div>
+    </section>
+}
+else
+{
+    <section class="col-lg-2 col-lg-offset-3 col-md-4 col-xs-7">
+        <div class="esh-identity">
+            <section class="esh-identity-section">
+                <div class="esh-identity-item">
+                    <a asp-area="" asp-controller="Account" asp-action="SignIn" class="esh-identity-name esh-identity-name--upper">
+                        Login
+                    </a>
+                    &nbsp; <a asp-controller="Account" asp-action="Register" class="text">Register</a>
+                </div>
+            </section>
+        </div>
+    </section>
+
+    <section class="col-lg-1 col-xs-12">
+        @await Component.InvokeAsync("Basket")
+    </section>
+}

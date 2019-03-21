@@ -1,0 +1,119 @@
+@*
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.   
+*@
+
+@model Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate.Order
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="container">
+    <h3>Edit Order</h3>
+    <form asp-action="Edit">
+        <div class="esh-orders">
+            <section class="esh-orders-section">
+                <article class="esh-orders-titles row">
+                    <section class="esh-orders-title col-xs-3">Order number</section>
+                    <section class="esh-orders-title col-xs-3">Date</section>
+                    <section class="esh-orders-title col-xs-3">Total</section>
+                    <section class="esh-orders-title col-xs-3">Status</section>
+                </article>
+
+                <article class="esh-orders-items row">
+                    <section class="esh-orders-item col-xs-3">@Model.Id</section>
+                    <section class="esh-orders-item col-xs-3">@Model.OrderDate</section>
+                    <section class="esh-orders-item col-xs-3">@Model.Total.AsMoney()</section>
+                    <section class="esh-orders-title col-xs-3">@Model.Status.GetDescription()</section>
+                </article>
+            </section>
+
+            <section class="esh-orders-section">
+                <article class="esh-orders-titles row">
+                    <section class="esh-orders-title col-xs-12">Shipping Address</section>
+                </article>
+
+                <article class="esh-orders-items row">
+                    <section class="esh-orders-item col-xs-12">@Model.ShipToAddress.Street</section>
+                </article>
+
+                <article class="esh-orders-items row">
+                    <section class="esh-orders-item col-xs-12">@Model.ShipToAddress.City</section>
+                </article>
+
+                <article class="esh-orders-items row">
+                    <section class="esh-orders-item col-xs-12">@Model.ShipToAddress.CountryRegion</section>
+                </article>
+            </section>
+
+            <section class="esh-orders-section">
+                <article class="esh-orders-titles row">
+                    <section class="esh-orders-title col-xs-12">ORDER DETAILS</section>
+                </article>
+
+                @foreach (var item in Model.OrderItems)
+                {
+                    <article class="row">
+                        <section class="esh-orders-item col-md-4 hidden-md-down">
+                            <img class="esh-orders-image" src="@item.ItemOrdered.PictureUri">
+                        </section>
+                        <section class="esh-orders-item esh-orders-item--middle col-xs-4">@item.ItemOrdered.ProductName</section>
+                        <section class="esh-orders-item esh-orders-item--middle col-xs-1">@item.UnitPrice.AsMoney()</section>
+                        <section class="esh-orders-item esh-orders-item--middle col-xs-1">@item.Units</section>
+                        <section class="esh-orders-item esh-orders-item--middle col-xs-2">@((item.Units * item.UnitPrice).AsMoney())</section>
+                    </article>
+                }
+            </section>
+
+            <section class="esh-orders-section esh-orders-section--right">
+                <article class="esh-orders-titles esh-basket-titles--clean row">
+                    <section class="esh-orders-title col-xs-9"></section>
+                    <section class="esh-orders-title col-xs-2">TAX</section>
+                </article>
+
+                <article class="esh-orders-items row">
+                    <section class="esh-orders-item col-xs-9"></section>
+                    <section class="esh-orders-item esh-orders-item--mark col-xs-2">@Model.Tax.AsMoney()</section>
+                </article>
+
+                <article class="esh-orders-titles esh-basket-titles--clean row">
+                    <section class="esh-orders-title col-xs-9"></section>
+                    <section class="esh-orders-title col-xs-2">TOTAL</section>
+                </article>
+
+                <article class="esh-orders-items row">
+                    <section class="esh-orders-item col-xs-9"></section>
+                    <section class="esh-orders-item esh-orders-item--mark col-xs-2">@Model.Total.AsMoney()</section>
+                </article>
+            </section>
+            <section class="esh-orders-section">
+                <article class="esh-orders-items row">
+                    <section class="esh-orders-title col-xs-4">Return Reason</section>
+                    <section class="col-xs-8">@Model.ReturnOrChargebackReason</section>
+                </article>
+                <article class="esh-orders-titles esh-basket-titles--clean row">
+                    <section class="esh-orders-title col-xs-4">Status</section>
+                    <section class="esh-orders-title col-xs-4">@Html.DropDownListFor(model => model.Status, (IEnumerable<SelectListItem>)ViewData["SelectList"], "Select Status", new { })</section>
+                    <section class="esh-orders-title col-xs-4"></section>
+                </article>
+                <article class="esh-orders-titles esh-basket-titles--clean row">
+                    <section class="esh-orders-title col-xs-4">Admin Comments</section>
+                    <section class="esh-orders-title col-xs-8">@Html.TextAreaFor(model => model.AdminComments)</section>
+                </article>
+
+            </section>
+
+
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Save" class="btn btn-default" /> |
+            <a asp-action="Index" asp-controller="Manage" asp-area="Admin">Back to List</a>
+        </div>
+    </form>
+
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
