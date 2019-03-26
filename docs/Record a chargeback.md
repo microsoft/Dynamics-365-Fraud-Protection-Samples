@@ -1,13 +1,13 @@
-# Microsoft Dynamics 365 Fraud Protection - API Examples
+# Microsoft Dynamics 365 Fraud Protection - API examples
 ## Record a chargeback
 
-While Dynamics 365 Fraud Protection (Fraud Protection) tries to minimize chargebacks, they may still happen from time to time. You should inform Fraud Protection about chargebacks to improve Fraud Protection models.
+While Dynamics 365 Fraud Protection tries to minimize chargebacks, they may still happen from time to time. To improve Dynamics 365 Fraud Protection models, inform it about chargebacks.
 
 ## Helpful links
-- [Calling Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
+- [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
 - [Chargeback - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesChargebackPost)
-- [Sample Site - Send chargeback event](../src/Web/Controllers/OrderController.cs) (see ChargebackOrder method)
-- [Sample Site - Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostChargeback method)
+- [Sample site - Send chargeback event](../src/Web/Controllers/OrderController.cs) (see ChargebackOrder method)
+- [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostChargeback method)
 
 ## Required data
 - Chargeback ID
@@ -18,14 +18,14 @@ While Dynamics 365 Fraud Protection (Fraud Protection) tries to minimize chargeb
 - User ID
 - Chargeback details (amount, currency, reason, etc.)
 
-## Notes
-In the Sample Site, a user clicks **Chargeback** from their **Orders** page. In reality, customers would contact their bank, for instance, to request a chargeback, and the bank would ultimately inform you. At this point, you would send the chargeback event to Fraud Protection. You may negotiate with the bank to dispute the chargeback. In this case, you can send multiple chargeback events to Fraud Protection with various statuses:
+[!NOTE]
+In the sample site, a user clicks **Chargeback** from their **Orders** page. In reality, customers would contact their bank, for instance, to request a chargeback, and the bank would ultimately inform you. At this point, you would send the chargeback event to Dynamics 365 Fraud Protection. You may negotiate with the bank to dispute the chargeback. In this instance, you can send multiple chargeback events to Dynamics 365 Fraud Protection with various statuses:
 - "WON": You win the chargeback dispute.
 - "LOST": You lose the chargeback dispute.
 - "INITIATED": A chargeback starts, but is not finalized.
 
 ## Example chargeback event
-This example request sends a chargeback event to Fraud Protection. In this case, you lost the chargeback dispute.
+The following example request sends a chargeback event to Dynamics 365 Fraud Protection. In this instance, you lost the chargeback dispute.
 ```http
 POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/Chargeback HTTP/1.1
 Host: api.dfp.microsoft.com
