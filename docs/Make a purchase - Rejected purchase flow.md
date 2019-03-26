@@ -1,16 +1,16 @@
-# Microsoft Dynamics 365 Fraud Protection - API Examples
-## Make a purchase - Rejected Purchase flow
+# Microsoft Dynamics 365 Fraud Protection - API examples
+## Make a purchase - Rejected purchase flow
 
-After sending Dynamics 365 Fraud Protection (Fraud Protection) a purchase event, it is up to you to use the Fraud Protection decision to either continue with or stop the purchase event workflow. As the following examples show, you ultimately inform Fraud Protection that a purchase was rejected.
+After sending Dynamics 365 Fraud Protection a purchase event, you can use the Dynamics 365 Fraud Protection decision to either continue with or stop the purchase event workflow. As shown in the following examples, you ultimately inform Dynamics 365 Fraud Protection that a purchase was rejected.
 
 ## Helpful links
-- [Calling Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
+- [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
 - [Purchase - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesPurchasePost)
-- [Bank Event - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesBankEventPost)
-- [Purchase Status - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesPurchasestatusPost)
-- [Sample Site - Make a purchase](../src/Web/Controllers/BasketController.cs) (see SetupPurchase and CheckoutDetails methods)
-- [Sample Site - Sending Bank and Purchase status events](../src/Web/Controllers/BasketController.cs) (see ApproveOrRejectPurchase, SetupBankEvent, and SetupPurchaseStatus methods)
-- [Sample Site - Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostPurchase, PostBankEvent, and PostPurchaseStatus methods)
+- [Bank event - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesBankEventPost)
+- [Purchase status - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesPurchasestatusPost)
+- [Sample site - Make a purchase](../src/Web/Controllers/BasketController.cs) (see SetupPurchase and CheckoutDetails methods)
+- [Sample site - Sending bank and purchase status events](../src/Web/Controllers/BasketController.cs) (see ApproveOrRejectPurchase, SetupBankEvent, and SetupPurchaseStatus methods)
+- [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostPurchase, PostBankEvent, and PostPurchaseStatus methods)
 
 ## Rejected purchase flows
 A typical purchase event flow consists of:
@@ -19,7 +19,7 @@ A typical purchase event flow consists of:
 1. Bank charge event
 1. Purchase status event
 
-However, in a rejected purchase flow, the bank auth and charge events might never occur, or they may, depending on the cause(s) for the purchase to be rejected. 
+However, in a rejected purchase flow, the bank auth and charge events might never occur; or they may, depending on the cause(s) for the purchase to be rejected. 
 
 ## Required data
 - Purchase ID
@@ -37,11 +37,11 @@ However, in a rejected purchase flow, the bank auth and charge events might neve
 
 ## Purchase event
 Examples:
-- [Make a Purchase - Existing User](./Make&#32;a&#32;purchase&#32;-&#32;Existing&#32;user.md)
-- [Make a Purchase - Guest User](./Make&#32;a&#32;purchase&#32;-&#32;Guest&#32;user.md)
+- [Make a Purchase - existing eser](./Make&#32;a&#32;purchase&#32;-&#32;Existing&#32;user.md)
+- [Make a Purchase - guest user](./Make&#32;a&#32;purchase&#32;-&#32;Guest&#32;user.md)
 
 ## Rejected bank auth event
-This example request sends a bank auth event to Fraud Protection informing it that the bank authorization was rejected. If you send a rejected bank auth, you would likely skip the bank charge event, and send a rejected purchase status event.
+The following example request sends a bank auth event to Dynamics 365 Fraud Protection informing it that the bank authorization was rejected. If you send a rejected bank auth, you would likely skip the bank charge event, and send a rejected purchase status event.
 ```http
 POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/BankEvent HTTP/1.1
 Host: api.dfp.microsoft.com
@@ -67,7 +67,7 @@ Content-Length: <content length>
 ```
 
 ## Rejected bank charge event
-This example request sends a bank charge event to Fraud Protection informing it that the bank charge was rejected. If you send a rejected bank charge, you would likely send a rejected purchase status event.
+The following example request sends a bank charge event to Dynamics 365 Fraud Protection informing it that the bank charge was rejected. If you send a rejected bank charge, you would likely send a rejected purchase status event.
 ```http
 POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/BankEvent HTTP/1.1
 Host: api.dfp.microsoft.com
@@ -92,7 +92,7 @@ Content-Length: <content length>
 ```
 
 ## Canceled purchase status event
-This example request sends a purchase status event to Fraud Protection informing it that the purchase was canceled from your perspective. You may send this immediately after getting a reject decision from Fraud Protection in a purchase event response. Additionally, you may send it in response to a rejected bank auth or charge, or any other reason that you decide to reject a purchase and need to inform Fraud Protection.
+The following example request sends a purchase status event to Dynamics 365 Fraud Protection informing it that the purchase was canceled from your perspective. You may send this immediately after getting a reject decision from Dynamics 365 Fraud Protection in a purchase event response. Additionally, you may send it in response to a rejected bank auth or charge, or any other reason that you decide to reject a purchase, and need to inform Dynamics 365 Fraud Protection.
 ```http
 POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/PurchaseStatus HTTP/1.1
 Host: api.dfp.microsoft.com
