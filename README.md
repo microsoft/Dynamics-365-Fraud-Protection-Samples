@@ -15,11 +15,10 @@ Before running the solution, you must install these prerequisites:
 - (optional) SQL Management Studio, Azure Data Studio, or similar, if you want to view your schema and data during testing/development.
 
 ## Running the application
-```
-To speed up local development, you can start running/debugging the sample app locally. The app uses an in-memory database which lasts for that single run/debug session. Otherwise, follow these steps to use your own database, and then run/debug the app.
-```
 
-### One time database setup
+To speed up local development, you can start running/debugging the sample app locally. The app uses an in-memory database which lasts for that single run/debug session. Otherwise, follow these steps to use your own database, and then run/debug the app.
+
+### One-time database setup
 
 1. Set the connection strings in `appsettings.json` and/or `appsettings.Development.json` to point to a database of your choice (for example, an Azure SQL Server database).
 2. Open a command prompt in the src/Web folder, and execute the following commands:
@@ -57,7 +56,7 @@ User: demouser@microsoft.com
 Password: Pass@word1
 ```
 
-## Privacy and Telemetry
+## Privacy and telemetry
 
 Once properly configured, this sample site uses Microsoft device fingerprinting to send device telemetry to Microsoft for the purposes of demonstrating Dynamics 365 Fraud Protection. To disable device fingerprinting, remove code related to it rather than configuring it. 
 
