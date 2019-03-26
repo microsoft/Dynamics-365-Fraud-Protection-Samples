@@ -1,0 +1,92 @@
+@*
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.   
+*@
+
+@using Contoso.FraudProtection.Web.ViewModels
+@model BasketViewModel
+@{
+    ViewData["Title"] = "Basket";
+}
+@section TopBanner {
+    <div class="container">
+        <img class="esh-catalog-title" src="~/images/main_banner_text.png" />
+    </div>
+}
+
+<div class="container">
+
+    @if (Model.Items.Any())
+    {
+        <form method="post">
+            <article class="esh-basket-titles row">
+                <br />
+                <section class="esh-basket-title col-xs-3">Product</section>
+                <section class="esh-basket-title col-xs-3 hidden-lg-down"></section>
+                <section class="esh-basket-title col-xs-2">Price</section>
+                <section class="esh-basket-title col-xs-2">Quantity</section>
+                <section class="esh-basket-title col-xs-2">Cost</section>
+            </article>
+            <div class="esh-catalog-items row">
+                @for (int i = 0; i < Model.Items.Count; i++)
+                {
+                    var item = Model.Items[i];
+                    <article class="esh-basket-items row">
+                        <div>
+                            <section class="esh-basket-item esh-basket-item--middle col-lg-3 hidden-lg-down">
+                                <img class="esh-basket-image" src="@item.PictureUrl" />
+                            </section>
+                            <section class="esh-basket-item esh-basket-item--middle col-xs-3">@item.ProductName</section>
+                            <section class="esh-basket-item esh-basket-item--middle col-xs-2">@item.UnitPrice.AsMoney()</section>
+                            <section class="esh-basket-item esh-basket-item--middle col-xs-2">
+                                <input type="hidden" name="@("Items[" + i + "].Key")" value="@item.Id" />
+                                <input type="number" class="esh-basket-input" min="0" name="@("Items[" + i + "].Value")" value="@item.Quantity" onchange="this.form.submit()" />
+                            </section>
+                            <section class="esh-basket-item esh-basket-item--middle esh-basket-item--mark col-xs-2">@((item.Quantity * item.UnitPrice).AsMoney())</section>
+                        </div>
+                        <div class="row">
+
+                        </div>
+                    </article>
+                }
+
+                <div class="container">
+                    <article class="esh-basket-titles esh-basket-titles--clean row">
+                        <section class="esh-basket-title col-xs-10"></section>
+                        <section class="esh-basket-title col-xs-2">Tax</section>
+                    </article>
+
+                    <article class="esh-basket-items row">
+                        <section class="esh-basket-item col-xs-10"></section>
+                        <section class="esh-basket-item esh-basket-item--mark col-xs-2">@Model.Tax.AsMoney()</section>
+                    </article>
+                </div>
+
+                <br/>
+
+                <div class="container">
+                    <article class="esh-basket-titles esh-basket-titles--clean row">
+                        <section class="esh-basket-title col-xs-10"></section>
+                        <section class="esh-basket-title col-xs-2">Total</section>
+                    </article>
+
+                    <article class="esh-basket-items row">
+                        <section class="esh-basket-item col-xs-10"></section>
+                        <section class="esh-basket-item esh-basket-item--mark col-xs-2">@Model.Total.AsMoney()</section>
+                    </article>
+                </div>
+                <section class="col-xs-push-6 col-xs-7">
+                    <button class="btn esh-basket-checkout" name="continueShoppingButton" asp-action="Index" asp-controller="Catalog">[ Continue Shopping... ]</button>
+                    <button class="btn esh-basket-checkout" name="checkoutButton" type="submit" asp-action="Checkout">[ Checkout ]</button>
+                </section>
+
+            </div>
+        </form>
+    }
+    else
+    {
+        <div class="esh-catalog-items row">
+            Basket is empty.
+        </div>
+    }
+</div>

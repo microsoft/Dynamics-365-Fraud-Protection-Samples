@@ -1,0 +1,31 @@
+@*
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.   
+*@
+
+@model IEnumerable<Contoso.FraudProtection.ApplicationCore.Entities.CatalogItem>
+
+@{
+    ViewData["Title"] = "Catalogs";
+}
+
+<div class="container">
+    <div class="esh-orders">
+        <article class="esh-orders-titles row">
+            <section class="esh-orders-title col-xs-5">Name</section>
+            <section class="esh-orders-title col-xs-5">Description</section>
+            <section class="esh-orders-title col-xs-2">Price</section>
+        </article>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <article class="esh-orders-items row">
+                    <section class="esh-orders-item col-xs-5"> @Html.DisplayFor(modelItem => item.Name)</section>
+                    <section class="esh-orders-item col-xs-5"> @Html.DisplayFor(modelItem => item.Description)</section>
+                    <section class="esh-orders-item col-xs-2"> @Html.DisplayFor(modelItem => item.Price)</section>
+                </article>
+            }
+        }
+    </div>
+</div>

@@ -1,0 +1,41 @@
+@*
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.   
+*@
+
+@model IEnumerable<Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate.Order>
+
+@{
+    ViewData["Title"] = "All Orders";
+}
+
+<div class="container">
+    <div class="esh-orders">
+
+        <article class="esh-orders-titles row">
+            <section class="esh-orders-title col-xs-1">Order number</section>
+            <section class="esh-orders-title col-xs-3">Date</section>
+            <section class="esh-orders-title col-xs-2">Total</section>
+            <section class="esh-orders-title col-xs-4">Status</section>
+            <section class="esh-orders-title col-xs-2"></section>
+        </article>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <article class="esh-orders-items row">
+                    <section class="esh-orders-item col-xs-1">@Html.DisplayFor(modelItem => item.Id)</section>
+                    <section class="esh-orders-item col-xs-3">@Html.DisplayFor(modelItem => item.OrderDate)</section>
+                    <section class="esh-orders-item col-xs-2">@item.Total.AsMoney()</section>
+                    <section class="esh-orders-item col-xs-4">@item.Status.GetDescription()</section>
+                    <section class="esh-orders-item col-xs-2">
+                        <a class="esh-orders-link" asp-controller="Manage" asp-action="Details" asp-route-id="@item.Id">Detail</a>
+                        <a class="esh-orders-link" asp-controller="Manage" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    </section>
+                </article>
+            }
+        }
+    </div>
+</div>
+
+

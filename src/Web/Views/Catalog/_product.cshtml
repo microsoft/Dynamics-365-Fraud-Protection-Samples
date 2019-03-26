@@ -1,0 +1,23 @@
+@*
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.   
+*@
+
+@model CatalogItemViewModel
+
+<form asp-controller="Basket" asp-action="AddToBasket">
+    <img class="esh-catalog-thumbnail" src="@Model.PictureUri" />
+    <input class="esh-catalog-button" type="submit" value="[ ADD TO BASKET ]" />
+
+    <div class="esh-catalog-name">
+        <span>@Model.Name</span>
+    </div>
+    <div class="esh-catalog-price">
+        <span>@Model.Price.AsMoney()</span>
+    </div>
+
+    <input type="hidden" asp-for="@Model.Id" name="id" />
+    <input type="hidden" asp-for="@Model.Name" name="name" />
+    <input type="hidden" asp-for="@Model.PictureUri" name="pictureUri" />
+    <input type="hidden" asp-for="@Model.Price" name="price" />
+</form>
