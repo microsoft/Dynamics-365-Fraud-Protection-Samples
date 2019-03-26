@@ -1,7 +1,7 @@
 # Microsoft Dynamics 365 Fraud Protection - API Examples
-## Authenticate and call Fraud Protection
+## Authenticate and call Dynamics 365 Fraud Protection
 
-You must send an authentication token with Dynamics 365 Fraud Protection API calls. The following example shows one way to do that and then walks you through the process of creating a request and handling the response.
+You must send an authentication token with Dynamics 365 Fraud Protection API calls. The following example shows one way to do that, then walks you through the process of creating a request and handling the response.
 
 ## Helpful links
 For additional support, see the following links:
@@ -14,7 +14,7 @@ This example requires the following data to obtain an access token:
 
 1. **Authority**: Your OAuth authority URL to authenticate against.
 1. **Client ID**: Your Dynamics 365 Fraud Protection merchant application's ID in Azure Active Directory (Azure AD).
-1. **Certificate**: The private certificate you've selected and placed its public portion in your Dynamics 365 Fraud Protection merchant app in Azure AD.
+1. **Certificate**: The private certificate you've selected, with its public portion placed in your Dynamics 365 Fraud Protection merchant app in Azure AD.
 
 ```csharp
 public class TokenProviderService : ITokenProvider
@@ -49,7 +49,7 @@ All events sent to Dynamics 365 Fraud Protection follow the same JSON model:
 
 > The update account event is the only exception, also requiring a ```customerLocalDate``` top-level property.
 
-The event data model varies from one event type to the next, though.
+However, the event data model varies from one event type to the next.
 
 For example, see the following request and response when sending a refund event to Dynamics 365 Fraud Protection.
 
