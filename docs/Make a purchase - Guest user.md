@@ -1,13 +1,13 @@
-# Microsoft Dynamics 365 Fraud Protection - API Examples
+# Microsoft Dynamics 365 Fraud Protection - API examples
 ## Make a purchase – Guest user
 
-You can request Dynamics 365 Fraud Protection (Fraud Protection) for a risk decision when guest users make purchases. A guest user is simply a customer who has not registered with your business. The only difference in Fraud Protection between guest checkout and non-guest checkout is what user ID you send in the purchase event.
+You can request Dynamics 365 Fraud Protection for a risk decision when guest users make purchases. A guest user is simply a customer who has not registered with your business. The only difference in Dynamics 365 Fraud Protection between guest checkout and non-guest checkout is the user ID you send in the purchase event.
 
 ## Helpful links
-- [Calling Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
+- [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
 - [Purchase - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesPurchasePost)
-- [Sample Site - Make a purchase](../src/Web/Controllers/BasketController.cs) (see SetupPurchase and CheckoutDetails methods)
-- [Sample Site - Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostPurchase method)
+- [Sample site - Make a purchase](../src/Web/Controllers/BasketController.cs) (see SetupPurchase and CheckoutDetails methods)
+- [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostPurchase method)
 
 ## Required data
 - Purchase ID
@@ -22,11 +22,11 @@ You can request Dynamics 365 Fraud Protection (Fraud Protection) for a risk deci
 - Payment instrument(s) details (credit card/PayPal/etc, billing addresses, etc.)
 - Device info (IP, session ID, etc.)
 
-## Notes
-- You should set the AssessmentType field based on if you do or do not plan to use the Fraud Protection risk recommendation:
-  - Pass 'evaluate' if you do not plan to use the Fraud Protection risk recommendation and are still evaluating Fraud Protection against your existing fraud solution.
-  - Pass 'protect' if you do plan to use the Fraud Protection risk recommendation. This lets Fraud Protection know that we should also inform your bank about an incoming transaction via our Trusted MID program to possibly help lift the bank acceptance rate. It also creates more accurate and granular reports when we can distinguish between your 'evaluate' and 'protect' API calls.
-- In the Sample Site, a guest user's ID is set to a random GUID to avoid matches with known or future user IDs. You can decide what format you want to use for guest user IDs. It does not have to be a random GUID, but you should be careful not to use an ID of a non-guest user. We do not advise you trying to detect if multiple guest customers are the same, real customer. Instead, **include device fingerprinting context in the purchase request**.
+[!NOTES]
+- You should set the AssessmentType field based on if you plan to use the Dynamics 365 Fraud Protection risk recommendation:
+  - Pass 'evaluate' if you do not plan to use the Dynamics 365 Fraud Protection risk recommendation, and are still evaluating Dynamics 365 Fraud Protection against your existing fraud solution.
+  - Pass 'protect' if you plan to use the Dynamics 365 Fraud Protection risk recommendation. Consequently, Dynamics 365 Fraud Protection identifies that we must inform your bank about an incoming transaction via our Trusted MID program to potentially lift the bank acceptance rate. It also creates more accurate and detailed reports when we can distinguish between your 'evaluate' and 'protect' API calls.
+- In the sample site, a guest user's ID is set to a random GUID to avoid matches with known or future user IDs. You can decide what format to use for guest user IDs. It doesn't have to be a random GUID, but be careful not to use an ID of a non-guest user. We do not recommend trying to detect if multiple guest customers are the same, real customer. Instead, include Microsoft device fingerprinting context in the purchase request.
 
 ## Example purchase request
 ```http
