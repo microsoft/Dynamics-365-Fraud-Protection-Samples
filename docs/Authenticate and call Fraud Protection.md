@@ -1,18 +1,20 @@
 # Microsoft Dynamics 365 Fraud Protection - API Examples
 ## Authenticate and call Fraud Protection
 
-You must send an authentication token with Dynamics 365 Fraud Protection (Fraud Protection) API calls. The following example shows one way to do that and then walks you through creating a request and handling the response.
+You must send an authentication token with Dynamics 365 Fraud Protection API calls. The following example shows one way to do that and then walks you through the process of creating a request and handling the response.
 
 ## Helpful links
+For additional support, see the following links:
 - [API spec](https://apidocs.microsoft.com/services/graphriskapi)
 - [Sample Site - Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs)
+- [Integrate real-time APIs](https://go.microsoft.com/fwlink/?linkid=2085128)
 
-## Authenticate with Fraud Protection API
-This example requires the following data to obtain a bearer token:
+## Authenticate with Dynamics 365 Fraud Protection API
+This example requires the following data to obtain an access token:
 
 1. **Authority**: Your OAuth authority URL to authenticate against.
-1. **Client ID**: Your Fraud Protection merchant application's ID in Azure Active Directory.
-1. **Certificate**: The private certificate you've selected and placed its public portion in your Fraud Protection merchant app in Azure Active Directory.
+1. **Client ID**: Your Dynamics 365 Fraud Protection merchant application's ID in Azure Active Directory (Azure AD).
+1. **Certificate**: The private certificate you've selected and placed its public portion in your Dynamics 365 Fraud Protection merchant app in Azure AD.
 
 ```csharp
 public class TokenProviderService : ITokenProvider
@@ -36,8 +38,8 @@ public class TokenProviderService : ITokenProvider
     }
 }
 ```
-## Send events to Fraud Protection
-All events sent to Fraud Protection follow the same JSON model:
+## Send events to Dynamics 365 Fraud Protection
+All events sent to Dynamics 365 Fraud Protection follow the same JSON model:
 ```json
 {
     merchantLocalDate = <event date in ISO 8601 format>,
@@ -45,11 +47,11 @@ All events sent to Fraud Protection follow the same JSON model:
 }
 ```
 
-> The update account event is the only exception, also requiring a ```customerLocalDate``` top level property.
+> The update account event is the only exception, also requiring a ```customerLocalDate``` top-level property.
 
 The event data model varies from one event type to the next, though.
 
-For example, see the following request and response when sending a refund event to Fraud Protection.
+For example, see the following request and response when sending a refund event to Dynamics 365 Fraud Protection.
 
 ### Request
 
@@ -88,7 +90,7 @@ Content-Length: 27
 ```
 
 ### Error response example 1
-This response is the result of sending an expired/invalid bearer token:
+This response is the result of sending an expired/invalid access token:
 ```http
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json
