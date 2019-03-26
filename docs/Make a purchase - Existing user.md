@@ -1,13 +1,13 @@
-# Microsoft Dynamics 365 Fraud Protection - API Examples
+# Microsoft Dynamics 365 Fraud Protection - API examples
 ## Make a purchase – Existing user
 
-You should request that Dynamics 365 Fraud Protection (Fraud Protection) make a risk decision when your existing customers try to make purchases. An existing user is typically a customer who logs into your business, whereas a guest user is a customer who typically has not registered with your business. The only difference in Fraud Protection between guest checkout and non-guest checkout is what user ID you send in the purchase event.
+Request that Dynamics 365 Fraud Protection make a risk decision when your existing customers try to make purchases. An existing user is typically a customer who logs into your business, whereas a guest user is a customer who typically has not registered with your business. The only difference in Dynamics 365 Fraud Protection between guest checkout and non-guest checkout is the user ID you send in the purchase event.
 
 ## Helpful links
-- [Calling Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
+- [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
 - [Purchase - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesPurchasePost)
-- [Sample Site - Make a purchase](../src/Web/Controllers/BasketController.cs) (see SetupPurchase and CheckoutDetails methods)
-- [Sample Site - Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostPurchase method)
+- [Sample site - Make a purchase](../src/Web/Controllers/BasketController.cs) (see SetupPurchase and CheckoutDetails methods)
+- [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostPurchase method)
 
 ## Required data
 - Purchase ID
@@ -22,11 +22,11 @@ You should request that Dynamics 365 Fraud Protection (Fraud Protection) make a 
 - Payment instrument(s) details (credit card/PayPal/etc, billing addresses, etc.)
 - Device info (IP, session ID, etc.)
 
-## Notes
-- You should set the AssessmentType field based on if you do or do not plan to use the Fraud Protection risk recommendation:
-  - Pass 'evaluate' if you do not plan to use the Fraud Protection risk recommendation and are still evaluating Fraud Protection against your existing fraud solution.
-  - Pass 'protect' if you do plan to use the Fraud Protection risk recommendation. This lets Fraud Protection know that we should also inform your bank about an incoming transaction via our Trusted MID program to possibly help lift the bank acceptance rate. It also creates more accurate and granular reports when we can distinguish between your 'evaluate' and 'protect' API calls.
-- In the Sample Site, an existing user's ID is set to their email address, which is also tied to how they log in to the Sample Site. Furthermore, the Sample Site ensures that no two customers have the same email address. This ensures user IDs will be unique for the Sample Site and consequently unique when sent to Fraud Protection. You can decide what format you want to use for existing user IDs. It does not have to be an email address, but you should be careful not to use a user ID that could match another user's ID.
+[!NOTES]
+- Set the AssessmentType field based on if you plan to use the Dynamics 365 Fraud Protection risk recommendation:
+  - Pass 'evaluate' if you do not plan to use the Dynamics 365 Fraud Protection risk recommendation and are still evaluating Dynamics 365 Fraud Protection against your existing fraud solution.
+  - Pass 'protect' if you plan to use the Dynamics 365 Fraud Protection risk recommendation. Consequently, Dynamics 365 Fraud Protection communicates that we must inform your bank about an incoming transaction via our Trusted MID program to potentially lift the bank acceptance rate. It also creates more accurate and detailed reports when we can distinguish between your 'evaluate' and 'protect' API calls.
+- In the sample site, an existing user's ID is set to their email address which is also tied to how they log in to the sample site. Furthermore, the sample site ensures that no two customers have the same email address. This ensures user IDs will be unique for the sample site, as well as unique when sent to Dynamics 365 Fraud Protection. Decide what format to use for existing user IDs. It does not have to be an email address, but you should be careful not to duplicate user IDs.
 
 ## Example purchase request
 ```http
