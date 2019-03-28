@@ -1,10 +1,9 @@
-# Microsoft Dynamics 365 Fraud Protection - API Examples
+# Microsoft Dynamics 365 Fraud Protection - API examples
 ## Authenticate and call Dynamics 365 Fraud Protection
 
-You must send an authentication token with Dynamics 365 Fraud Protection API calls. The following example shows one way to do that, then walks you through the process of creating a request and handling the response.
+You must send an authentication token with Dynamics 365 Fraud Protection API calls. See the following example for one way to do that. It then walks you through the process of creating a request and handling the response.
 
 ## Helpful links
-For additional support, see the following links:
 - [API spec](https://apidocs.microsoft.com/services/graphriskapi)
 - [Sample Site - Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs)
 - [Integrate real-time APIs](https://go.microsoft.com/fwlink/?linkid=2085128)
