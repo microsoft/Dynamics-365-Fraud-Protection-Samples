@@ -22,7 +22,7 @@ You can request Dynamics 365 Fraud Protection for a risk decision when guest use
 - Payment instrument(s) details (credit card/PayPal/etc, billing addresses, etc.)
 - Device info (IP, session ID, etc.)
 
-[!NOTES]
+**NOTES**
 - You should set the AssessmentType field based on if you plan to use the Dynamics 365 Fraud Protection risk recommendation:
   - Pass 'evaluate' if you do not plan to use the Dynamics 365 Fraud Protection risk recommendation, and are still evaluating Dynamics 365 Fraud Protection against your existing fraud solution.
   - Pass 'protect' if you plan to use the Dynamics 365 Fraud Protection risk recommendation. Consequently, Dynamics 365 Fraud Protection identifies that we must inform your bank about an incoming transaction via our Trusted MID program to potentially lift the bank acceptance rate. It also creates more accurate and detailed reports when we can distinguish between your 'evaluate' and 'protect' API calls.
