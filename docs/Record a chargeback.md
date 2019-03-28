@@ -18,7 +18,8 @@ While Dynamics 365 Fraud Protection tries to minimize chargebacks, they may stil
 - User ID
 - Chargeback details (amount, currency, reason, etc.)
 
-[!NOTE]
+**NOTE**
+
 In the sample site, a user clicks **Chargeback** from their **Orders** page. In reality, customers would contact their bank, for instance, to request a chargeback, and the bank would ultimately inform you. At this point, you would send the chargeback event to Dynamics 365 Fraud Protection. You may negotiate with the bank to dispute the chargeback. In this instance, you can send multiple chargeback events to Dynamics 365 Fraud Protection with various statuses:
 - "WON": You win the chargeback dispute.
 - "LOST": You lose the chargeback dispute.
