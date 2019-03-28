@@ -1,16 +1,16 @@
-# Microsoft Dynamics 365 Fraud Protection - API Examples
+# Microsoft Dynamics 365 Fraud Protection - API examples
 ## Make a purchase – Approved purchase flow
 
-After sending Dynamics 365 Fraud Protection (Fraud Protection) a purchase event, it is up to you to use the Fraud Protection decision to either continue with or stop the purchase workflow. You should inform Fraud Protection of the intermediate bank events and final purchase status for a purchase to improve Fraud Protection models.
+After sending Dynamics 365 Fraud Protection a purchase event, it is up to you to use the Dynamics 365 Fraud Protection decision to either continue with or stop the purchase workflow. Inform Dynamics 365 Fraud Protection of the intermediate bank events and final purchase status for a purchase to improve Dynamics 365 Fraud Protection models.
 
 ## Helpful links
-- [Calling Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
+- [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
 - [Purchase - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesPurchasePost)
 - [Bank Event - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesBankEventPost)
 - [Purchase Status - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesPurchasestatusPost)
-- [Sample Site - Make a purchase](../src/Web/Controllers/BasketController.cs) (see SetupPurchase and CheckoutDetails methods)
-- [Sample Site - Sending Bank and Purchase status events](../src/Web/Controllers/BasketController.cs) (see ApproveOrRejectPurchase, SetupBankEvent, and SetupPurchaseStatus methods)
-- [Sample Site - Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostPurchase, PostBankEvent, and PostPurchaseStatus methods)
+- [Sample site - Make a purchase](../src/Web/Controllers/BasketController.cs) (see SetupPurchase and CheckoutDetails methods)
+- [Sample site - Sending bank and purchase status events](../src/Web/Controllers/BasketController.cs) (see ApproveOrRejectPurchase, SetupBankEvent, and SetupPurchaseStatus methods)
+- [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostPurchase, PostBankEvent, and PostPurchaseStatus methods)
 
 ## Purchase Flow
 A typical purchase event flow consists of:
@@ -19,12 +19,13 @@ A typical purchase event flow consists of:
 1. Bank charge event
 1. Purchase status event
 
-You typically send requests to your bank/payment gateway between some of these steps, so Fraud Protection identifies them as separate events. 
+You typically send requests to your bank/payment gateway between some of these steps, so Dynamics 365 Fraud Protection identifies them as separate events. 
 
-You are not required to send these events, much less send them in any particular order, or within any specific time. The Sample Site does, in fact, follow this order. 
+You are not required to send these events, much less send them in any particular order, or within any specific time. The sample site does, in fact, follow this order. 
 
-## Important: Purchase updates not allowed
-After you send a purchase ID, you cannot send the same purchase ID again; purchase events cannot be updated like other Fraud Protection events. If you send the same purchase ID again, an error response is returned. You can update the bank auth, bank charge, and purchase status events as many times as needed, though.
+**Important**
+**Purchase updates not allowed**
+After you send a purchase ID, you cannot send the same purchase ID again; purchase events cannot be updated like other Dynamics 365 Fraud Protection events. If you send the same purchase ID again, an error response is returned. You can update the bank auth, bank charge, and purchase status events as many times as needed, though.
 
 ## Required data
 - Purchase ID
@@ -42,8 +43,8 @@ After you send a purchase ID, you cannot send the same purchase ID again; purcha
 
 ## Purchase event
 Examples:
-- [Make a Purchase - Existing User](./Make&#32;a&#32;purchase&#32;-&#32;Existing&#32;user.md)
-- [Make a Purchase - Guest User](./Make&#32;a&#32;purchase&#32;-&#32;Guest&#32;user.md)
+- [Make a Purchase - Existing user](./Make&#32;a&#32;purchase&#32;-&#32;Existing&#32;user.md)
+- [Make a Purchase - Guest user](./Make&#32;a&#32;purchase&#32;-&#32;Guest&#32;user.md)
 
 ## Bank auth event
 This example request sends a bank auth event to Fraud Protection telling it that the bank authorization was successful.
