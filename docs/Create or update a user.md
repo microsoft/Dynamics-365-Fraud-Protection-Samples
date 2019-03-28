@@ -1,7 +1,7 @@
-# Microsoft Dynamics 365 Fraud Protection - API Examples
+# Microsoft Dynamics 365 Fraud Protection - API examples
 ## Create or update a user
 
-You can inform Dynamics 365 Fraud Protection (Fraud Protection) when new customers register and create accounts. This call is optional, but providing this data helps build knowledge in Fraud Protection to better detect fraud when customers try to make purchases.
+You can inform Dynamics 365 Fraud Protection when new customers register and create accounts. Although this call is optional, we recommend providing this data to build knowledge in Dynamics 365 Fraud Protection to better detect fraud when customers try to make purchases.
 
 ## Helpful links
 - [Calling Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
@@ -16,12 +16,12 @@ You can inform Dynamics 365 Fraud Protection (Fraud Protection) when new custome
 
 ## Optional data
 - Basic user data (name, email, phone, create/update date, etc.)
-- Regional info (country, timezone, language, etc.)
+- Regional info (country, time zone, language, etc.)
 - Shipping address
 - Billing address
 - Payment method(s)
 - Device info (IP, session ID, etc.)
 
 ## Notes
-- In the Sample Site, the user's ID is set to their email. As the merchant, you can decide what you want to use for the user's ID. It does not have to be their email, but user IDs should be unique.
-- In the Sample Site, the user's shipping and billing address are set to the same address, but they don't have to be.
+- In the sample site, the user's ID is set to their email. As the merchant, you can decide what you want to use for the user's ID. It does not have to be their email, but user IDs should be unique.
+- In the sample site, the user's shipping and billing address are set to the same address, but this isn't mandatory.
