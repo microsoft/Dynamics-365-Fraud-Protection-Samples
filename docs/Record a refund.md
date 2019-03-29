@@ -1,7 +1,7 @@
 # Microsoft Dynamics 365 Fraud Protection - API examples
 ## Record a refund
 
-Customers may request refunds from you. To improve Dynamics 365 Fraud Protection models, inform it about these refunds. Notify Dynamics 365 Fraud Protection when refunds start and complete.
+Customers may request refunds from you. To improve Dynamics 365 Fraud Protection models, inform it about these refunds. When refunds start and complete, notify Dynamics 365 Fraud Protection.
 
 ## Helpful links
 - [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
@@ -18,7 +18,7 @@ Customers may request refunds from you. To improve Dynamics 365 Fraud Protection
 - User ID
 - Refund details (amount, currency, reason, etc.)
 
-[!NOTE]
+**NOTE**
 In the sample site, to request a refund, a user selects **Refund** from their **Orders** page. Subsequently, an admin uses the sample site and can either complete or reject the refund.
 
 ## Example refund event
