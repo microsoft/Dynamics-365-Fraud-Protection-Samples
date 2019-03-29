@@ -22,6 +22,6 @@ You can inform Dynamics 365 Fraud Protection when new customers register and cre
 - Payment method(s)
 - Device info (IP, session ID, etc.)
 
-## Notes
+**Notes**
 - In the sample site, the user's ID is set to their email. As the merchant, you can decide what you want to use for the user's ID. It does not have to be their email, but user IDs should be unique.
 - In the sample site, the user's shipping and billing address are set to the same address, but this isn't mandatory.
