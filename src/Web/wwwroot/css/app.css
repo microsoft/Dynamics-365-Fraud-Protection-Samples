@@ -65,7 +65,6 @@ select::-ms-expand {
     width: 100%;
 }
 
-
 a,
 a:active,
 a:hover,
@@ -80,4 +79,3 @@ a:visited {
         color: #75B918;
         transition: color 0.35s;
     }
-
