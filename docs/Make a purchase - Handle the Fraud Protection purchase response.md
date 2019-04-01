@@ -13,8 +13,8 @@ One of many core values of Dynamics 365 Fraud Protection is providing you a risk
 - Dynamics 365 Fraud Protection risk score: Risk score for the purchase as determined by Dynamics 365 Fraud Protection.
 - Dynamics 365 Fraud Protection reason codes: Risk attributes of the purchase as determined by Dynamics 365 Fraud Protection.
 - Purchase ID: Same purchase ID that you sent to Dynamics 365 Fraud Protection to get this response.
-- Merchant ID flag (MIDFlag): "Default", "Program", or "Control". Use this flag to choose which Merchant ID (MID) you send to the bank during authorization. See the following summary of each MID:
-  - **Default**: Currently existing before integrating with Dynamics 365 Fraud Protection. 
+- Merchant ID flag (MIDFlag): "Standard", "Program", or "Control". Use this flag to choose which Merchant ID (MID) you send to the bank during authorization. See the following summary of each MID:
+  - **Standard**: Currently existing before integrating with Dynamics 365 Fraud Protection. 
   - **Program**: Used for high-confidence transactions expected to return a higher acceptance yield. 
   - **Control**: Provides a representative sample of performance before you start Dynamics 365 Fraud Protection, and will be used as a baseline for measuring overall gain.
 
