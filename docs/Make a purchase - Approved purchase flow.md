@@ -24,7 +24,9 @@ You typically send requests to your bank/payment gateway between some of these s
 You are not required to send these events, much less send them in any particular order, or within any specific time. The sample site does, in fact, follow this order. 
 
 **Important**
+
 **Purchase updates not allowed**
+
 After you send a purchase ID, you cannot send the same purchase ID again; purchase events cannot be updated like other Dynamics 365 Fraud Protection events. If you send the same purchase ID again, an error response is returned. You can update the bank auth, bank charge, and purchase status events as many times as needed, though.
 
 ## Required data
