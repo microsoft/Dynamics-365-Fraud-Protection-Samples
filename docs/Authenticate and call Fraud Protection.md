@@ -39,7 +39,7 @@ public class TokenProviderService : ITokenProvider
 ```
 ## Send events to Dynamics 365 Fraud Protection
 All events sent to Dynamics 365 Fraud Protection follow the same JSON model:
-```json
+```
 {
     merchantLocalDate = <event date in ISO 8601 format>,
     Data = <event data>
