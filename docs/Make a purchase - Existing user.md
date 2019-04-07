@@ -30,7 +30,7 @@ Request that Dynamics 365 Fraud Protection make a risk decision when your existi
 
 ## Example purchase request
 ```http
-POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/Purchase HTTP/1.1
+POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/Purchase HTTP/1.1
 Host: api.dfp.microsoft.com
 Content-Type: application/json; charset=utf-8
 x-ms-correlation-id: <correlation ID>

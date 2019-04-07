@@ -28,7 +28,7 @@ In the sample site, a user clicks **Chargeback** from their **Orders** page. In 
 ## Example chargeback event
 The following example request sends a chargeback event to Dynamics 365 Fraud Protection. In this instance, you lost the chargeback dispute.
 ```http
-POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/Chargeback HTTP/1.1
+POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/Chargeback HTTP/1.1
 Host: api.dfp.microsoft.com
 Content-Type: application/json; charset=utf-8
 x-ms-correlation-id: <correlation ID 1>

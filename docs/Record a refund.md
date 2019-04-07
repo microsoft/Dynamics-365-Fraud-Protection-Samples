@@ -24,7 +24,7 @@ In the sample site, to request a refund, a user selects **Refund** from their **
 ## Example refund event
 This example request sends a completed refund event to Dynamics 365 Fraud Protection:
 ```http
-POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/Refund HTTP/1.1
+POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/Refund HTTP/1.1
 Host: api.dfp.microsoft.com
 Content-Type: application/json; charset=utf-8
 x-ms-correlation-id: <correlation ID 1>

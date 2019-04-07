@@ -43,7 +43,7 @@ Examples:
 ## Rejected bank auth event
 The following example request sends a bank auth event to Dynamics 365 Fraud Protection informing it that the bank authorization was rejected. If you send a rejected bank auth, you would likely skip the bank charge event, and send a rejected purchase status event.
 ```http
-POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/BankEvent HTTP/1.1
+POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/BankEvent HTTP/1.1
 Host: api.dfp.microsoft.com
 Content-Type: application/json; charset=utf-8
 x-ms-correlation-id: <correlation ID 1>
@@ -69,7 +69,7 @@ Content-Length: <content length>
 ## Rejected bank charge event
 The following example request sends a bank charge event to Dynamics 365 Fraud Protection informing it that the bank charge was rejected. If you send a rejected bank charge, you would likely send a rejected purchase status event.
 ```http
-POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/BankEvent HTTP/1.1
+POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/BankEvent HTTP/1.1
 Host: api.dfp.microsoft.com
 Content-Type: application/json; charset=utf-8
 x-ms-correlation-id: <correlation ID 1>
@@ -94,7 +94,7 @@ Content-Length: <content length>
 ## Canceled purchase status event
 The following example request sends a purchase status event to Dynamics 365 Fraud Protection informing it that the purchase was canceled from your perspective. You may send this immediately after getting a reject decision from Dynamics 365 Fraud Protection in a purchase event response. Additionally, you may send it in response to a rejected bank auth or charge, or any other reason that you decide to reject a purchase, and need to inform Dynamics 365 Fraud Protection.
 ```http
-POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/PurchaseStatus HTTP/1.1
+POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/PurchaseStatus HTTP/1.1
 Host: api.dfp.microsoft.com
 Content-Type: application/json; charset=utf-8
 x-ms-correlation-id: <correlation ID 1>

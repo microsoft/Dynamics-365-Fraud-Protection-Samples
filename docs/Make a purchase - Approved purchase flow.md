@@ -51,7 +51,7 @@ Examples:
 ## Bank auth event
 This example request sends a bank auth event to Fraud Protection telling it that the bank authorization was successful.
 ```http
-POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/BankEvent HTTP/1.1
+POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/BankEvent HTTP/1.1
 Host: api.dfp.microsoft.com
 Content-Type: application/json; charset=utf-8
 x-ms-correlation-id: <correlation ID 1>
@@ -77,7 +77,7 @@ Content-Length: <content length>
 ## Bank charge event
 This example request sends a bank charge event to Fraud Protection telling it that the bank charge was successful.
 ```http
-POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/BankEvent HTTP/1.1
+POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/BankEvent HTTP/1.1
 Host: api.dfp.microsoft.com
 Content-Type: application/json; charset=utf-8
 x-ms-correlation-id: <correlation ID 1>
@@ -102,7 +102,7 @@ Content-Length: <content length>
 ## Purchase status event
 This example request sends a purchase status event to Fraud Protection telling it that the purchase was successful from your perspective. The purchase status may differ from bank event statuses and is completely up to you to determine.
 ```http
-POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/PurchaseStatus HTTP/1.1
+POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/PurchaseStatus HTTP/1.1
 Host: api.dfp.microsoft.com
 Content-Type: application/json; charset=utf-8
 x-ms-correlation-id: <correlation ID 1>
