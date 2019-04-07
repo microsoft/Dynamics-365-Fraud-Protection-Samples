@@ -5,7 +5,7 @@ Customers may request refunds from you. To improve Dynamics 365 Fraud Protection
 
 ## Helpful links
 - [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
-- [Refund - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesRefundPost)
+- [Refund - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/Events/V0.5MerchantservicesEventsRefundPost)
 - [Sample site - Send refund event](../src/Web/Areas/Admin/Controllers/ManageController.cs) (see POST to Edit method)
 - [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostRefund method)
 

@@ -5,7 +5,7 @@ While Dynamics 365 Fraud Protection tries to minimize chargebacks, they may stil
 
 ## Helpful links
 - [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
-- [Chargeback - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesChargebackPost)
+- [Chargeback - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/Events/V0.5MerchantservicesEventsChargebackPost)
 - [Sample site - Send chargeback event](../src/Web/Controllers/OrderController.cs) (see ChargebackOrder method)
 - [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostChargeback method)
 
