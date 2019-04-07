@@ -9,7 +9,7 @@ You must send an authentication token with Dynamics 365 Fraud Protection API cal
 - [Integrate real-time APIs](https://go.microsoft.com/fwlink/?linkid=2085128)
 
 ## Authenticate with Dynamics 365 Fraud Protection API
-This example requires the following data to obtain an access token:
+This C# example requires the following data to obtain an access token:
 
 1. **Authority**: Your OAuth authority URL to authenticate against.
 1. **Client ID**: Your Dynamics 365 Fraud Protection merchant application's ID in Azure Active Directory (Azure AD).
@@ -37,6 +37,44 @@ public class TokenProviderService : ITokenProvider
     }
 }
 ```
+
+Behind the scenes, the code above generates an HTTP request and receives a response like below:
+
+### Request
+```http
+POST <authority>/oauth2/token HTTP/1.1
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+Content-Length: <content length>
+Host: login.microsoftonline.com
+
+resource=https://api.dfp.microsoft-int.com
+&client_id=<Azure Active Directory client app ID>
+&client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
+&client_assertion=<client secret; in this case a private cert>
+&grant_type=client_credentials
+```
+### Response
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: <date>
+Content-Length: <content length>
+
+{
+  "token_type":"Bearer",
+  "expires_in":"3599",
+  "ext_expires_in":"3599",
+  "expires_on":"<date timestamp>",
+  "not_before":"<date timestamp>",
+  "resource":"https://api.dfp.microsoft-int.com",
+  "access_token":"<your access token; e.g.: eyJ0eXA...NFLCQ"
+}
+```
+
+## Token refreshing
+You should make sure your appliation gets a new access token when needed. For instance, when your existing one is about to expire. Many frameworks, including .NET Core seen in the C# sample above, handle this for you automatically by caching your access token and only getting a new one when needed.  
+
 ## Send events to Dynamics 365 Fraud Protection
 All events sent to Dynamics 365 Fraud Protection follow the same JSON model:
 ```
