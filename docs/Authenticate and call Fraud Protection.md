@@ -73,7 +73,7 @@ Content-Length: <content length>
 ```
 
 ## Token refreshing
-You should make sure your appliation gets a new access token when needed. For instance, when your existing one is about to expire. Many frameworks, including .NET Core seen in the C# sample above, handle this for you automatically by caching your access token and only getting a new one when needed.  
+Ensure your application gets a new access token as needed. For instance, when your existing one is about to expire. Many frameworks, including .NET Core seen in the C# sample above, handle this for you automatically by caching your access token and only getting a new one as needed.  
 
 ## Send events to Dynamics 365 Fraud Protection
 All events sent to Dynamics 365 Fraud Protection follow the same JSON model:
