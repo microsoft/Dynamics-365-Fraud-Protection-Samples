@@ -48,7 +48,7 @@ Content-Type: application/x-www-form-urlencoded
 Content-Length: <content length>
 Host: login.microsoftonline.com
 
-resource=https://api.dfp.microsoft-int.com
+resource=https://api.dfp.microsoft.com
 &client_id=<Azure Active Directory client app ID>
 &client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
 &client_assertion=<client secret; in this case a private cert>
@@ -67,7 +67,7 @@ Content-Length: <content length>
   "ext_expires_in":"3599",
   "expires_on":"<date timestamp>",
   "not_before":"<date timestamp>",
-  "resource":"https://api.dfp.microsoft-int.com",
+  "resource":"https://api.dfp.microsoft.com",
   "access_token":"<your access token; e.g.: eyJ0eXA...NFLCQ"
 }
 ```
