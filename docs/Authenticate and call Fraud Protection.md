@@ -4,7 +4,7 @@
 You must send an authentication token with Dynamics 365 Fraud Protection API calls. See the following example for one way to do that. It then walks you through the process of creating a request and handling the response.
 
 ## Helpful links
-- [API spec](https://apidocs.microsoft.com/services/graphriskapi)
+- [API spec](https://apidocs.microsoft.com/services/dynamics365fraudprotection)
 - [Sample Site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs)
 - [Integrate real-time APIs](https://go.microsoft.com/fwlink/?linkid=2085128)
 

@@ -5,7 +5,7 @@ You can inform Dynamics 365 Fraud Protection when customers update their payment
 
 ## Helpful links
 - [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
-- [UpdateUser - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesUpdateAccountPost)
+- [UpdateUser - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesUpdateAccountPost)
 - [Sample Site - Manage a user](../src/Web/Controllers/ManageController.cs) (see POST to the ManagePaymentInstrument method)
 - [Sample Site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostUser method)
 
