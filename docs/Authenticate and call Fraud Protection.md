@@ -68,7 +68,7 @@ Content-Length: <content length>
   "expires_on":"<date timestamp>",
   "not_before":"<date timestamp>",
   "resource":"https://api.dfp.microsoft.com",
-  "access_token":"<your access token; e.g.: eyJ0eXA...NFLCQ"
+  "access_token":"<your access token; e.g.: eyJ0eXA...NFLCQ>"
 }
 ```
 
