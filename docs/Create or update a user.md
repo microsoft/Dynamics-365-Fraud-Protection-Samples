@@ -4,10 +4,10 @@
 You can inform Dynamics 365 Fraud Protection when new customers register and create accounts. Although this call is optional, we recommend providing this data to build knowledge in Dynamics 365 Fraud Protection to better detect fraud when customers try to make purchases.
 
 ## Helpful links
-- [Calling Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
+- [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
 - [UpdateUser - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesUpdateAccountPost)
-- [Sample Site - Register a user](../src/Web/Controllers/ManageController.cs) (see POST to the Index method)
-- [Sample Site - Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostUser method)
+- [Sample site - Register a user](../src/Web/Controllers/ManageController.cs) (see POST to the Index method)
+- [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostUser method)
 
 ## Required data
 - User ID
