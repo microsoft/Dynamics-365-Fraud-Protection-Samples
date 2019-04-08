@@ -49,7 +49,7 @@ Examples:
 - [Make a Purchase - Guest user](./Make&#32;a&#32;purchase&#32;-&#32;Guest&#32;user.md)
 
 ## Bank auth event
-This example request sends a bank auth event to Fraud Protection telling it that the bank authorization was successful.
+This example request sends a bank auth event to Dynamics 365 Fraud Protection informing it that the bank authorization was successful.
 ```http
 POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/BankEvent HTTP/1.1
 Host: api.dfp.microsoft.com
@@ -75,7 +75,7 @@ Content-Length: <content length>
 ```
 
 ## Bank charge event
-This example request sends a bank charge event to Fraud Protection telling it that the bank charge was successful.
+This example request sends a bank charge event to Dynamics 365 Fraud Protection informing it that the bank charge was successful.
 ```http
 POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/BankEvent HTTP/1.1
 Host: api.dfp.microsoft.com
@@ -100,7 +100,7 @@ Content-Length: <content length>
 ```
 
 ## Purchase status event
-This example request sends a purchase status event to Fraud Protection telling it that the purchase was successful from your perspective. The purchase status may differ from bank event statuses and is completely up to you to determine.
+This example request sends a purchase status event to Dynamics 365 Fraud Protection informing it that the purchase was successful from your perspective. The purchase status may differ from bank event statuses and is completely up to you to determine.
 ```http
 POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/PurchaseStatus HTTP/1.1
 Host: api.dfp.microsoft.com
