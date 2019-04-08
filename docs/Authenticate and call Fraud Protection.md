@@ -5,7 +5,7 @@ You must send an authentication token with Dynamics 365 Fraud Protection API cal
 
 ## Helpful links
 - [API spec](https://apidocs.microsoft.com/services/dynamics365fraudprotection)
-- [Sample Site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs)
+- [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs)
 - [Integrate real-time APIs](https://go.microsoft.com/fwlink/?linkid=2085128)
 
 ## Authenticate with Dynamics 365 Fraud Protection API
