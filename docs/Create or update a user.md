@@ -5,7 +5,7 @@ You can inform Dynamics 365 Fraud Protection when new customers register and cre
 
 ## Helpful links
 - [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
-- [UpdateUser - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesUpdateAccountPost)
+- [UpdateUser - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/Events/V0.5MerchantservicesEventsUpdateAccountPost)
 - [Sample site - Register a user](../src/Web/Controllers/ManageController.cs) (see POST to the Index method)
 - [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostUser method)
 

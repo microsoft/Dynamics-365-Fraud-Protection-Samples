@@ -5,7 +5,7 @@ You can request Dynamics 365 Fraud Protection for a risk decision when guest use
 
 ## Helpful links
 - [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
-- [Purchase - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesPurchasePost)
+- [Purchase - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/Events/V0.5MerchantservicesEventsPurchasePost)
 - [Sample site - Make a purchase](../src/Web/Controllers/BasketController.cs) (see SetupPurchase and CheckoutDetails methods)
 - [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostPurchase method)
 
@@ -30,7 +30,7 @@ You can request Dynamics 365 Fraud Protection for a risk decision when guest use
 
 ## Example purchase request
 ```http
-POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/Purchase HTTP/1.1
+POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/Purchase HTTP/1.1
 Host: api.dfp.microsoft.com
 Content-Type: application/json; charset=utf-8
 x-ms-correlation-id: <correlation ID>

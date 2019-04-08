@@ -5,7 +5,7 @@ While Dynamics 365 Fraud Protection tries to minimize chargebacks, they may stil
 
 ## Helpful links
 - [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
-- [Chargeback - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesChargebackPost)
+- [Chargeback - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/Events/V0.5MerchantservicesEventsChargebackPost)
 - [Sample site - Send chargeback event](../src/Web/Controllers/OrderController.cs) (see ChargebackOrder method)
 - [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostChargeback method)
 
@@ -28,7 +28,7 @@ In the sample site, a user clicks **Chargeback** from their **Orders** page. In 
 ## Example chargeback event
 The following example request sends a chargeback event to Dynamics 365 Fraud Protection. In this instance, you lost the chargeback dispute.
 ```http
-POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/Chargeback HTTP/1.1
+POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/Chargeback HTTP/1.1
 Host: api.dfp.microsoft.com
 Content-Type: application/json; charset=utf-8
 x-ms-correlation-id: <correlation ID 1>

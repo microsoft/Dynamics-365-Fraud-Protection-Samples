@@ -5,9 +5,9 @@ After sending Dynamics 365 Fraud Protection a purchase event, it is up to you to
 
 ## Helpful links
 - [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
-- [Purchase - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesPurchasePost)
-- [Bank Event - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesBankEventPost)
-- [Purchase Status - Data model and endpoint](https://apidocs.microsoft.com/services/graphriskapi#/KnowledgeGatewayEvent/KnowledgeGatewayEventActivitiesPurchasestatusPost)
+- [Purchase - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/Events/V0.5MerchantservicesEventsPurchasePost)
+- [Bank Event - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/Events/V0.5MerchantservicesEventsBankEventPost)
+- [Purchase Status - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/Events/V0.5MerchantservicesEventsPurchaseStatusPost)
 - [Sample site - Make a purchase](../src/Web/Controllers/BasketController.cs) (see SetupPurchase and CheckoutDetails methods)
 - [Sample site - Sending bank and purchase status events](../src/Web/Controllers/BasketController.cs) (see ApproveOrRejectPurchase, SetupBankEvent, and SetupPurchaseStatus methods)
 - [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostPurchase, PostBankEvent, and PostPurchaseStatus methods)
@@ -51,7 +51,7 @@ Examples:
 ## Bank auth event
 This example request sends a bank auth event to Dynamics 365 Fraud Protection informing it that the bank authorization was successful.
 ```http
-POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/BankEvent HTTP/1.1
+POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/BankEvent HTTP/1.1
 Host: api.dfp.microsoft.com
 Content-Type: application/json; charset=utf-8
 x-ms-correlation-id: <correlation ID 1>
@@ -77,7 +77,7 @@ Content-Length: <content length>
 ## Bank charge event
 This example request sends a bank charge event to Dynamics 365 Fraud Protection informing it that the bank charge was successful.
 ```http
-POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/BankEvent HTTP/1.1
+POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/BankEvent HTTP/1.1
 Host: api.dfp.microsoft.com
 Content-Type: application/json; charset=utf-8
 x-ms-correlation-id: <correlation ID 1>
@@ -102,7 +102,7 @@ Content-Length: <content length>
 ## Purchase status event
 This example request sends a purchase status event to Dynamics 365 Fraud Protection informing it that the purchase was successful from your perspective. The purchase status may differ from bank event statuses and is completely up to you to determine.
 ```http
-POST https://api.dfp.microsoft.com/KnowledgeGateway/activities/PurchaseStatus HTTP/1.1
+POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/PurchaseStatus HTTP/1.1
 Host: api.dfp.microsoft.com
 Content-Type: application/json; charset=utf-8
 x-ms-correlation-id: <correlation ID 1>
