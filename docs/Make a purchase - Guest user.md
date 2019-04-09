@@ -42,7 +42,7 @@ Content-Length: <content length>
   "MerchantLocalDate": "<event date in ISO 8601 format>",
   "Data": {
     "PurchaseId": "<merchant mastered purchase ID>",
-    "AssessmentType": "<'evaluate' or 'protect' based on if you are using the Fraud Protection recommendation or not>,
+    "AssessmentType": "<'evaluate' or 'protect' based on if you are using the Fraud Protection recommendation or not>",
     "CustomerLocalDate": "<customer local date in ISO 8601 format>",
     "MerchantLocalDate": "<merchant local date in ISO 8601 format>",
     "TotalAmount": 76.49,
