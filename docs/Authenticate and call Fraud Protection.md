@@ -13,7 +13,7 @@ You must send an authentication token with Dynamics 365 Fraud Protection API cal
 This C# example requires the following data to obtain an access token:
 
 1. **Authority**: Your OAuth authority URL to authenticate against.
-1. **Client application ID**: Your Dynamics 365 Fraud Protection client application's ID in Azure Active Directory (Azure AD). Ensure you have assigned the proper role(s) to your Azure AD client application. Please see the [role documentation](https://go.microsoft.com/fwlink/?linkid=2084758) for the latest role names and descriptions.
+1. **Client application ID**: Your Dynamics 365 Fraud Protection client application's ID in Azure Active Directory (Azure AD). Ensure you have assigned the proper role(s) to your Azure AD client application. For the latest roles and descriptions, see [configure user access](https://go.microsoft.com/fwlink/?linkid=2084758).
 1. **Certificate**: The private certificate you've selected, with its public portion placed in your Dynamics 365 Fraud Protection client application in Azure AD. This sample application authenticates via a username/certificate pair. Using a username/password pair is also possible by using the ```ClientCredential``` C# class rather than the ```ClientAssertionCertificate``` class as in the TokenProviderService sample below.
 
 ```csharp
