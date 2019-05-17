@@ -8,8 +8,8 @@ It demonstrates two primary operations using the Dynamics 365 Fraud Protection A
 ## Local development setup
 Before running the solution, you must install these prerequisites:
 
-- Visual Studio 2017 
-- .Net Core SDK version 2.1 or greater
+- Visual Studio 2019 
+- .Net Core SDK version 2.2 or greater
 - (optional) SQL Management Studio, Azure Data Studio, or similar, if you want to view your schema and data during testing/development.
 
 ## Running the application
