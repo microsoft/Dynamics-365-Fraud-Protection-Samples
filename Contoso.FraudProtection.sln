@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{419A6ACE-0419-4315-A6FB-B0E63D39432E}"
 EndProject
@@ -17,6 +17,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE = LICENSE
 		PRIVACY = PRIVACY
 		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{31E6802C-EA18-41FB-8392-4DC40DFF3184}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Authenticate and call Fraud Protection.md = docs\Authenticate and call Fraud Protection.md
+		docs\Create or update a user credit card.md = docs\Create or update a user credit card.md
+		docs\Create or update a user.md = docs\Create or update a user.md
+		docs\Make a purchase - Approved purchase flow.md = docs\Make a purchase - Approved purchase flow.md
+		docs\Make a purchase - Existing user.md = docs\Make a purchase - Existing user.md
+		docs\Make a purchase - Guest user.md = docs\Make a purchase - Guest user.md
+		docs\Make a purchase - Handle the Fraud Protection purchase response.md = docs\Make a purchase - Handle the Fraud Protection purchase response.md
+		docs\Make a purchase - Rejected purchase flow.md = docs\Make a purchase - Rejected purchase flow.md
+		docs\README.md = docs\README.md
+		docs\Record a chargeback.md = docs\Record a chargeback.md
+		docs\Record a refund.md = docs\Record a refund.md
 	EndProjectSection
 EndProject
 Global
