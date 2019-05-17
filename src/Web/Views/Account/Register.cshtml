@@ -3,9 +3,6 @@
 // Licensed under the MIT license.   
 *@
 
-@using System.Collections.Generic
-@using Microsoft.AspNetCore.Http
-@using Microsoft.AspNetCore.Http.Authentication
 @using Contoso.FraudProtection.Web.Helpers
 @using Contoso.FraudProtection.Web.ViewModels.Account
 @using Microsoft.Extensions.Configuration
@@ -14,11 +11,6 @@
 @{
     ViewData["Title"] = "Register";
 }
-<div class="brand-header-block">
-    <ul class="container">
-        <li class="active" style="margin-right: 65px;">Already have an account? <a asp-action="Signin">LOGIN</a></li>
-    </ul>
-</div>
 
 <div class="container account-login-container">
     <form asp-controller="Account" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" onsubmit="setUpClientDetails()">

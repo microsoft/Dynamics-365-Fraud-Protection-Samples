@@ -8,18 +8,13 @@
 @{
     ViewData["Title"] = "Log in";
 }
-<div class="brand-header-block">
-    <ul class="container">
-        @*<li><a asp-area="" asp-controller="Account" asp-action="Register">REGISTER</a></li>*@
-        <li class="active" style="margin-right: 65px;">LOGIN</li>
-    </ul>
-</div>
+<br />
 <div class="container account-login-container">
     <div class="row">
         <div class="col-md-12">
             <section>
                 <form asp-controller="Account" asp-action="SignIn" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
-                    <h4>ARE YOU REGISTERED?</h4>
+                    <h3>Login</h3>
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="Email" class="control-label form-label"></label>
@@ -38,9 +33,7 @@
                                 @Html.DisplayNameFor(m => m.RememberMe)
                             </label>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-default btn-brand btn-brand-big">&nbsp;LOG IN&nbsp;</button>
+                        <input type="submit" class="btn esh-basket-checkout" value="[ LOGIN ]" />
                     </div>
                     <p>
                         <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" class="text">Register as a new user?</a>
