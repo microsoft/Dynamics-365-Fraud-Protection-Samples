@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Contoso.FraudProtection.Infrastructure.Utilities
@@ -13,9 +14,14 @@ namespace Contoso.FraudProtection.Infrastructure.Utilities
             certStore.Open(OpenFlags.ReadOnly);
 
             X509Certificate2Collection certs = certStore.Certificates.Find(findType, findValue, findValidOnly);
-            X509Certificate2 cert = certs.Count > 0 ? certs[0] : null;
-
-            return cert;
+            if(certs.Count > 0)
+            {
+                return certs[0];
+            }
+            else
+            {
+                throw new Exception("Certificate is missing from your current user storage.");
+            }
         }
 
         public static X509Certificate2 GetCertificateByName(string certName)
