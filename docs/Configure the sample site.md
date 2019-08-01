@@ -20,8 +20,8 @@ Follow these steps to configure the sample site before running it.
    1. Select "Integration" for the environment.
    1. Keep "Certificate" selected for the authentication method.
    1. Upload the public portion of a valid certificate you have and click "Create application".
-   1. Copy the "Application (client) ID" and enter it as the value for the "ClientId" setting.
-   1. Copy the "Thumbprint" and enter it as the value for the "CertificateThumbprint" setting.
+   1. Copy the "Application (client) ID" and set it as the value for the "ClientId" setting.
+   1. Copy the "Thumbprint" and set it as the value for the "CertificateThumbprint" setting.
    1. Install the matching private key on your local machine (or wherever you will run the sample site from) and place it in the "Current User" certificate store.
 1. Go to the [Azure Admin Center](https://aad.portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview). Copy your tenant domain (e.g. contoso.onmicrosoft.com) and set the "Authority" setting to "https://login.microsoftonline.com/[your tenant domain]".
 1. You've finished configuring the sample site. You can now run the sample site, which will make calls to the Dynamics 365 Fraud Protection APIs.
@@ -35,7 +35,7 @@ This sample application authenticates via a client ID/certificate pair. Using a 
   "ConnectionStrings": {
     "CatalogConnection": "<optional>",
     "IdentityConnection": "<optional>"
-  },n
+  },
   "CatalogBaseUrl": "",
   "Logging": {
     "IncludeScopes": false,
