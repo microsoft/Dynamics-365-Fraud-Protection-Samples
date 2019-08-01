@@ -1,5 +1,5 @@
 # Microsoft Dynamics 365 Fraud Protection - Sample merchant application
-The Microsoft Dynamics 365 Fraud Protection sample merchant application demonstrates how to call the [Dynamics 365 Fraud Protection APIs](https://apidocs.microsoft.com/services/dynamics365fraudprotection) in the context of an online merchant who sells clothing and other goods. This sample may be useful if you are in the process of integrating with the Dynamics 365 Fraud Protection APIs, or if you want to see how new API endpoints/features are integrated when there are new API versions.
+The Microsoft Dynamics 365 Fraud Protection sample merchant application demonstrates how to call the [Dynamics 365 Fraud Protection APIs](https://apidocs.microsoft.com/services/dynamics365fraudprotection) in the context of an online merchant who sells clothing and other goods. This sample may be useful if you are integrating with the Dynamics 365 Fraud Protection APIs, or if you want to see how to integrate new API endpoints/features when there are new API versions.
 
 It demonstrates two primary operations using the Dynamics 365 Fraud Protection APIs:
 - Setting up the user and their associated information in the Dynamics 365 Fraud Protection system (for example, basic info, payment methods, addresses, and so on).
