@@ -6,6 +6,7 @@ You can inform Dynamics 365 Fraud Protection of events that happen in your syste
 These documents are largely based on a sample application developed to demonstrate how you can integrate your system with Dynamics 365 Fraud Protection. In general, the documents link to actual sample application code, where possible; otherwise, code samples exist directly in the documentation.
 
 ## Contents
+- [Configure the sample site](./Configure&#32;the&#32;sample&#32;site.md)
 - [Authenticate and call Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
 - **Create and update users**
   * [Create or update a user](./Create&#32;or&#32;update&#32;a&#32;user.md)
