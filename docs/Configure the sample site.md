@@ -67,7 +67,7 @@ Follow these steps to configure the sample site before running it.
 ```
 
 ## Note: Authenticating with a password rather than a certificate
-We recommend authenticating via certificate. If you want or need to authenticate via a secret (password) instead, select "Secret" on the Real Time APIs page instead of "Certificate". Then, copy the secret from the confirmation page and set it as the value for the "ClientSecret" setting in your appsettings.json file. For non sample apps, you would want to securely inject that secret into the application rather than having it hard-coded into your appsettings file.
+We recommend authenticating via certificate. If you want or need to authenticate via a secret (password) instead, select "Secret" on the Real Time APIs page instead of "Certificate," then copy the secret from the confirmation page and set it as the value for the "ClientSecret" setting in your appsettings.json file. For non-sample apps, you would want to securely inject that secret into the application rather than having it hard-coded into your appsettings file.
 
 ## More info
-Read [integrate real-time APIs](https://go.microsoft.com/fwlink/?linkid=2085128) for generalized information on configuring API access. The steps are nearly identical, but do not discuss the sample site's specific configuration file.
+Read [integrate real-time APIs](https://go.microsoft.com/fwlink/?linkid=2085128) for general information on configuring API access. The steps are nearly identical, but do not discuss the sample site's specific configuration file.
