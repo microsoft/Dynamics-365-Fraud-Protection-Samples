@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Contoso.FraudProtection.Infrastructure.Services
 {
-	public class TokenProviderService : ITokenProvider
+    public class TokenProviderService : ITokenProvider
     {
-        private TokenProviderServiceSettings _settings;
+        private readonly TokenProviderServiceSettings _settings;
 
         public TokenProviderService(IOptions<TokenProviderServiceSettings> settings)
         {
@@ -20,10 +20,10 @@ namespace Contoso.FraudProtection.Infrastructure.Services
 
         public async Task<string> AcquireTokenAsync(string resource)
         {
-			var assertionCert = CertificateUtility.GetByThumbprint(_settings.CertificateThumbprint);
-			var clientAssertion = new ClientAssertionCertificate(_settings.ClientId, assertionCert);
-         
-			var context = new AuthenticationContext(_settings.Authority);
+            var assertionCert = CertificateUtility.GetByThumbprint(_settings.CertificateThumbprint);
+            var clientAssertion = new ClientAssertionCertificate(_settings.ClientId, assertionCert);
+
+            var context = new AuthenticationContext(_settings.Authority);
             var authenticationResult = await context.AcquireTokenAsync(resource, clientAssertion);
 
             return authenticationResult.AccessToken;
