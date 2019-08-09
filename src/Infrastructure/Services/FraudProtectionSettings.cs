@@ -25,6 +25,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         public string ClientId { get; set; }
         public string Authority { get; set; }
 		public string CertificateThumbprint { get; set; }
+		public string ClientSecret { get; set; }
 	}
     #endregion
 }

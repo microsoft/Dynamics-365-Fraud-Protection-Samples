@@ -28,9 +28,6 @@ Follow these steps to configure the sample site before running it.
    1. Install the matching private key on your local machine (or wherever you will run the sample site from) and place it in the "Current User" certificate store.
 1. You've finished configuring the sample site. You can now run the sample site, which will make calls to the Dynamics 365 Fraud Protection APIs.
 
-## Note: Authenticating with a password rather than a certificate
-This sample application authenticates via a client ID/certificate pair. Using a client ID/password pair is also possible by using the ```ClientCredential``` C# class rather than the ```ClientAssertionCertificate``` class as in the TokenProviderService sample below. In this scenario, you would also create another AAD application using the Real Time APIs page, but select "Secret" as the authentication method. You would then need to safely and securely get that secret into the application.
-
 ## Example: final appsettings.json
 ```json
 {
@@ -61,9 +58,16 @@ This sample application authenticates via a client ID/certificate pair. Using a 
     },
     "TokenProviderConfig": {
       "ClientId": "00112233-4455-6677-8899-aabbccddeefg",
-      "Authority": "https://login.microsoftonline.com/contoso.onmicrosoft.com",
-      "CertificateThumbprint": "934367bf1c97033f877db0f15cb1b586957d313"
+      "Authority": "https://login.microsoftonline.com/11112222-3333-4444-5555-666677778888",
+      "CertificateThumbprint": "111122223333444455556666777788889999000",
+      "ClientSecret": ""
     }
   }
 }
 ```
+
+## Note: Authenticating with a password rather than a certificate
+We recommend authenticating via certificate. If you want or need to authenticate via a secret (password) instead, select "Secret" on the Real Time APIs page instead of "Certificate". Then, copy the secret from the confirmation page and set it as the value for the "ClientSecret" setting in your appsettings.json file. For non sample apps, you would want to securely inject that secret into the application rather than having it hard-coded into your appsettings file.
+
+## More info
+Read [integrate real-time APIs](https://go.microsoft.com/fwlink/?linkid=2085128) for generalized information on configuring API access. The steps are nearly identical, but do not discuss the sample site's specific configuration file.
