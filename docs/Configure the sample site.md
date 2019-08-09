@@ -7,11 +7,11 @@ Follow these steps to configure the sample site before running it.
 1. If you haven't already, clone this repository locally.
 1. In your local repository, open [appsettings.json](../src/Web/appsettings.json).
 1. Go to the [Dynamics 365 Fraud Protection integration portal](https://dfp.microsoft-int.com).
-   1. If your Azure global administrator has not already visited the portal, please ask them to do so first. They will need to agree to the terms of use in order to setup the integration environment.
+   1. If your Azure global administrator has not already visited the portal - and you are not an Azure global administrator - please ask them to do so first. They will need to agree to the terms of use in order to setup the integration environment. 
 1. Sign in and you will be on the dashboard.
 1. Gather the following pieces of information from the dashboard:
    1. Copy the "Instance ID" GUID and set the "DeviceFingerprintingCustomerId" setting in your appsettings.json file to it.
-   1. Copy the "Directory ID" GUID and set the "Authority" setting in your appsettings.json file to "https://login.microsoftonline.com/[Directory ID]".
+   1. Copy the "Directory ID" GUID and set the "Authority" setting in your appsettings.json file to "https://login.microsoftonline.com/[Directory_ID]".
 1. If you aren't using Microsoft Device Fingerprinting, you can skip this step. If you are using Microsoft Device Fingerprinting or will in the future, follow the [Set up Azure DNS](https://docs.microsoft.com/en-us/dynamics365/fraud-protection/device-fingerprinting#set-up-azure-dns) steps from our product documentation.
    1. Then, put your merchant domain name in your appsettings.json file as the value for the "DeviceFingerprintingDomain" setting. 
 1. On the portal, go to the [Configuration --> Real Time APIs](https://dfp.microsoft-int.com/configuration/realTimeApis) page. Use it to set up API access via an Azure Active Directory (AAD) application:
