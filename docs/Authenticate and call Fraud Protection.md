@@ -15,7 +15,7 @@ This C# example below assumes you have already configured the sample site.
 ```csharp
 public class TokenProviderService : ITokenProvider
 {
-    private TokenProviderServiceSettings _settings;
+    private readonly TokenProviderServiceSettings _settings;
 
     public TokenProviderService(IOptions<TokenProviderServiceSettings> settings)
     {
@@ -24,9 +24,26 @@ public class TokenProviderService : ITokenProvider
 
     public async Task<string> AcquireTokenAsync(string resource)
     {
-        var assertionCert = CertificateUtility.GetByThumbprint(_settings.CertificateThumbprint);
-        var clientAssertion = new ClientAssertionCertificate(_settings.ClientId, assertionCert);
-        
+        //error handling elided for documentation
+
+        return _settings.CertificateThumbprint != "" ?
+            await AcquireTokenWithCertificateAsync(resource) :
+            await AcquireTokenWithSecretAsync(resource);
+    }
+
+    private async Task<string> AcquireTokenWithCertificateAsync(string resource)
+    {
+        var x509Cert = CertificateUtility.GetByThumbprint(_settings.CertificateThumbprint);
+        var clientAssertion = new ClientAssertionCertificate(_settings.ClientId, x509Cert);
+        var context = new AuthenticationContext(_settings.Authority);
+        var authenticationResult = await context.AcquireTokenAsync(resource, clientAssertion);
+
+        return authenticationResult.AccessToken;
+    }
+
+    private async Task<string> AcquireTokenWithSecretAsync(string resource)
+    {
+        var clientAssertion = new ClientCredential(_settings.ClientId, _settings.ClientSecret);
         var context = new AuthenticationContext(_settings.Authority);
         var authenticationResult = await context.AcquireTokenAsync(resource, clientAssertion);
 
