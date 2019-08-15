@@ -6,7 +6,7 @@ You must send an authentication token with Dynamics 365 Fraud Protection API cal
 ## Helpful links
 - [API spec](https://apidocs.microsoft.com/services/dynamics365fraudprotection)
 - [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs)
-- [Configure the sample site](./Configure&#32;the&#32;sample&#32;site.md))
+- [Configure the sample site](./Configure&#32;the&#32;sample&#32;site.md)
 - [Integrate real-time APIs](https://go.microsoft.com/fwlink/?linkid=2085128)
 
 ## Authenticate with Dynamics 365 Fraud Protection API
@@ -52,7 +52,7 @@ public class TokenProviderService : ITokenProvider
 }
 ```
 
-Behind the scenes, the code above generates an HTTP request and receives a response like below:
+Behind the scenes, the code above generates an HTTP request and receives a response like below in the case of authenticating with a certificate:
 
 ### Request
 ```http
@@ -65,7 +65,7 @@ Host: login.microsoftonline.com
 resource=https://api.dfp.microsoft.com
 &client_id=<Azure Active Directory client app ID>
 &client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
-&client_assertion=<client secret; in this case a private cert>
+&client_assertion=<client secret; in this case a JWT token signed by the private cert>
 &grant_type=client_credentials
 ```
 ### Response
