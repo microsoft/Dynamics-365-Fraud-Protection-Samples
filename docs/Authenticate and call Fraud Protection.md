@@ -36,7 +36,7 @@ public class TokenProviderService : ITokenProvider
         var x509Cert = CertificateUtility.GetByThumbprint(_settings.CertificateThumbprint);
         var clientAssertion = new ClientAssertionCertificate(_settings.ClientId, x509Cert);
         var context = new AuthenticationContext(_settings.Authority);
-        var authenticationResult = await context.AcquireTokenAsync(_settings.resource, clientAssertion);
+        var authenticationResult = await context.AcquireTokenAsync(_settings.Resource, clientAssertion);
 
         return authenticationResult.AccessToken;
     }
@@ -45,7 +45,7 @@ public class TokenProviderService : ITokenProvider
     {
         var clientAssertion = new ClientCredential(_settings.ClientId, _settings.ClientSecret);
         var context = new AuthenticationContext(_settings.Authority);
-        var authenticationResult = await context.AcquireTokenAsync(_settings.resource, clientAssertion);
+        var authenticationResult = await context.AcquireTokenAsync(_settings.Resource, clientAssertion);
 
         return authenticationResult.AccessToken;
     }
