@@ -55,7 +55,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
 
             modifyBody?.Invoke(contentWithTimestamp);
 
-            var authToken = await _tokenProviderService.AcquireTokenAsync(_settings.ApiBaseUrl);
+            var authToken = await _tokenProviderService.AcquireTokenAsync();
             var url = $"{_settings.ApiBaseUrl}{endpoint}";
             var serializedObject = JsonConvert.SerializeObject(contentWithTimestamp, _serializerSettings);
             var serializedContent = new StringContent(serializedObject, Encoding.UTF8, "application/json");

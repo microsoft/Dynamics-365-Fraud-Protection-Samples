@@ -57,6 +57,7 @@ Follow these steps to configure the sample site before running it.
       "UpdateAccount": "/v0.5/MerchantServices/events/UpdateAccount"
     },
     "TokenProviderConfig": {
+      "Resource": "https://api.dfp.microsoft-int.com",
       "ClientId": "00112233-4455-6677-8899-aabbccddeefg",
       "Authority": "https://login.microsoftonline.com/11112222-3333-4444-5555-666677778888",
       "CertificateThumbprint": "111122223333444455556666777788889999000",

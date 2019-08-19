@@ -7,6 +7,6 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
 {
     public interface ITokenProvider
     {
-        Task<string> AcquireTokenAsync(string resource);
+        Task<string> AcquireTokenAsync();
     }
 }

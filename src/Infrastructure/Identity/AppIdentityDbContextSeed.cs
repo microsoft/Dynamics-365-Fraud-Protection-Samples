@@ -14,8 +14,8 @@ namespace Contoso.FraudProtection.Infrastructure.Identity
             if (!userManager.Users.Any())
             {
                 var defaultUser = new ApplicationUser { UserName = "demoadminuser@microsoft.com", Email = "demoadminuser@microsoft.com" };
-                var user = await userManager.CreateAsync(defaultUser, "Pass@word1");
-                await userManager.AddToRoleAsync(userManager.Users.FirstOrDefault(), "Manager");
+                await userManager.CreateAsync(defaultUser, "Pass@word1");
+                await userManager.AddToRoleAsync(userManager.Users.Single(), "Manager");
 
                 defaultUser = new ApplicationUser { UserName = "demouser@microsoft.com", Email = "demouser@microsoft.com" };
                 await userManager.CreateAsync(defaultUser, "Pass@word1");

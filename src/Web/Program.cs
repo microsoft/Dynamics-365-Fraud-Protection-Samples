@@ -1,20 +1,21 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore;
-using Microsoft.Extensions.DependencyInjection;
 using Contoso.FraudProtection.Infrastructure.Data;
-using System;
-using Microsoft.Extensions.Logging;
 using Contoso.FraudProtection.Infrastructure.Identity;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 namespace Contoso.FraudProtection.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = CreateWebHostBuilder(args).Build();
 
@@ -25,13 +26,13 @@ namespace Contoso.FraudProtection.Web
                 try
                 {
                     var catalogContext = services.GetRequiredService<CatalogContext>();
-                    CatalogContextSeed.SeedAsync(catalogContext, loggerFactory).Wait();
+                    await CatalogContextSeed.SeedAsync(catalogContext, loggerFactory);
 
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    AppIdentityDbContextSeed.SeedRoleAsync(roleManager).Wait();
+                    await AppIdentityDbContextSeed.SeedRoleAsync(roleManager);
 
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-                    AppIdentityDbContextSeed.SeedAsync(userManager).Wait();
+                    await AppIdentityDbContextSeed.SeedAsync(userManager);
                 }
                 catch (Exception ex)
                 {
