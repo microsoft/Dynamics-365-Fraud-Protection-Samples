@@ -24,7 +24,6 @@ namespace Contoso.FraudProtection.Web.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IBasketService _basketService;
-        private readonly IAppLogger<AccountController> _logger;
         private readonly IFraudProtectionService _fraudProtectionService;
         private readonly IHttpContextAccessor _contextAccessor;
 
@@ -32,14 +31,12 @@ namespace Contoso.FraudProtection.Web.Controllers
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IBasketService basketService,
-            IAppLogger<AccountController> logger,
             IFraudProtectionService fraudProtectionService,
             IHttpContextAccessor contextAccessor)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _basketService = basketService;
-            _logger = logger;
             _fraudProtectionService = fraudProtectionService;
             _contextAccessor = contextAccessor;
         }
@@ -89,7 +86,6 @@ namespace Contoso.FraudProtection.Web.Controllers
         {
             return View();
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]

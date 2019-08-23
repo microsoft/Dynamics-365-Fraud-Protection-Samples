@@ -33,4 +33,13 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         Publisher,
         Tenant
     }
+
+    /// <summary>
+    /// The possible assessment types.
+    /// </summary>
+    public enum AssessmentType
+    {
+        evaluate,
+        protect
+    }
 }

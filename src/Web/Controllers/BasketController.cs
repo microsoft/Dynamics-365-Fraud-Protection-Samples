@@ -1,25 +1,25 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate;
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Contoso.FraudProtection.Infrastructure.Identity;
 using Contoso.FraudProtection.Web.Interfaces;
+using Contoso.FraudProtection.Web.Services;
 using Contoso.FraudProtection.Web.ViewModels;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Dynamics.FraudProtection.Models;
+using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
+using Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent;
+using Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent;
+using Microsoft.Dynamics.FraudProtection.Models.SharedEntities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Contoso.FraudProtection.Web.Services;
-using Microsoft.Dynamics.FraudProtection.Models;
-using Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent;
-using Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent;
-using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
 using PurchaseEvent = Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent.Purchase;
 using PurchaseStatusEvent = Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent.Purchase;
-using PurchaseEventAddress = Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent.Address;
 
 namespace Contoso.FraudProtection.Web.Controllers
 {
@@ -29,7 +29,6 @@ namespace Contoso.FraudProtection.Web.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IBasketService _basketService;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IAppLogger<BasketController> _logger;
         private readonly IOrderService _orderService;
         private readonly IBasketViewModelService _basketViewModelService;
         private readonly IFraudProtectionService _fraudProtectionService;
@@ -39,14 +38,12 @@ namespace Contoso.FraudProtection.Web.Controllers
             IBasketViewModelService basketViewModelService,
             IOrderService orderService,
             SignInManager<ApplicationUser> signInManager,
-            IAppLogger<BasketController> logger,
-            IFraudProtectionService fraudProtectionService, 
+            IFraudProtectionService fraudProtectionService,
             IHttpContextAccessor contextAccessor,
             UserManager<ApplicationUser> userManager)
         {
             _basketService = basketService;
             _signInManager = signInManager;
-            _logger = logger;
             _orderService = orderService;
             _basketViewModelService = basketViewModelService;
             _fraudProtectionService = fraudProtectionService;
@@ -70,7 +67,6 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             return View(await GetBasketViewModelAsync());
         }
-
 
         // POST: /Basket/AddToBasket
         [HttpPost]
@@ -138,7 +134,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         public async Task<IActionResult> CheckoutDetails(CheckoutDetailsViewModel checkoutDetails)
         {
             var basketViewModel = await GetBasketViewModelAsync();
-          
+
             var address = new ApplicationCore.Entities.OrderAggregate.Address(
                 string.Join(' ', checkoutDetails.ShippingAddress1, checkoutDetails.ShippingAddress2),
                 checkoutDetails.City,
@@ -160,9 +156,9 @@ namespace Contoso.FraudProtection.Web.Controllers
             var purchase = SetupPurchase(checkoutDetails, basketViewModel);
             var correlationId = _fraudProtectionService.NewCorrelationId;
             var result = await _fraudProtectionService.PostPurchase(purchase, correlationId);
-            
+
             //Check the risk score that was returned and possibly complete the purchase.
-            var status = await ApproveOrRejectPurchase(result.ResultDetails.MerchantRuleDecision, checkoutDetails.UnformattedCardNumber, purchase.PurchaseId, purchase.User.UserId, correlationId);
+            var status = await ApproveOrRejectPurchase(result.ResultDetails.MerchantRuleDecision, checkoutDetails.UnformattedCardNumber, purchase.PurchaseId, correlationId);
             #endregion
 
             await _orderService.CreateOrderAsync(basketViewModel.Id, address, paymentInfo, status, purchase, result);
@@ -178,15 +174,14 @@ namespace Contoso.FraudProtection.Web.Controllers
         ///    If the purchase is not approved, submit a REJECTED purchase status.
         ///    If the purchase is approved, submit the bank AUTH, bank CHARGE, and purchase status (approved if the bank also approves the auth and charge, or rejected otherwise).
         /// </summary>
-        private async Task<OrderStatus> ApproveOrRejectPurchase(string merchantRuleDecision, string cardNumber, string purchaseId, string userId, string correlationId)
+        private async Task<OrderStatus> ApproveOrRejectPurchase(string merchantRuleDecision, string cardNumber, string purchaseId, string correlationId)
         {
             var status = OrderStatus.Received;
-            FakeCreditCardBankResponses creditCardBankResponse = null;
             BankEvent auth = null;
             BankEvent charge = null;
-            PurchaseStatusEvent purchaseStatus = null;
+            PurchaseStatusEvent purchaseStatus;
 
-            if (!FakeCreditCardBankResponses.CreditCardResponses.TryGetValue(cardNumber, out creditCardBankResponse))
+            if (!FakeCreditCardBankResponses.CreditCardResponses.TryGetValue(cardNumber, out FakeCreditCardBankResponses creditCardBankResponse))
             {
                 //default response
                 creditCardBankResponse = new FakeCreditCardBankResponses
@@ -197,7 +192,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 };
             }
 
-            if (!merchantRuleDecision.StartsWith("APPROVE", StringComparison.OrdinalIgnoreCase) && 
+            if (!merchantRuleDecision.StartsWith("APPROVE", StringComparison.OrdinalIgnoreCase) &&
                 !creditCardBankResponse.IgnoreFraudRiskRecommendation)
             {
                 purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.CANCELED);
@@ -206,10 +201,10 @@ namespace Contoso.FraudProtection.Web.Controllers
             else
             {
                 //Auth
-                if(!creditCardBankResponse.IsAuthApproved)
+                if (!creditCardBankResponse.IsAuthApproved)
                 {
                     //Auth Rejected
-                    auth = SetupBankEvent(BankEventType.AUTH, DateTimeOffset.Now, userId, purchaseId, BankStatus.REJECTED);
+                    auth = SetupBankEvent(BankEventType.AUTH, DateTimeOffset.Now, purchaseId, BankStatus.REJECTED);
                     //Purchase Status - Rejected
                     purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.CANCELED);
                     status = OrderStatus.Rejected;
@@ -217,26 +212,26 @@ namespace Contoso.FraudProtection.Web.Controllers
                 else
                 {
                     //Auth Approved
-                    auth = SetupBankEvent(BankEventType.AUTH, DateTimeOffset.Now, userId, purchaseId, BankStatus.APPROVED);
+                    auth = SetupBankEvent(BankEventType.AUTH, DateTimeOffset.Now, purchaseId, BankStatus.APPROVED);
                     //Charge
                     if (creditCardBankResponse.IsChargeApproved)
                     {
                         //Charge - Approved
-                        charge = SetupBankEvent(BankEventType.CHARGE, DateTimeOffset.Now, userId, purchaseId, BankStatus.APPROVED);
+                        charge = SetupBankEvent(BankEventType.CHARGE, DateTimeOffset.Now, purchaseId, BankStatus.APPROVED);
                         //Purchase Status Approved
                         purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.APPROVED);
                     }
                     else
                     {
                         //Charge - Rejected
-                        charge = SetupBankEvent(BankEventType.CHARGE, DateTimeOffset.Now, userId, purchaseId, BankStatus.REJECTED);
+                        charge = SetupBankEvent(BankEventType.CHARGE, DateTimeOffset.Now, purchaseId, BankStatus.REJECTED);
                         //Purchase status Rejected
                         purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.CANCELED);
                         status = OrderStatus.Rejected;
                     }
                 }
             }
-          
+
             if (auth != null)
             {
                 await _fraudProtectionService.PostBankEvent(auth, correlationId);
@@ -245,7 +240,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             {
                 await _fraudProtectionService.PostBankEvent(charge, correlationId);
             }
-            if (purchaseStatus != null )
+            if (purchaseStatus != null)
             {
                 await _fraudProtectionService.PostPurchaseStatus(purchaseStatus, correlationId);
             }
@@ -263,7 +258,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 FirstName = checkoutDetails.FirstName,
                 LastName = checkoutDetails.LastName,
                 PhoneNumber = checkoutDetails.PhoneNumber,
-                ShippingAddressDetails = new PurchaseEventAddress
+                ShippingAddressDetails = new AddressDetails
                 {
                     Street1 = checkoutDetails.ShippingAddress1,
                     Street2 = checkoutDetails.ShippingAddress2,
@@ -279,7 +274,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 FirstName = checkoutDetails.FirstName,
                 LastName = checkoutDetails.LastName,
                 PhoneNumber = checkoutDetails.PhoneNumber,
-                BillingAddressDetails = new PurchaseEventAddress
+                BillingAddressDetails = new AddressDetails
                 {
                     Street1 = checkoutDetails.BillingAddress1,
                     Street2 = checkoutDetails.BillingAddress2,
@@ -290,11 +285,11 @@ namespace Contoso.FraudProtection.Web.Controllers
                 }
             };
 
-            var device = new PurchaseDeviceContext
+            var device = new DeviceContext
             {
                 DeviceContextId = _contextAccessor.GetSessionId(),
                 IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                DeviceContextDetails = new DeviceContext
+                DeviceContextDetails = new DeviceContextDetails
                 {
                     DeviceContextDC = checkoutDetails.FingerPrintingDC,
                     Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString()
@@ -335,10 +330,10 @@ namespace Contoso.FraudProtection.Web.Controllers
             //If that isn't available - it always should be - create a new GUID.
             var userId = User?.Identity?.Name ?? basketViewModel.BuyerId ?? Guid.NewGuid().ToString();
 
-            var user = new PurchaseUser
+            var user = new User<UserDetails>
             {
                 UserId = userId,
-                UserDetails = new User
+                UserDetails = new UserDetails
                 {
                     CreationDate = DateTimeOffset.Now,
                     UpdateDate = DateTimeOffset.Now,
@@ -357,7 +352,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             var paymentInstrument = new PurchasePaymentInstrument
             {
                 PurchaseAmount = basketViewModel.Total,
-                PaymentInstrumentDetails = new PaymentInstrument
+                PaymentInstrumentDetails = new PaymentInstrumentDetails
                 {
                     MerchantPaymentInstrumentId = $"{userId}-CreditCard",
                     Type = PaymentInstrumentType.CREDITCARD.ToString(),
@@ -375,7 +370,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             return new PurchaseEvent
             {
                 PurchaseId = Guid.NewGuid().ToString(),
-                AssessmentType = PurchaseAssessmentType.protect.ToString(),
+                AssessmentType = AssessmentType.protect.ToString(),
                 ShippingAddress = shippingAddress,
                 ShippingMethod = PurchaseShippingMethod.Standard.ToString(),
                 Currency = "USD",
@@ -410,7 +405,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         /// <summary>
         /// Creates charge and auth bank events.
         /// </summary>
-        private BankEvent SetupBankEvent(BankEventType type, DateTimeOffset transactionDate, string userId, string PurchaseId, BankStatus status)
+        private BankEvent SetupBankEvent(BankEventType type, DateTimeOffset transactionDate, string PurchaseId, BankStatus status)
         {
             return new BankEvent
             {
