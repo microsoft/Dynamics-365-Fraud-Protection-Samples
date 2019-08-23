@@ -1,13 +1,14 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
+using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
 using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
 using Microsoft.Dynamics.FraudProtection.Models.RefundEvent;
+using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
 using Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent;
-using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
 using Microsoft.Extensions.Options;
-using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -124,6 +125,12 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         {
             var response = await PostAsync(_settings.Endpoints.PurchaseStatus, purchaseStatus, correlationId);
             return await Read<FraudProtectionResponse>(response);
+        }
+
+        public async Task<SignupResponse> PostSignup(SignUp signup, string correlationId = null)
+        {
+            var response = await PostAsync(_settings.Endpoints.Signup, signup, correlationId);
+            return await Read<SignupResponse>(response);
         }
     }
     #endregion

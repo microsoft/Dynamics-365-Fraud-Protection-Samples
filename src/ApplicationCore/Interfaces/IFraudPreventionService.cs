@@ -1,13 +1,14 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
 using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
 using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
+using Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent;
 using Microsoft.Dynamics.FraudProtection.Models.RefundEvent;
+using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
 using Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent;
-using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
 using System.Threading.Tasks;
-using PurchaseEvent = Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent.Purchase;
 using PurchaseStatusEvent = Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent.Purchase;
 
 namespace Contoso.FraudProtection.ApplicationCore.Interfaces
@@ -17,9 +18,9 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
     {
         string NewCorrelationId { get; }
 
-        Task<PurchaseResponse> PostPurchase(PurchaseEvent purchase, string correlationId = null);
+        Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId = null);
 
-        Task<SignupResponse> PostSignup(SignupEvent purchase, string correlationId = null);
+        Task<SignupResponse> PostSignup(SignUp signup, string correlationId = null);
 
         Task<FraudProtectionResponse> PostRefund(Refund refund, string correlationId = null);
 
