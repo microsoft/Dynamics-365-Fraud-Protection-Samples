@@ -19,6 +19,8 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
 
         Task<PurchaseResponse> PostPurchase(PurchaseEvent purchase, string correlationId = null);
 
+        Task<SignupResponse> PostSignup(SignupEvent purchase, string correlationId = null);
+
         Task<FraudProtectionResponse> PostRefund(Refund refund, string correlationId = null);
 
         Task<FraudProtectionResponse> PostUser(User userAccount, string correlationId = null);

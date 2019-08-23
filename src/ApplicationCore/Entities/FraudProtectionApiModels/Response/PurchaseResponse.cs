@@ -11,10 +11,9 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         public PurchaseResultDetails ResultDetails { get; set; }
     }
 
-    public class PurchaseResultDetails
+    public class PurchaseResultDetails : BaseAssessmentResponse
     {
-        public string MerchantRuleDecision { get; set; }
-
         public string MIDFlag { get; set; }
+        public string PolicyApplied { get; set; }
     }
 }
