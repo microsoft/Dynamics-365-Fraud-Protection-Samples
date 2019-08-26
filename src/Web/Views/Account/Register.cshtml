@@ -1,6 +1,6 @@
 @*
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.   
+    // Copyright (c) Microsoft Corporation.
+    // Licensed under the MIT license.
 *@
 
 @using Contoso.FraudProtection.Web.Helpers
@@ -20,7 +20,17 @@
         @Html.HiddenFor(m => m.ClientTimeZone)
         <div class="row">
             <div asp-validation-summary="All" class="text-danger"></div>
+
             <div class="col-md-12">
+                @if (Model != null && Model.FraudProtectionResponse != null)
+                {
+                    <section>
+                        <div class="col-md-12">
+                            <h3>Fraud Protection Response</h3>
+                            <pre>@Model.FraudProtectionResponse</pre>
+                        </div>
+                    </section>
+                }
                 <section>
                     <div class="col-md-6">
                         <h3>User Profile</h3>

@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Dynamics.FraudProtection.Models;
 using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
 using Microsoft.Dynamics.FraudProtection.Models.SharedEntities;
+using Newtonsoft.Json;
 
 namespace Contoso.FraudProtection.Web.Controllers
 {
@@ -195,11 +196,12 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             var signupAssessment = await _fraudProtectionService.PostSignup(signupEvent);
 
-            //TODO - show response
-            //TODO - Configurable or something?  Or, flip a coin in code since a user would lose much (and can try again right away?)
-            if (signupAssessment.ResultDetails.RiskScore > 20)
+            //4 out of 5 signups will succeed on average. Adjust if you want more or less signups blocked for tesing purposes.
+            var random = new Random();
+            if (random.NextDouble() >= .8)
             {
-                ModelState.AddModelError("", "Signup rejected by Fraud Protection");
+                ModelState.AddModelError("", "Signup rejected by Fraud Protection. You can try again as it has a random likelyhood of happening in this sample site.");
+                model.FraudProtectionResponse = JsonConvert.SerializeObject(signupAssessment, Formatting.Indented);
                 return View(model);
             }
 

@@ -60,5 +60,7 @@ namespace Contoso.FraudProtection.Web.ViewModels.Account
         public string ClientCoutnryCode { get; set; }
 
         public string FingerPrintingDC { get; set; }
+
+        public string FraudProtectionResponse { get; set; }
     }
 }
