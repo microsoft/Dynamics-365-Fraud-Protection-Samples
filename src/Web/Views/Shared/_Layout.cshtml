@@ -1,4 +1,4 @@
-@*
+﻿@*
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.   
 *@
@@ -66,6 +66,8 @@
     </section>
 
     @RenderBody()
+
+    <partial name="_FraudProtectionIO" model="TempData[FraudProtectionIOModel.TempDataKey]" />
 
     <footer class="esh-app-footer">
         <div class="container">

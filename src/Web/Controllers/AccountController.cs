@@ -3,18 +3,18 @@
 
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Contoso.FraudProtection.Infrastructure.Identity;
+using Contoso.FraudProtection.Web.ViewModels;
+using Contoso.FraudProtection.Web.ViewModels.Account;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Contoso.FraudProtection.Web.ViewModels.Account;
+using Microsoft.Dynamics.FraudProtection.Models;
+using Microsoft.Dynamics.FraudProtection.Models.SharedEntities;
+using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Dynamics.FraudProtection.Models;
-using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
-using Microsoft.Dynamics.FraudProtection.Models.SharedEntities;
-using Newtonsoft.Json;
 
 namespace Contoso.FraudProtection.Web.Controllers
 {
@@ -196,12 +196,12 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             var signupAssessment = await _fraudProtectionService.PostSignup(signupEvent);
 
-            //4 out of 5 signups will succeed on average. Adjust if you want more or less signups blocked for tesing purposes.
+            //2 out of 3 signups will succeed on average. Adjust if you want more or less signups blocked for tesing purposes.
             var random = new Random();
-            if (random.NextDouble() >= .8)
+            if (random.NextDouble() >= 2/3)
             {
                 ModelState.AddModelError("", "Signup rejected by Fraud Protection. You can try again as it has a random likelyhood of happening in this sample site.");
-                model.FraudProtectionResponse = JsonConvert.SerializeObject(signupAssessment, Formatting.Indented);
+                TempData[FraudProtectionIOModel.TempDataKey] = new FraudProtectionIOModel(signupEvent, signupAssessment);
                 return View(model);
             }
 
