@@ -10,10 +10,10 @@ using Microsoft.AspNetCore.Mvc;
 using Contoso.FraudProtection.Web.ViewModels.Account;
 using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Dynamics.FraudProtection.Models;
-using Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent;
+using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
+using Microsoft.Dynamics.FraudProtection.Models.SharedEntities;
 
 namespace Contoso.FraudProtection.Web.Controllers
 {
@@ -107,112 +107,136 @@ namespace Contoso.FraudProtection.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
-            if (ModelState.IsValid)
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
+
+            if (!ModelState.IsValid)
             {
-                var user = new ApplicationUser {
-                    UserName = model.Email,
-                    Email = model.Email,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    PhoneNumber = model.Phone,
-                    Address1 = model.Address1,
-                    Address2 = model.Address2,
+                return View(model);
+            }
+
+            if (_contextAccessor.HttpContext.Connection == null)
+                throw new Exception(nameof(_contextAccessor.HttpContext.Connection));
+
+            #region Fraud Protection Service
+            // Ask Fraud Protection to assess this signup/registration before registering the user in our database, etc.
+            var signupAddress = new SignupAddress
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                PhoneNumber = model.Phone,
+                SignupAddressDetails = new AddressDetails
+                {
+                    Street1 = model.Address1,
+                    Street2 = model.Address2,
                     City = model.City,
                     State = model.State,
                     ZipCode = model.ZipCode,
-                    CountryRegion = model.CountryRegion
-                };
-
-                var result = await _userManager.CreateAsync(user, model.Password);
-
-                #region Fraud Protection Service
-                // If storing the user locally succeeds, update Fraud Protection
-                if (result.Succeeded)
-                {
-                    if (user == null)
-                        throw new Exception(nameof(user));
-
-                    if (model == null)
-                        throw new Exception(nameof(model));
-
-                    if (_contextAccessor.HttpContext.Connection == null)
-                        throw new Exception(nameof(_contextAccessor.HttpContext.Connection));
-
-                    var billingAddress = new UserAddress
-                    {
-                        Type = UserAddressType.BILLING.ToString(),
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        AddressDetails = new Address
-                        {
-                            Street1 = user.Address1,
-                            Street2 = user.Address2,
-                            City = user.City,
-                            State = user.State,
-                            ZipCode = user.ZipCode,
-                            Country = user.CountryRegion
-                        }
-                    };
-
-                    var shippingAddress = new UserAddress
-                    {
-                        Type = UserAddressType.SHIPPING.ToString(),
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        AddressDetails = new Address
-                        {
-                            Street1 = user.Address1,
-                            Street2 = user.Address2,
-                            City = user.City,
-                            State = user.State,
-                            ZipCode = user.ZipCode,
-                            Country = user.CountryRegion
-                        }
-                    };
-
-                    var deviceContext = new UserDeviceContext
-                    {
-                        DeviceContextId = _contextAccessor.GetSessionId(),
-                        IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                        DeviceContextDetails = new DeviceContext
-                        {
-                            DeviceContextDC = model.FingerPrintingDC,
-                            Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString(),
-                        }
-                    };
-
-                    var fraudProtectionUser = new User
-                    {
-                        UserId = user.Email,
-                        Email = user.Email,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        PhoneNumber = user.PhoneNumber,
-                        AddressList = new List<UserAddress> { billingAddress, shippingAddress },
-                        ZipCode = user.ZipCode,
-                        Country = user.CountryRegion,
-                        TimeZone = new TimeSpan(0, 0, -model.ClientTimeZone, 0).ToString(),
-                        CreationDate = DateTimeOffset.Now,
-                        Language = "EN-US",
-                        DeviceContext = deviceContext,
-                        ProfileType = UserProfileType.Consumer.ToString()
-                    };
-
-                    await _fraudProtectionService.PostUser(fraudProtectionUser);
-
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-
-                    await TransferBasketToEmailAsync(user.Email);
-
-                    return RedirectToLocal(returnUrl);
+                    Country = model.CountryRegion
                 }
-                #endregion
+            };
 
-                AddErrors(result);
+            var signupUser = new User<SignupUserDetails>
+            {
+                UserId = model.Email,
+                UserDetails = new SignupUserDetails
+                {
+                    CreationDate = DateTimeOffset.Now,
+                    UpdateDate = DateTimeOffset.Now,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Country = model.CountryRegion,
+                    ZipCode = model.ZipCode,
+                    TimeZone = new TimeSpan(0, 0, -model.ClientTimeZone, 0).ToString(),
+                    Language = "EN-US",
+                    PhoneNumber = model.Phone,
+                    Email = model.Email,
+                    ProfileType = UserProfileType.Consumer.ToString(),
+                    SignUpAddress = signupAddress
+                }
+            };
+
+            var deviceContext = new DeviceContext
+            {
+                DeviceContextId = _contextAccessor.GetSessionId(),
+                IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
+                DeviceContextDetails = new DeviceContextDetails
+                {
+                    DeviceContextDC = model.FingerPrintingDC,
+                    Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString(),
+                }
+            };
+
+            var marketingContext = new MarketingContext
+            {
+                Type = MarketingType.Direct.ToString(),
+                IncentiveType = MarketingIncentiveType.None.ToString(),
+                IncentiveOffer = "Integrate with Fraud Protection"
+            };
+
+            var storefrontContext = new StoreFrontContext
+            {
+                StoreName = "Fraud Protection Sample Site",
+                Type = StorefrontType.Web.ToString(),
+                Market = "US"
+            };
+
+            var signupEvent = new SignUp
+            {
+                SignUpId = Guid.NewGuid().ToString(),
+                AssessmentType = AssessmentType.protect.ToString(),
+                User = signupUser,
+                MerchantLocalDate = DateTimeOffset.Now,
+                CustomerLocalDate = model.ClientDate,
+                MarketingContext = marketingContext,
+                StoreFrontContext = storefrontContext,
+                DeviceContext = deviceContext,
+            };
+
+            var signupAssessment = await _fraudProtectionService.PostSignup(signupEvent);
+
+            //TODO - show response
+            //TODO - Configurable or something?  Or, flip a coin in code since a user would lose much (and can try again right away?)
+            if (signupAssessment.ResultDetails.RiskScore > 20)
+            {
+                ModelState.AddModelError("", "Signup rejected by Fraud Protection");
+                return View(model);
             }
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
+            //TODO consider response and send signup status either way.
+            #endregion
+
+            //Only create the user in the sample site if the Fraud Protection merchant decision is APPROVE
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                PhoneNumber = model.Phone,
+                Address1 = model.Address1,
+                Address2 = model.Address2,
+                City = model.City,
+                State = model.State,
+                ZipCode = model.ZipCode,
+                CountryRegion = model.CountryRegion
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+            {
+                AddErrors(result);
+                return View(model);
+            }
+
+            if (user == null)
+                throw new Exception(nameof(user));
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            await TransferBasketToEmailAsync(user.Email);
+
+            return RedirectToLocal(returnUrl);
         }
 
         [HttpGet]

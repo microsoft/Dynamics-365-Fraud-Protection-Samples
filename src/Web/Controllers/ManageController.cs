@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Dynamics.FraudProtection.Models;
 using Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent;
+using Microsoft.Dynamics.FraudProtection.Models.SharedEntities;
 
 namespace Contoso.FraudProtection.Web.Controllers
 {
@@ -122,7 +123,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                     Type = UserAddressType.BILLING.ToString(),
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    AddressDetails = new Address
+                    AddressDetails = new AddressDetails
                     {
                         Street1 = user.Address1,
                         Street2 = user.Address2,
@@ -138,7 +139,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                     Type = UserAddressType.SHIPPING.ToString(),
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    AddressDetails = new Address
+                    AddressDetails = new AddressDetails
                     {
                         Street1 = user.Address1,
                         Street2 = user.Address2,
@@ -160,11 +161,11 @@ namespace Contoso.FraudProtection.Web.Controllers
                     ZipCode = user.ZipCode,
                     Country = user.CountryRegion,
                     TimeZone = new TimeSpan(0, 0, -model.ClientTimeZone, 0).ToString(),
-                    DeviceContext = new UserDeviceContext
+                    DeviceContext = new DeviceContext
                     {
                         DeviceContextId = _contextAccessor.GetSessionId(),
                         IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                        DeviceContextDetails = new DeviceContext
+                        DeviceContextDetails = new DeviceContextDetails
                         {
                             DeviceContextDC = model.FingerPrintingDC,
                             Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString()
@@ -245,7 +246,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 {
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    BillingAddressDetails = new Address
+                    BillingAddressDetails = new AddressDetails
                     {
                         Street1 = user.BillingAddress1,
                         Street2 = user.BillingAddress2,
@@ -265,7 +266,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                     {
                         new UserPaymentInstrument
                         {
-                            PaymentInstrumentDetails = new PaymentInstrument
+                            PaymentInstrumentDetails = new PaymentInstrumentDetails
                             {
                                 MerchantPaymentInstrumentId = $"{userId}-CreditCard",
                                 Type = PaymentInstrumentType.CREDITCARD.ToString(),
@@ -280,11 +281,11 @@ namespace Contoso.FraudProtection.Web.Controllers
                             }
                         }
                     },
-                    DeviceContext = new UserDeviceContext
+                    DeviceContext = new DeviceContext
                     {
                         DeviceContextId = _contextAccessor.GetSessionId(),
                         IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                        DeviceContextDetails = new DeviceContext
+                        DeviceContextDetails = new DeviceContextDetails
                         {
                             DeviceContextDC = model.FingerPrintingDC,
                             Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString()
