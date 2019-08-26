@@ -42,4 +42,36 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         evaluate,
         protect
     }
+
+    public enum StorefrontType
+    {
+        None,
+        Web,
+        Console,
+        MobileApp,
+        ComputerApp,
+        MobileWeb
+    }
+
+    public enum MarketingType
+    {
+        None,
+        Email,
+        Referral,
+        SearchEngine,
+        Direct,
+        SocialNetwork,
+        Other
+    }
+
+    public enum MarketingIncentiveType
+    {
+        None,
+        CashBack,
+        Discount,
+        FreeTrial,
+        BonusPoints,
+        Gift,
+        Other
+    }
 }

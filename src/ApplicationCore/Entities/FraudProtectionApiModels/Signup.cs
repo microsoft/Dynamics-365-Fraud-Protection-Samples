@@ -41,12 +41,12 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SignupEvent
         public User<SignupUserDetails> User { get; set; }
 
         /// <summary>
-        /// 	N/A
+        /// 	Marketing based, contextual information related to this signup.
         /// </summary>
         public MarketingContext MarketingContext { get; set; }
 
         /// <summary>
-        /// 	N/A
+        /// 	Store front based, contextual information related to this signup.
         /// </summary>
         public StoreFrontContext StoreFrontContext { get; set; }
 
@@ -59,7 +59,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SignupEvent
     public class SignupUserDetails : UserDetails
     {
         /// <summary>
-        /// 	N/A
+        /// 	The address the user entered during signup.
         /// </summary>
         public SignupAddress SignUpAddress { get; set; }
 

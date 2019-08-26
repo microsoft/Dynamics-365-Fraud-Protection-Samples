@@ -57,7 +57,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SharedEntities
     /// <summary>
     /// 	User information associated with this event
     /// </summary>
-    public class User<T> where T: UserDetails
+    public class User<T> where T : UserDetails
     {
         /// <summary>
         /// 	A unique string identifying the User
