@@ -5,11 +5,12 @@ using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
 using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
 using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
 using Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent;
+using Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent;
 using Microsoft.Dynamics.FraudProtection.Models.RefundEvent;
 using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
+using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent;
 using System.Threading.Tasks;
-using PurchaseStatusEvent = Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent.Purchase;
 
 namespace Contoso.FraudProtection.ApplicationCore.Interfaces
 {
@@ -31,6 +32,8 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
         Task<FraudProtectionResponse> PostChargeback(Chargeback chargeback, string correlationId = null);
 
         Task<FraudProtectionResponse> PostPurchaseStatus(PurchaseStatusEvent purchaseStatus, string correlationId = null);
+
+        Task<FraudProtectionResponse> PostSignupStatus(SignupStatusEvent signupStatus, string correlationId = null);
     }
     #endregion
 }

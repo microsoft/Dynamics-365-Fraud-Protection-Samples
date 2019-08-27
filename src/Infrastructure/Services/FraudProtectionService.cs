@@ -5,8 +5,11 @@ using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
 using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
+using Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent;
+using Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent;
 using Microsoft.Dynamics.FraudProtection.Models.RefundEvent;
 using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
+using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -15,8 +18,6 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using PurchaseEvent = Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent.Purchase;
-using PurchaseStatusEvent = Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent.Purchase;
 
 namespace Contoso.FraudProtection.Infrastructure.Services
 {
@@ -85,7 +86,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             return response;
         }
 
-        public async Task<PurchaseResponse> PostPurchase(PurchaseEvent purchase, string correlationId = null)
+        public async Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId = null)
         {
             var response = await PostAsync(_settings.Endpoints.Purchase, purchase, correlationId);
             return await Read<PurchaseResponse>(response);
@@ -131,6 +132,12 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         {
             var response = await PostAsync(_settings.Endpoints.Signup, signup, correlationId);
             return await Read<SignupResponse>(response);
+        }
+
+        public async Task<FraudProtectionResponse> PostSignupStatus(SignupStatusEvent signupStatus, string correlationId = null)
+        {
+            var response = await PostAsync(_settings.Endpoints.SignupStatus, signupStatus, correlationId);
+            return await Read<FraudProtectionResponse>(response);
         }
     }
     #endregion
