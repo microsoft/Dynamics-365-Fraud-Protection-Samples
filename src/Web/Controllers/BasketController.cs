@@ -18,8 +18,6 @@ using Microsoft.Dynamics.FraudProtection.Models.SharedEntities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using PurchaseEvent = Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent.Purchase;
-using PurchaseStatusEvent = Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent.Purchase;
 
 namespace Contoso.FraudProtection.Web.Controllers
 {
@@ -251,7 +249,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         /// <summary>
         /// Creates the purchase event.
         /// </summary>
-        private PurchaseEvent SetupPurchase(CheckoutDetailsViewModel checkoutDetails, BasketViewModel basketViewModel)
+        private Purchase SetupPurchase(CheckoutDetailsViewModel checkoutDetails, BasketViewModel basketViewModel)
         {
             var shippingAddress = new PurchaseAddress
             {
@@ -367,7 +365,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 }
             };
 
-            return new PurchaseEvent
+            return new Purchase
             {
                 PurchaseId = Guid.NewGuid().ToString(),
                 AssessmentType = AssessmentType.protect.ToString(),
