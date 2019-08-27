@@ -3,6 +3,7 @@
 
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Contoso.FraudProtection.Infrastructure.Identity;
+using Contoso.FraudProtection.Web.Extensions;
 using Contoso.FraudProtection.Web.ViewModels;
 using Contoso.FraudProtection.Web.ViewModels.Account;
 using Microsoft.AspNetCore.Authentication;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Dynamics.FraudProtection.Models;
 using Microsoft.Dynamics.FraudProtection.Models.SharedEntities;
 using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
+using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using System;
 using System.Threading.Tasks;
 
@@ -194,19 +196,42 @@ namespace Contoso.FraudProtection.Web.Controllers
                 DeviceContext = deviceContext,
             };
 
-            var signupAssessment = await _fraudProtectionService.PostSignup(signupEvent);
+            var correlationId = _fraudProtectionService.NewCorrelationId;
+
+            var signupAssessment = await _fraudProtectionService.PostSignup(signupEvent, correlationId);
+
+            //Track Fraud Protection request/response for display only
+            var fraudProtectionIO = new FraudProtectionIOModel(signupEvent, signupAssessment, "Signup");
 
             //2 out of 3 signups will succeed on average. Adjust if you want more or less signups blocked for tesing purposes.
             var random = new Random();
-            if (random.NextDouble() >= 2/3)
+            var rejectSignup = random.NextDouble() >= 2.0 / 3;
+            var signupStatusType = rejectSignup ? SignupStatusType.REJECTED.ToString() : SignupStatusType.APPROVED.ToString();
+
+            var signupStatus = new SignupStatusEvent
+            {
+                SignupId = signupEvent.SignUpId,
+                Status = new SignupStatus
+                {
+                    StatusType = signupStatusType,
+                    StatusDate = DateTimeOffset.Now,
+                    Reason = "User is " + signupStatusType
+                },
+                User = rejectSignup ? null : new SignupStatusUser { UserId = signupUser.UserId }
+            };
+
+            var signupStatusResponse = await _fraudProtectionService.PostSignupStatus(signupStatus, correlationId);
+
+            fraudProtectionIO.Add(signupStatus, signupStatusResponse, "Signup Status");
+
+            TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
+            #endregion
+
+            if (rejectSignup)
             {
                 ModelState.AddModelError("", "Signup rejected by Fraud Protection. You can try again as it has a random likelyhood of happening in this sample site.");
-                TempData[FraudProtectionIOModel.TempDataKey] = new FraudProtectionIOModel(signupEvent, signupAssessment);
                 return View(model);
             }
-
-            //TODO consider response and send signup status either way.
-            #endregion
 
             //Only create the user in the sample site if the Fraud Protection merchant decision is APPROVE
             var user = new ApplicationUser
