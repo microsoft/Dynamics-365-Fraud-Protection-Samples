@@ -1,7 +1,9 @@
-@*
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.   
+﻿@*
+    // Copyright (c) Microsoft Corporation.
+    // Licensed under the MIT license.
 *@
+
+@using Contoso.FraudProtection.Web.Extensions;
 
 <!DOCTYPE html>
 <html>
@@ -31,7 +33,6 @@
     <header class="navbar navbar-light navbar-static-top">
         <div class="container">
             <article class="row">
-
                 <section class="col-lg-6 col-md-5 col-xs-11">
                     <a asp-area="" asp-controller="Catalog" asp-action="Index" class="navbar-brand">
                         <img src="~/images/brand.png" alt="Microsoft Fraud Protection Merchant Application" />
@@ -45,8 +46,10 @@
     <section class="esh-top-banner">
         @RenderSection("TopBanner", required: false)
     </section>
+
     @RenderBody()
 
+    <partial name="_FraudProtectionIO" model="TempData.Get<FraudProtectionIOModel>(FraudProtectionIOModel.TempDataKey)" />
 
     <footer class="esh-app-footer">
         <div class="container">
