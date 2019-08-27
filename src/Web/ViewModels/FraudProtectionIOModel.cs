@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Contoso.FraudProtection.Web.ViewModels
 {
@@ -9,13 +10,20 @@ namespace Contoso.FraudProtection.Web.ViewModels
     {
         public const string TempDataKey = "FraudProtectionIOData";
 
-        public readonly string FraudProtectionRequest;
-        public readonly string FraudProtectionResponse;
+        public List<(string Request, string Response, string Name)> RequestResponsePairs = new List<(string Request, string Response, string Name)>();
 
-        public FraudProtectionIOModel(object request, object response)
+        public FraudProtectionIOModel(object request, object response, string name = "")
         {
-            FraudProtectionRequest = JsonConvert.SerializeObject(request, Formatting.Indented);
-            FraudProtectionResponse = JsonConvert.SerializeObject(response, Formatting.Indented);
+            Add(request, response, name);
+        }
+
+        public void Add(object request, object response, string name = "")
+        {
+            RequestResponsePairs.Add((
+                JsonConvert.SerializeObject(request, Formatting.Indented),
+                JsonConvert.SerializeObject(response, Formatting.Indented),
+                name
+                ));
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿@*
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.   
+    // Copyright (c) Microsoft Corporation.
+    // Licensed under the MIT license.
 *@
 
 @using Microsoft.Extensions.Configuration
+@using Contoso.FraudProtection.Web.Extensions;
+
 @inject IConfiguration Configuration
 <!DOCTYPE html>
 <html>
@@ -67,7 +69,7 @@
 
     @RenderBody()
 
-    <partial name="_FraudProtectionIO" model="TempData[FraudProtectionIOModel.TempDataKey]" />
+    <partial name="_FraudProtectionIO" model="TempData.Get<FraudProtectionIOModel>(FraudProtectionIOModel.TempDataKey)" />
 
     <footer class="esh-app-footer">
         <div class="container">
