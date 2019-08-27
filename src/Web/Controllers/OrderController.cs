@@ -1,19 +1,20 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate;
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Contoso.FraudProtection.ApplicationCore.Specifications;
 using Contoso.FraudProtection.Infrastructure.Identity;
+using Contoso.FraudProtection.Web.Extensions;
 using Contoso.FraudProtection.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
 
 namespace Contoso.FraudProtection.Web.Controllers
 {
@@ -85,6 +86,9 @@ namespace Contoso.FraudProtection.Web.Controllers
                     User = new ChargebackUser { UserId = order.RiskPurchase.User.UserId },
                 };
                 var response = await _fraudProtectionService.PostChargeback(chargeback);
+
+                var fraudProtectionIO = new FraudProtectionIOModel(chargeback, response, "Chargeback");
+                TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
                 #endregion
 
                 order.ReturnOrChargebackReason = viewModel.ReturnOrChargebackReason;

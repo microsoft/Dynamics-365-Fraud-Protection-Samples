@@ -4,6 +4,7 @@
 using Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate;
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Contoso.FraudProtection.Infrastructure.Identity;
+using Contoso.FraudProtection.Web.Extensions;
 using Contoso.FraudProtection.Web.Interfaces;
 using Contoso.FraudProtection.Web.Services;
 using Contoso.FraudProtection.Web.ViewModels;
@@ -155,8 +156,17 @@ namespace Contoso.FraudProtection.Web.Controllers
             var correlationId = _fraudProtectionService.NewCorrelationId;
             var result = await _fraudProtectionService.PostPurchase(purchase, correlationId);
 
+            var fraudProtectionIO = new FraudProtectionIOModel(purchase, result, "Purchase");
+
             //Check the risk score that was returned and possibly complete the purchase.
-            var status = await ApproveOrRejectPurchase(result.ResultDetails.MerchantRuleDecision, checkoutDetails.UnformattedCardNumber, purchase.PurchaseId, correlationId);
+            var status = await ApproveOrRejectPurchase(
+                result.ResultDetails.MerchantRuleDecision,
+                checkoutDetails.UnformattedCardNumber,
+                purchase.PurchaseId,
+                correlationId,
+                fraudProtectionIO);
+
+            TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
             #endregion
 
             await _orderService.CreateOrderAsync(basketViewModel.Id, address, paymentInfo, status, purchase, result);
@@ -172,7 +182,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         ///    If the purchase is not approved, submit a REJECTED purchase status.
         ///    If the purchase is approved, submit the bank AUTH, bank CHARGE, and purchase status (approved if the bank also approves the auth and charge, or rejected otherwise).
         /// </summary>
-        private async Task<OrderStatus> ApproveOrRejectPurchase(string merchantRuleDecision, string cardNumber, string purchaseId, string correlationId)
+        private async Task<OrderStatus> ApproveOrRejectPurchase(string merchantRuleDecision, string cardNumber, string purchaseId, string correlationId, FraudProtectionIOModel fraudProtectionIO)
         {
             var status = OrderStatus.Received;
             BankEvent auth = null;
@@ -232,15 +242,18 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             if (auth != null)
             {
-                await _fraudProtectionService.PostBankEvent(auth, correlationId);
+                var response = await _fraudProtectionService.PostBankEvent(auth, correlationId);
+                fraudProtectionIO.Add(auth, response, "BankEvent Auth");
             }
             if (charge != null)
             {
-                await _fraudProtectionService.PostBankEvent(charge, correlationId);
+                var response = await _fraudProtectionService.PostBankEvent(charge, correlationId);
+                fraudProtectionIO.Add(charge, response, "BankEvent Charge");
             }
             if (purchaseStatus != null)
             {
-                await _fraudProtectionService.PostPurchaseStatus(purchaseStatus, correlationId);
+                var response = await _fraudProtectionService.PostPurchaseStatus(purchaseStatus, correlationId);
+                fraudProtectionIO.Add(purchaseStatus, response, "PurchaseStatus");
             }
 
             return status;

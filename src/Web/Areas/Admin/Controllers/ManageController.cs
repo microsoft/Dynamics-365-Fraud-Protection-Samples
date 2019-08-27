@@ -1,17 +1,19 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate;
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Contoso.FraudProtection.Infrastructure.Data;
+using Contoso.FraudProtection.Web.Extensions;
+using Contoso.FraudProtection.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Dynamics.FraudProtection.Models.RefundEvent;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Dynamics.FraudProtection.Models.RefundEvent;
 
 namespace Web.Areas.Admin.Controllers
 {
@@ -126,6 +128,9 @@ namespace Web.Areas.Admin.Controllers
                         var riskResponse = await _fraudProtectionService.PostRefund(refund);
                         dbOrder.RiskRefund = refund;
                         dbOrder.RiskRefundResponse = riskResponse;
+
+                        var fraudProtectionIO = new FraudProtectionIOModel(refund, riskResponse, "Refund");
+                        TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
                     }
 
                     _context.Update(dbOrder);

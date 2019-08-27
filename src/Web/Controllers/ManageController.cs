@@ -3,20 +3,22 @@
 
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Contoso.FraudProtection.Infrastructure.Identity;
+using Contoso.FraudProtection.Web.Extensions;
+using Contoso.FraudProtection.Web.ViewModels;
+using Contoso.FraudProtection.Web.ViewModels.Manage;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Contoso.FraudProtection.Web.ViewModels.Manage;
+using Microsoft.Dynamics.FraudProtection.Models;
+using Microsoft.Dynamics.FraudProtection.Models.SharedEntities;
+using Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Dynamics.FraudProtection.Models;
-using Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent;
-using Microsoft.Dynamics.FraudProtection.Models.SharedEntities;
 
 namespace Contoso.FraudProtection.Web.Controllers
 {
@@ -173,7 +175,10 @@ namespace Contoso.FraudProtection.Web.Controllers
                     }
                 };
 
-                await _fraudProtectionService.PostUser(fraudProtectionUser);
+                var response = await _fraudProtectionService.PostUser(fraudProtectionUser);
+
+                var fraudProtectionIO = new FraudProtectionIOModel(fraudProtectionUser, response, "UpdateAccount");
+                TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
             }
             #endregion
 
@@ -293,7 +298,10 @@ namespace Contoso.FraudProtection.Web.Controllers
                     }
                 };
 
-                await _fraudProtectionService.PostUser(fraudProtectionUser);
+                var response = await _fraudProtectionService.PostUser(fraudProtectionUser);
+
+                var fraudProtectionIO = new FraudProtectionIOModel(fraudProtectionUser, response, "UpdateAccount");
+                TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
             }
             #endregion
 
