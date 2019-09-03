@@ -119,10 +119,10 @@ namespace Web.Areas.Admin.Controllers
                             Amount = dbOrder.Total,
                             Currency = dbOrder.RiskPurchase?.Currency,
                             BankEventTimestamp = DateTimeOffset.Now,
-                            Purchase = new RefundPurchase { PurchaseId = dbOrder.RiskPurchase.PurchaseId },
+                            PurchaseId = dbOrder.RiskPurchase.PurchaseId,
                             Reason = order.ReturnOrChargebackReason,
                             Status = order.Status == OrderStatus.ReturnInProgress ? RefundStatus.INITIATED.ToString(): RefundStatus.COMPLETED.ToString(),
-                            User = new RefundUser { UserId = dbOrder.RiskPurchase?.User?.UserId },
+                            UserId = dbOrder.RiskPurchase?.User?.UserId,
                         };
 
                         var riskResponse = await _fraudProtectionService.PostRefund(refund);

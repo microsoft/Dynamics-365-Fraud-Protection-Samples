@@ -17,6 +17,7 @@ using Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent;
 using Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Contoso.FraudProtection.Web.Controllers
@@ -202,7 +203,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             if (!merchantRuleDecision.StartsWith("APPROVE", StringComparison.OrdinalIgnoreCase) &&
                 !creditCardBankResponse.IgnoreFraudRiskRecommendation)
             {
-                purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.CANCELED);
+                purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Canceled);
                 status = OrderStatus.Rejected;
             }
             else
@@ -213,7 +214,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                     //Auth Rejected
                     auth = SetupBankEvent(BankEventType.AUTH, DateTimeOffset.Now, purchaseId, BankStatus.REJECTED);
                     //Purchase Status - Rejected
-                    purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.CANCELED);
+                    purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Canceled);
                     status = OrderStatus.Rejected;
                 }
                 else
@@ -226,14 +227,14 @@ namespace Contoso.FraudProtection.Web.Controllers
                         //Charge - Approved
                         charge = SetupBankEvent(BankEventType.CHARGE, DateTimeOffset.Now, purchaseId, BankStatus.APPROVED);
                         //Purchase Status Approved
-                        purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.APPROVED);
+                        purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Approved);
                     }
                     else
                     {
                         //Charge - Rejected
                         charge = SetupBankEvent(BankEventType.CHARGE, DateTimeOffset.Now, purchaseId, BankStatus.REJECTED);
                         //Purchase status Rejected
-                        purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.CANCELED);
+                        purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Canceled);
                         status = OrderStatus.Rejected;
                     }
                 }
@@ -297,33 +298,28 @@ namespace Contoso.FraudProtection.Web.Controllers
                 Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString()
             };
 
-            var productList = new List<PurchaseProduct>();
-            foreach (var item in basketViewModel.Items)
-            {
-                productList.Add(new PurchaseProduct
+            var productList = basketViewModel.Items
+                .Select(i => new Product
                 {
-                    ProductId = item.Id.ToString(),
-                    PurchasePrice = item.UnitPrice,
-                    Quantity = item.Quantity,
+                    ProductId = i.Id.ToString(),
+                    PurchasePrice = i.UnitPrice,
+                    Quantity = i.Quantity,
                     Margin = 2.1M,
                     IsPreorder = false,
                     ShippingMethod = PurchaseShippingMethod.Standard.ToString(),
-                    ProductDetails = new Product
-                    {
-                        ProductName = item.ProductName,
-                        Type = "digital",
-                        Category = item.CatalogItemId.ToString(),
-                        Market = "US",
-                        COGS = 0.11M,
-                        IsRecurring = false,
-                        SalesPrice = item.UnitPrice,
-                        Currency = "USD",
-                        IsFree = false,
-                        Language = "EN-US",
-                        Sku = item.Id.ToString()
-                    }
-                });
-            }
+                    ProductName = i.ProductName,
+                    Type = "digital",
+                    Category = i.CatalogItemId.ToString(),
+                    Market = "US",
+                    COGS = 0.11M,
+                    IsRecurring = false,
+                    SalesPrice = i.UnitPrice,
+                    Currency = "USD",
+                    IsFree = false,
+                    Language = "EN-US",
+                    Sku = i.Id.ToString()
+                })
+                .ToList();
 
             //Logged in vs. anonymous user checkout.
             //If they are logged in, use their email.
@@ -350,25 +346,22 @@ namespace Contoso.FraudProtection.Web.Controllers
             var paymentInstrument = new PurchasePaymentInstrument
             {
                 PurchaseAmount = basketViewModel.Total,
-                PaymentInstrumentDetails = new PaymentInstrumentDetails
-                {
-                    MerchantPaymentInstrumentId = $"{userId}-CreditCard",
-                    Type = PaymentInstrumentType.CREDITCARD.ToString(),
-                    CardType = checkoutDetails.CardType,
-                    State = PaymentInstrumentState.Active.ToString(),
-                    HolderName = checkoutDetails.CardName,
-                    BIN = checkoutDetails.UnformattedCardNumber.Substring(0, 6),
-                    ExpirationDate = string.Join('/', checkoutDetails.ExpirationMonth, checkoutDetails.ExpirationYear),
-                    LastFourDigits = checkoutDetails.UnformattedCardNumber.Substring(checkoutDetails.UnformattedCardNumber.Length - 4),
-                    CreationDate = DateTimeOffset.Now.AddMonths(-14),
-                    BillingAddress = billingAddress,
-                }
+                MerchantPaymentInstrumentId = $"{userId}-CreditCard",
+                Type = PaymentInstrumentType.CREDITCARD.ToString(),
+                CardType = checkoutDetails.CardType,
+                State = PaymentInstrumentState.Active.ToString(),
+                HolderName = checkoutDetails.CardName,
+                BIN = checkoutDetails.UnformattedCardNumber.Substring(0, 6),
+                ExpirationDate = string.Join('/', checkoutDetails.ExpirationMonth, checkoutDetails.ExpirationYear),
+                LastFourDigits = checkoutDetails.UnformattedCardNumber.Substring(checkoutDetails.UnformattedCardNumber.Length - 4),
+                CreationDate = DateTimeOffset.Now.AddMonths(-14),
+                BillingAddress = billingAddress,
             };
 
             return new Purchase
             {
                 PurchaseId = Guid.NewGuid().ToString(),
-                AssessmentType = AssessmentType.protect.ToString(),
+                AssessmentType = AssessmentType.Protect.ToString(),
                 ShippingAddress = shippingAddress,
                 ShippingMethod = PurchaseShippingMethod.Standard.ToString(),
                 Currency = "USD",
@@ -391,12 +384,9 @@ namespace Contoso.FraudProtection.Web.Controllers
             return new PurchaseStatusEvent
             {
                 PurchaseId = purchaseId,
-                Status = new PurchaseStatus
-                {
-                    StatusDate = DateTimeOffset.Now,
-                    StatusType = status.ToString(),
-                    Reason = "Some reason for " + status
-                }
+                StatusDate = DateTimeOffset.Now,
+                StatusType = status.ToString(),
+                Reason = "Some reason for " + status
             };
         }
 
@@ -415,7 +405,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 PaymentProcessor = "CitiAch", //this is something the bank sent, here we just hardcode a possible one
                 MRN = "Z20LY1SSB3WY", //this is something the bank sent, here we just hardcode a possible one
                 MID = "A1010EUSD01", //this is something the bank sent, here we just hardcode a possible one
-                Purchase = new BankEventPurchase { PurchaseId = PurchaseId }
+                PurchaseId = PurchaseId
             };
         }
         #endregion

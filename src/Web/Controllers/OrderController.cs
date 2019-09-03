@@ -58,6 +58,12 @@ namespace Contoso.FraudProtection.Web.Controllers
             return await OrderDetailView("ChargeBack", orderId);
         }
 
+        [HttpGet("{orderId}")]
+        public async Task<IActionResult> FraudLabel(int orderId)
+        {
+            return await OrderDetailView("Label", orderId);
+        }
+
         public async Task<IActionResult> ReturnOrder(OrderViewModel viewModel)
         {
             return await ModifyOrderView("ReturnInitiated", viewModel, order =>
@@ -82,8 +88,8 @@ namespace Contoso.FraudProtection.Web.Controllers
                     BankEventTimestamp = DateTimeOffset.Now,
                     Reason = viewModel.ReturnOrChargebackReason,
                     Status = ChargebackStatus.WON.ToString(),
-                    Purchase = new ChargebackPurchase { PurchaseId = order.RiskPurchase.PurchaseId },
-                    User = new ChargebackUser { UserId = order.RiskPurchase.User.UserId },
+                    PurchaseId = order.RiskPurchase.PurchaseId,
+                    UserId = order.RiskPurchase.User.UserId,
                 };
                 var response = await _fraudProtectionService.PostChargeback(chargeback);
 

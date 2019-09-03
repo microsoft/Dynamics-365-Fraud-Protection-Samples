@@ -43,15 +43,16 @@ namespace Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent
         public String Currency { get; set; }
 
         /// <summary>
-        /// 	User associated with this chargeback event
-        /// </summary>
-        public ChargebackUser User { get; set; }
-
-        /// <summary>
-        /// 	Purchase information associated with this chargeback event
+        /// 	A unique string identifying the User
         /// </summary>
         [Required]
-        public ChargebackPurchase Purchase { get; set; }
+        public String UserId { get; set; }
+
+        /// <summary>
+        /// 	The original Purchase Id
+        /// </summary>
+        [Required]
+        public String PurchaseId { get; set; }
     }
 
     public enum ChargebackStatus
@@ -59,29 +60,5 @@ namespace Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent
         INITIATED,
         LOST,
         WON
-    }
-
-    /// <summary>
-    /// 	User associated with this chargeback event
-    /// </summary>
-    public class ChargebackUser
-    {
-        /// <summary>
-        /// 	A unique string identifying the User
-        /// </summary>
-        [Required]
-        public String UserId { get; set; }
-    }
-
-    /// <summary>
-    /// 	Purchase information associated with this chargeback event
-    /// </summary>
-    public class ChargebackPurchase
-    {
-        /// <summary>
-        /// 	The original Purchase Id
-        /// </summary>
-        [Required]
-        public String PurchaseId { get; set; }
     }
 }

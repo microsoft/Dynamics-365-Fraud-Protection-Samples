@@ -39,8 +39,8 @@ namespace Microsoft.Dynamics.FraudProtection.Models
     /// </summary>
     public enum AssessmentType
     {
-        evaluate,
-        protect
+        Evaluate,
+        Protect
     }
 
     public enum StorefrontType

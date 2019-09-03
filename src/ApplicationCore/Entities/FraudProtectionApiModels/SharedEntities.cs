@@ -212,20 +212,9 @@ namespace Microsoft.Dynamics.FraudProtection.Models
     }
 
     /// <summary>
-    /// 	Payment instrument information associated with this event
-    /// </summary>
-    public class PaymentInstrument
-    {
-        /// <summary>
-        /// 	Payment instrument associated this event
-        /// </summary>
-        public PaymentInstrumentDetails PaymentInstrumentDetails { get; set; }
-    }
-
-    /// <summary>
     /// 	Payment instrument associated this event
     /// </summary>
-    public class PaymentInstrumentDetails
+    public class PaymentInstrument
     {
         /// <summary>
         /// 	Identifier for the PI in merchant system, mastered by Merchant.

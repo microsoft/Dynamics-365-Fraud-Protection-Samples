@@ -51,8 +51,9 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent
 
     public enum SignupStatusType
     {
-        APPROVED,
-        REJECTED,
-        HELD
+        Approved,
+        Rejected,
+        Pending,
+        Failed
     }
 }

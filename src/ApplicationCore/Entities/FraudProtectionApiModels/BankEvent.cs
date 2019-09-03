@@ -54,18 +54,6 @@ namespace Microsoft.Dynamics.FraudProtection.Models.BankEventEvent
         public String MID { get; set; }
 
         /// <summary>
-        /// 	Purchase information associated with this Bank Event
-        /// </summary>
-        [Required]
-        public BankEventPurchase Purchase { get; set; }
-    }
-
-    /// <summary>
-    /// 	Purchase information associated with this Bank Event
-    /// </summary>
-    public class BankEventPurchase
-    {
-        /// <summary>
         /// 	A unique string identifying the purchase
         /// </summary>
         [Required]

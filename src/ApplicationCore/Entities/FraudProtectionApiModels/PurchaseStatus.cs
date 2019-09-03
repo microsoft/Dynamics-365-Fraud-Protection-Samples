@@ -18,18 +18,6 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent
         public String PurchaseId { get; set; }
 
         /// <summary>
-        /// 	status of a purchase that the merchant decides about the purchase transaction
-        /// </summary>
-        [Required]
-        public PurchaseStatus Status { get; set; }
-    }
-
-    /// <summary>
-    /// 	Status of a purchase that the merchant decides about the purchase transaction.
-    /// </summary>
-    public class PurchaseStatus
-    {
-        /// <summary>
         /// 	The type of the status. Possible values 'APPROVED' | 'CANCELED' | 'HELD' | 'FULFILLED'
         /// </summary>
         [Required]
@@ -49,9 +37,10 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent
 
     public enum PurchaseStatusType
     {
-        APPROVED,
-        CANCELED,
-        HELD,
-        FULFILLED
+        Approved,
+        Canceled,
+        Pending,
+        Rejected,
+        Failed
     }
 }

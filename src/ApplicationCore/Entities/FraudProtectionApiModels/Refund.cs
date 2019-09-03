@@ -43,44 +43,21 @@ namespace Microsoft.Dynamics.FraudProtection.Models.RefundEvent
         public String Currency { get; set; }
 
         /// <summary>
-        /// 	User associated with this refund event
-        /// </summary>
-        public RefundUser User { get; set; }
-
-        /// <summary>
-        /// 	Purchase associated with this refund event
+        /// 	A unique string identifying the User
         /// </summary>
         [Required]
-        public RefundPurchase Purchase { get; set; }
+        public String UserId { get; set; }
+
+        /// <summary>
+        /// 	The original Purchase Id
+        /// </summary>
+        [Required]
+        public String PurchaseId { get; set; }
     }
 
     public enum RefundStatus
     {
         INITIATED,
         COMPLETED,
-    }
-
-    /// <summary>
-    /// 	User associated with this refund event
-    /// </summary>
-    public class RefundUser
-    {
-        /// <summary>
-        /// 	A unique string identifying the User
-        /// </summary>
-        [Required]
-        public String UserId { get; set; }
-    }
-
-    /// <summary>
-    /// 	Purchase associated with this refund event
-    /// </summary>
-    public class RefundPurchase
-    {
-        /// <summary>
-        /// 	The original Purchase Id
-        /// </summary>
-        [Required]
-        public String PurchaseId { get; set; }
     }
 }

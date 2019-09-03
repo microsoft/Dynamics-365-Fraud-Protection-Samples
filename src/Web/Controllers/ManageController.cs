@@ -254,23 +254,20 @@ namespace Contoso.FraudProtection.Web.Controllers
                 var fraudProtectionUser = new User
                 {
                     UserId = userId,
-                    PaymentInstrumentList = new List<UserPaymentInstrument>
+                    PaymentInstrumentList = new List<PaymentInstrument>
                     {
-                        new UserPaymentInstrument
+                        new PaymentInstrument
                         {
-                            PaymentInstrumentDetails = new PaymentInstrumentDetails
-                            {
-                                MerchantPaymentInstrumentId = $"{userId}-CreditCard",
-                                Type = PaymentInstrumentType.CREDITCARD.ToString(),
-                                CardType = user.DefaultCardType,
-                                HolderName = model.CardName,
-                                BIN = user.BIN,
-                                ExpirationDate = user.ExpirationDate,
-                                LastFourDigits = user.LastFourDigits,
-                                BillingAddress = billingAddress,
-                                CreationDate = DateTimeOffset.Now,
-                                State = PaymentInstrumentState.Active.ToString(),
-                            }
+                            MerchantPaymentInstrumentId = $"{userId}-CreditCard",
+                            Type = PaymentInstrumentType.CREDITCARD.ToString(),
+                            CardType = user.DefaultCardType,
+                            HolderName = model.CardName,
+                            BIN = user.BIN,
+                            ExpirationDate = user.ExpirationDate,
+                            LastFourDigits = user.LastFourDigits,
+                            BillingAddress = billingAddress,
+                            CreationDate = DateTimeOffset.Now,
+                            State = PaymentInstrumentState.Active.ToString(),
                         }
                     },
                     DeviceContext = new DeviceContext

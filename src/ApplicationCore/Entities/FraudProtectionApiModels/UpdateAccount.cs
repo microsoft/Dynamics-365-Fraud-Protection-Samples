@@ -116,7 +116,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent
         /// <summary>
         /// 	Payment instrument associated with this update account event
         /// </summary>
-        public List<UserPaymentInstrument> PaymentInstrumentList { get; set; }
+        public List<PaymentInstrument> PaymentInstrumentList { get; set; }
 
         /// <summary>
         /// 	Address associated with this update account event
@@ -127,17 +127,6 @@ namespace Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent
         /// 	Device associated with this update account event
         /// </summary>
         public DeviceContext DeviceContext { get; set; }
-    }
-
-    /// <summary>
-    /// 	Payment instrument associated with this update account event
-    /// </summary>
-    public class UserPaymentInstrument
-    {
-        /// <summary>
-        /// 	Payment instrument details associated with this payment instrument
-        /// </summary>
-        public PaymentInstrumentDetails PaymentInstrumentDetails { get; set; }
     }
 
     public enum UserAddressType

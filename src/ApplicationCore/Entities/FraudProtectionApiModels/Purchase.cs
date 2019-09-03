@@ -82,7 +82,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent
         /// <summary>
         /// 	Product associated with this purchase transaction
         /// </summary>
-        public List<PurchaseProduct> ProductList { get; set; }
+        public List<Product> ProductList { get; set; }
     }
 
     /// <summary>
@@ -106,7 +106,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent
     /// <summary>
     /// 	Product associated with this purchase transaction
     /// </summary>
-    public class PurchaseProduct
+    public class Product
     {
         /// <summary>
         /// 	Unique identifier of this product
@@ -114,42 +114,6 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent
         [Required]
         public String ProductId { get; set; }
 
-        /// <summary>
-        /// 	Price for line item at the purchase.
-        /// </summary>
-        public Decimal? PurchasePrice { get; set; }
-
-        /// <summary>
-        /// 	Margin gained by sale of item.
-        /// </summary>
-        public Decimal? Margin { get; set; }
-
-        /// <summary>
-        /// 	Quantity of item purchased
-        /// </summary>
-        public Int32? Quantity { get; set; }
-
-        /// <summary>
-        /// 	Indicates if the product is offered for preorder.
-        /// </summary>
-        public Boolean IsPreorder { get; set; }
-
-        /// <summary>
-        /// 	Indicates the method used to ship the product.
-        /// </summary>
-        public String ShippingMethod { get; set; }
-
-        /// <summary>
-        /// 	Product details associated with this product
-        /// </summary>
-        public Product ProductDetails { get; set; }
-    }
-
-    /// <summary>
-    /// 	Product details associated with this product
-    /// </summary>
-    public class Product
-    {
         /// <summary>
         /// 	User-readable product name.
         /// </summary>
@@ -204,5 +168,30 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent
         /// 	Language in which product is described.
         /// </summary>
         public String Language { get; set; }
+
+        /// <summary>
+        /// 	Price for line item at the purchase.
+        /// </summary>
+        public Decimal? PurchasePrice { get; set; }
+
+        /// <summary>
+        /// 	Margin gained by sale of item.
+        /// </summary>
+        public Decimal? Margin { get; set; }
+
+        /// <summary>
+        /// 	Quantity of item purchased
+        /// </summary>
+        public Int32? Quantity { get; set; }
+
+        /// <summary>
+        /// 	Indicates if the product is offered for preorder.
+        /// </summary>
+        public Boolean IsPreorder { get; set; }
+
+        /// <summary>
+        /// 	Indicates the method used to ship the product.
+        /// </summary>
+        public String ShippingMethod { get; set; }
     }
 }
