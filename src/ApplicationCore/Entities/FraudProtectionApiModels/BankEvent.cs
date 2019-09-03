@@ -9,7 +9,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.BankEventEvent
     /// <summary>
     /// 	Provides information about a purchase transaction that was sent to the bank as being approved or rejected when the transaction was settled.
     /// </summary>
-    public class BankEvent
+    public class BankEvent : BaseFraudProtectionEvent
     {
         /// <summary>
         /// 	A unique string identifying this Bank Event

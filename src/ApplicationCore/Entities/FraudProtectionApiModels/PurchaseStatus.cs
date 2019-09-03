@@ -9,7 +9,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent
     /// <summary>
     /// 	Enables the merchant to update Fraud Protection about the status of a purchase, such as if the purchase has been cancelled.
     /// </summary>
-    public class PurchaseStatusEvent
+    public class PurchaseStatusEvent : BaseFraudProtectionEvent
     {
         /// <summary>
         /// 	Transaction (or purchase/order) identifier in merchant system.

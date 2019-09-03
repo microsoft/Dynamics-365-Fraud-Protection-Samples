@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.Dynamics.FraudProtection.Models.SharedEntities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +10,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent
     /// <summary>
     /// 	Updates or creates User account information, such as Add Payment Instrument, Add Address, or any other user attribute.
     /// </summary>
-    public class User
+    public class User : BaseFraudProtectionEvent
     {
         /// <summary>
         /// 	The User Id uniquely identifying the User account in Merchant
@@ -151,31 +150,11 @@ namespace Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent
     /// <summary>
     /// 	Address associated with this update account event
     /// </summary>
-    public class UserAddress
+    public class UserAddress : AddressDetails
     {
         /// <summary>
         /// 	Possible values 'SHIPPING', 'BILLING', 'SIGNUP'
         /// </summary>
         public String Type { get; set; }
-
-        /// <summary>
-        /// 	First Name provided with the address
-        /// </summary>
-        public String FirstName { get; set; }
-
-        /// <summary>
-        /// 	Last Name provided with the address
-        /// </summary>
-        public String LastName { get; set; }
-
-        /// <summary>
-        /// 	Phone Number provided with the address
-        /// </summary>
-        public String PhoneNumber { get; set; }
-
-        /// <summary>
-        /// 	Address details of this address
-        /// </summary>
-        public AddressDetails AddressDetails { get; set; }
     }
 }

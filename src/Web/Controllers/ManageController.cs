@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Dynamics.FraudProtection.Models;
-using Microsoft.Dynamics.FraudProtection.Models.SharedEntities;
 using Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent;
 using System;
 using System.Collections.Generic;
@@ -125,15 +124,12 @@ namespace Contoso.FraudProtection.Web.Controllers
                     Type = UserAddressType.BILLING.ToString(),
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    AddressDetails = new AddressDetails
-                    {
-                        Street1 = user.Address1,
-                        Street2 = user.Address2,
-                        City = user.City,
-                        State = user.State,
-                        ZipCode = user.ZipCode,
-                        Country = user.CountryRegion
-                    }
+                    Street1 = user.Address1,
+                    Street2 = user.Address2,
+                    City = user.City,
+                    State = user.State,
+                    ZipCode = user.ZipCode,
+                    Country = user.CountryRegion
                 };
 
                 var shippingAddress = new UserAddress
@@ -141,15 +137,12 @@ namespace Contoso.FraudProtection.Web.Controllers
                     Type = UserAddressType.SHIPPING.ToString(),
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    AddressDetails = new AddressDetails
-                    {
-                        Street1 = user.Address1,
-                        Street2 = user.Address2,
-                        City = user.City,
-                        State = user.State,
-                        ZipCode = user.ZipCode,
-                        Country = user.CountryRegion
-                    }
+                    Street1 = user.Address1,
+                    Street2 = user.Address2,
+                    City = user.City,
+                    State = user.State,
+                    ZipCode = user.ZipCode,
+                    Country = user.CountryRegion
                 };
 
                 var fraudProtectionUser = new User
@@ -167,11 +160,8 @@ namespace Contoso.FraudProtection.Web.Controllers
                     {
                         DeviceContextId = _contextAccessor.GetSessionId(),
                         IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                        DeviceContextDetails = new DeviceContextDetails
-                        {
-                            DeviceContextDC = model.FingerPrintingDC,
-                            Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString()
-                        }
+                        DeviceContextDC = model.FingerPrintingDC,
+                        Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString()
                     }
                 };
 
@@ -247,19 +237,16 @@ namespace Contoso.FraudProtection.Web.Controllers
             // If storing the user's payment information succeeds, update Fraud Protection.
             if (updateResult.Succeeded)
             {
-                var billingAddress = new PaymentInstrumentAddress
+                var billingAddress = new AddressDetails
                 {
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    BillingAddressDetails = new AddressDetails
-                    {
-                        Street1 = user.BillingAddress1,
-                        Street2 = user.BillingAddress2,
-                        City = user.BillingCity,
-                        State = user.BillingState,
-                        ZipCode = user.BillingZipCode,
-                        Country = user.BillingCountryRegion
-                    }
+                    Street1 = user.BillingAddress1,
+                    Street2 = user.BillingAddress2,
+                    City = user.BillingCity,
+                    State = user.BillingState,
+                    ZipCode = user.BillingZipCode,
+                    Country = user.BillingCountryRegion
                 };
 
                 var userId = user.Email;
@@ -290,11 +277,8 @@ namespace Contoso.FraudProtection.Web.Controllers
                     {
                         DeviceContextId = _contextAccessor.GetSessionId(),
                         IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                        DeviceContextDetails = new DeviceContextDetails
-                        {
-                            DeviceContextDC = model.FingerPrintingDC,
-                            Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString()
-                        }
+                        DeviceContextDC = model.FingerPrintingDC,
+                        Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString()
                     }
                 };
 

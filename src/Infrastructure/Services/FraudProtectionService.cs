@@ -3,6 +3,7 @@
 
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
+using Microsoft.Dynamics.FraudProtection.Models;
 using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
 using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
 using Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent;
@@ -13,6 +14,7 @@ using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -37,29 +39,33 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             _httpClient = new HttpClient();
             _settings = settings.Value;
             _tokenProviderService = tokenProviderService;
-            _serializerSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+            _serializerSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                }
+            };
         }
 
         public string NewCorrelationId => Guid.NewGuid().ToString();
 
         private async Task<HttpResponseMessage> PostAsync<T>(
-            string endpoint, 
+            string endpoint,
             T content,
-            string correlationId,
-            Action<Dictionary<string, object>> modifyBody = null)
+            string correlationId) where T: BaseFraudProtectionEvent
         {
             //All events have the following format
-            var contentWithTimestamp = new Dictionary<string, object>
+            content._metadata = new EventMetadata
             {
-                { "MerchantLocalDate", DateTimeOffset.Now },
-                { "Data", content },
+                TrackingId = Guid.NewGuid().ToString(),
+                MerchantTimeStamp = DateTimeOffset.Now
             };
-
-            modifyBody?.Invoke(contentWithTimestamp);
 
             var authToken = await _tokenProviderService.AcquireTokenAsync();
             var url = $"{_settings.ApiBaseUrl}{endpoint}";
-            var serializedObject = JsonConvert.SerializeObject(contentWithTimestamp, _serializerSettings);
+            var serializedObject = JsonConvert.SerializeObject(content, _serializerSettings);
             var serializedContent = new StringContent(serializedObject, Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PostWithHeadersAsync(
@@ -67,6 +73,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
                serializedContent,
                new Dictionary<string, string>
                {
+                    //TODO - still needed?
                     { Constants.CORRELATION_ID, correlationId ?? Guid.NewGuid().ToString() },
                     { Constants.TRACKING_ID, Guid.NewGuid().ToString() },
                     { Constants.AUTHORIZATION, $"{Constants.BEARER} {authToken}" }
@@ -75,14 +82,14 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             return response;
         }
 
-        private static async Task<T> Read<T>(HttpResponseMessage rawResponse) where T : BaseResponse, new()
+        private async Task<T> Read<T>(HttpResponseMessage rawResponse) where T : BaseResponse, new()
         {
             rawResponse.EnsureSuccessStatusCode();
             var rawContent = await rawResponse.Content.ReadAsStringAsync();
             var response = JsonConvert.DeserializeObject<T>(rawContent);
             response.StatusCode = rawResponse.StatusCode;
             response.IsSuccessStatusCode = rawResponse.IsSuccessStatusCode;
-            
+
             return response;
         }
 
@@ -100,13 +107,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
 
         public async Task<FraudProtectionResponse> PostUser(User userAccount, string correlationId = null)
         {
-            //UpdateAccount is the only endpoint that needs 'CustomerLocalDate'
-            var response = await PostAsync(
-                _settings.Endpoints.UpdateAccount,
-                userAccount,
-                correlationId,
-                body => body["CustomerLocalDate"] = DateTimeOffset.Now);
-
+            var response = await PostAsync(_settings.Endpoints.UpdateAccount, userAccount, correlationId);
             return await Read<FraudProtectionResponse>(response);
         }
 

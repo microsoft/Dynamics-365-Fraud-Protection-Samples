@@ -9,7 +9,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.RefundEvent
     /// <summary>
     /// 	Provides information about a previous purchase transaction being refunded.
     /// </summary>
-    public class Refund
+    public class Refund : BaseFraudProtectionEvent
     {
         /// <summary>
         /// 	A unique string identifying this refund event

@@ -9,7 +9,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent
     /// <summary>
     /// 	Provides information about a previous purchase that the customer disputed with their bank as fraud.
     /// </summary>
-    public class Chargeback
+    public class Chargeback : BaseFraudProtectionEvent
     {
         /// <summary>
         /// 	A unique string identifying this chargeback event

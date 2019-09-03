@@ -4,7 +4,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Microsoft.Dynamics.FraudProtection.Models.SharedEntities
+namespace Microsoft.Dynamics.FraudProtection.Models
 {
     /// <summary>
     /// 	Device information for the assessment/event.
@@ -22,17 +22,6 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SharedEntities
         /// </summary>
         public String IPAddress { get; set; }
 
-        /// <summary>
-        /// 	Device details for this device
-        /// </summary>
-        public DeviceContextDetails DeviceContextDetails { get; set; }
-    }
-
-    /// <summary>
-    /// 	Device details for this device
-    /// </summary>
-    public class DeviceContextDetails
-    {
         /// <summary>
         /// 	Provider of Device info. Can be one of DFPFINGERPRINTING|MERCHANT. If not specified, default is DFPFINGERPRINTING
         /// </summary>
@@ -57,7 +46,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SharedEntities
     /// <summary>
     /// 	User information associated with this event
     /// </summary>
-    public class User<T> where T : UserDetails
+    public class UserDetails
     {
         /// <summary>
         /// 	A unique string identifying the User
@@ -65,17 +54,6 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SharedEntities
         [Required]
         public String UserId { get; set; }
 
-        /// <summary>
-        /// 	User Details associated with this event
-        /// </summary>
-        public T UserDetails { get; set; }
-    }
-
-    /// <summary>
-    /// 	User Details associated with this event
-    /// </summary>
-    public class UserDetails
-    {
         /// <summary>
         /// 	Customer account creation date.
         /// </summary>
@@ -173,10 +151,25 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SharedEntities
     }
 
     /// <summary>
-    /// 	Address details associated with this event
+    /// 	Address associated with this event
     /// </summary>
     public class AddressDetails
     {
+        /// <summary>
+        /// 	First Name provided with the address
+        /// </summary>
+        public String FirstName { get; set; }
+
+        /// <summary>
+        /// 	Last Name provided with the address
+        /// </summary>
+        public String LastName { get; set; }
+
+        /// <summary>
+        /// 	Phone Number provided with the address
+        /// </summary>
+        public String PhoneNumber { get; set; }
+
         /// <summary>
         /// 	First row provided with address.
         /// </summary>
@@ -318,34 +311,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SharedEntities
         /// <summary>
         /// 	Address information associated with this payment instrument
         /// </summary>
-        public PaymentInstrumentAddress BillingAddress { get; set; }
-    }
-
-    /// <summary>
-    /// 	Address information associated with this payment instrument
-    /// </summary>
-    public class PaymentInstrumentAddress
-    {
-        /// <summary>
-        /// 	First Name provided with the address
-        /// </summary>
-        public String FirstName { get; set; }
-
-        /// <summary>
-        /// 	Last Name provided with the address
-        /// </summary>
-        public String LastName { get; set; }
-
-        /// <summary>
-        /// 	Phone Number provided with the address
-        /// </summary>
-        public String PhoneNumber { get; set; }
-
-        /// <summary>
-        /// 	Address details associated with this payment instrument
-        /// </summary>
-        [Required]
-        public AddressDetails BillingAddressDetails { get; set; }
+        public AddressDetails BillingAddress { get; set; }
     }
 
     public class MarketingContext

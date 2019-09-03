@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Dynamics.FraudProtection.Models;
-using Microsoft.Dynamics.FraudProtection.Models.SharedEntities;
 using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
 using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using System;
@@ -123,51 +122,42 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             #region Fraud Protection Service
             // Ask Fraud Protection to assess this signup/registration before registering the user in our database, etc.
-            var signupAddress = new SignupAddress
+            var signupAddress = new AddressDetails
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 PhoneNumber = model.Phone,
-                SignupAddressDetails = new AddressDetails
-                {
-                    Street1 = model.Address1,
-                    Street2 = model.Address2,
-                    City = model.City,
-                    State = model.State,
-                    ZipCode = model.ZipCode,
-                    Country = model.CountryRegion
-                }
+                Street1 = model.Address1,
+                Street2 = model.Address2,
+                City = model.City,
+                State = model.State,
+                ZipCode = model.ZipCode,
+                Country = model.CountryRegion
             };
 
-            var signupUser = new User<SignupUserDetails>
+            var signupUser = new SignupUser
             {
                 UserId = model.Email,
-                UserDetails = new SignupUserDetails
-                {
-                    CreationDate = DateTimeOffset.Now,
-                    UpdateDate = DateTimeOffset.Now,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Country = model.CountryRegion,
-                    ZipCode = model.ZipCode,
-                    TimeZone = new TimeSpan(0, 0, -model.ClientTimeZone, 0).ToString(),
-                    Language = "EN-US",
-                    PhoneNumber = model.Phone,
-                    Email = model.Email,
-                    ProfileType = UserProfileType.Consumer.ToString(),
-                    SignUpAddress = signupAddress
-                }
+                CreationDate = DateTimeOffset.Now,
+                UpdateDate = DateTimeOffset.Now,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Country = model.CountryRegion,
+                ZipCode = model.ZipCode,
+                TimeZone = new TimeSpan(0, 0, -model.ClientTimeZone, 0).ToString(),
+                Language = "EN-US",
+                PhoneNumber = model.Phone,
+                Email = model.Email,
+                ProfileType = UserProfileType.Consumer.ToString(),
+                Address = signupAddress
             };
 
             var deviceContext = new DeviceContext
             {
                 DeviceContextId = _contextAccessor.GetSessionId(),
                 IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                DeviceContextDetails = new DeviceContextDetails
-                {
-                    DeviceContextDC = model.FingerPrintingDC,
-                    Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString(),
-                }
+                DeviceContextDC = model.FingerPrintingDC,
+                Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString(),
             };
 
             var marketingContext = new MarketingContext
@@ -210,15 +200,16 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             var signupStatus = new SignupStatusEvent
             {
-                SignupId = signupEvent.SignUpId,
-                Status = new SignupStatus
-                {
-                    StatusType = signupStatusType,
-                    StatusDate = DateTimeOffset.Now,
-                    Reason = "User is " + signupStatusType
-                },
-                User = rejectSignup ? null : new SignupStatusUser { UserId = signupUser.UserId }
+                SignUpId = signupEvent.SignUpId,
+                StatusType = signupStatusType,
+                StatusDate = DateTimeOffset.Now,
+                Reason = "User is " + signupStatusType
             };
+
+            if (!rejectSignup)
+            {
+                signupStatus.User = new SignupStatusUser { UserId = signupUser.UserId };
+            }
 
             var signupStatusResponse = await _fraudProtectionService.PostSignupStatus(signupStatus, correlationId);
 

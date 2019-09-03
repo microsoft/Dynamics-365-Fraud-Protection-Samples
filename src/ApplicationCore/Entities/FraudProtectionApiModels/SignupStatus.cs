@@ -9,28 +9,14 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent
     /// <summary>
     /// 	Enables the merchant to update Fraud Protection about the status of a signup, such as if the signup has been cancelled.
     /// </summary>
-    public class SignupStatusEvent
+    public class SignupStatusEvent : BaseFraudProtectionEvent
     {
         /// <summary>
         /// 	Signup identifier in merchant system.
         /// </summary>
         [Required]
-        public String SignupId { get; set; }
+        public String SignUpId { get; set; }
 
-        /// <summary>
-        /// 	Status of the signup that the merchant decides
-        /// </summary>
-        [Required]
-        public SignupStatus Status { get; set; }
-
-        public SignupStatusUser User { get; set; }
-    }
-
-    /// <summary>
-    /// 	Status of a signup that the merchant decides about the signup event.
-    /// </summary>
-    public class SignupStatus
-    {
         /// <summary>
         /// 	The type of the status. Possible values 'APPROVED' | 'REJECTED' | 'HELD'
         /// </summary>
@@ -47,6 +33,8 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent
         /// 	Reason of the status transition
         /// </summary>
         public String Reason { get; set; }
+
+        public SignupStatusUser User { get; set; }
     }
 
     /// <summary>

@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.Dynamics.FraudProtection.Models.SharedEntities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +10,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent
     /// <summary>
     /// 	Contains information and context about an incoming new purchase transaction for a risk evaluation, including product details.
     /// </summary>
-    public class Purchase
+    public class Purchase : BaseFraudProtectionEvent
     {
         /// <summary>
         /// 	Transaction (or purchase/order) identifier in merchant system.
@@ -63,7 +62,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent
         /// <summary>
         /// 	User information associated with this purchase transaction
         /// </summary>
-        public User<UserDetails> User { get; set; }
+        public UserDetails User { get; set; }
 
         /// <summary>
         /// 	Purchase Device associated with this purchase transaction
@@ -73,7 +72,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent
         /// <summary>
         /// 	Purchase address associated with this purchase transaction
         /// </summary>
-        public PurchaseAddress ShippingAddress { get; set; }
+        public AddressDetails ShippingAddress { get; set; }
 
         /// <summary>
         /// 	Payment instrument information associated with this purchase transaction
@@ -94,32 +93,6 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent
         Standard,
         Expedited,
         Overnight
-    }
-
-    /// <summary>
-    /// 	Address associated with this purchase event.
-    /// </summary>
-    public class PurchaseAddress
-    {
-        /// <summary>
-        /// 	First Name provided with the address
-        /// </summary>
-        public String FirstName { get; set; }
-
-        /// <summary>
-        /// 	Last Name provided with the address
-        /// </summary>
-        public String LastName { get; set; }
-
-        /// <summary>
-        /// 	Phone Number provided with the address
-        /// </summary>
-        public String PhoneNumber { get; set; }
-
-        /// <summary>
-        /// 	Address details associated with this purchase transaction
-        /// </summary>
-        public AddressDetails ShippingAddressDetails { get; set; }
     }
 
     public class PurchasePaymentInstrument : PaymentInstrument

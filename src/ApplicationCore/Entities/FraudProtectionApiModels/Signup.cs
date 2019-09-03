@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.Dynamics.FraudProtection.Models.SharedEntities;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,7 +9,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SignupEvent
     /// <summary>
     /// 	Contains information and context about a signup attempt.
     /// </summary>
-    public class SignUp
+    public class SignUp : BaseFraudProtectionEvent
     {
         /// <summary>
         /// 	The identifier of the Signup event (can match trackingId).
@@ -38,7 +37,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SignupEvent
         /// 	User information associated with this signup
         /// </summary>
         [Required]
-        public User<SignupUserDetails> User { get; set; }
+        public SignupUser User { get; set; }
 
         /// <summary>
         /// 	Marketing based, contextual information related to this signup.
@@ -56,42 +55,16 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SignupEvent
         public DeviceContext DeviceContext { get; set; }
     }
 
-    public class SignupUserDetails : UserDetails
+    public class SignupUser : UserDetails
     {
         /// <summary>
         /// 	The address the user entered during signup.
         /// </summary>
-        public SignupAddress SignUpAddress { get; set; }
+        public AddressDetails Address { get; set; }
 
         /// <summary>
         /// 	Payment instrument information associated with this signUp transaction
         /// </summary>
         public PaymentInstrument PaymentInstrument { get; set; }
-    }
-
-    /// <summary>
-    /// 	Address associated with this signup event.
-    /// </summary>
-    public class SignupAddress
-    {
-        /// <summary>
-        /// 	First Name provided with the address
-        /// </summary>
-        public String FirstName { get; set; }
-
-        /// <summary>
-        /// 	Last Name provided with the address
-        /// </summary>
-        public String LastName { get; set; }
-
-        /// <summary>
-        /// 	Phone Number provided with the address
-        /// </summary>
-        public String PhoneNumber { get; set; }
-
-        /// <summary>
-        /// 	Address details associated with this event
-        /// </summary>
-        public AddressDetails SignupAddressDetails { get; set; }
     }
 }

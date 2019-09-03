@@ -15,7 +15,6 @@ using Microsoft.Dynamics.FraudProtection.Models;
 using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
 using Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent;
 using Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent;
-using Microsoft.Dynamics.FraudProtection.Models.SharedEntities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -264,47 +263,38 @@ namespace Contoso.FraudProtection.Web.Controllers
         /// </summary>
         private Purchase SetupPurchase(CheckoutDetailsViewModel checkoutDetails, BasketViewModel basketViewModel)
         {
-            var shippingAddress = new PurchaseAddress
+            var shippingAddress = new AddressDetails
             {
                 FirstName = checkoutDetails.FirstName,
                 LastName = checkoutDetails.LastName,
                 PhoneNumber = checkoutDetails.PhoneNumber,
-                ShippingAddressDetails = new AddressDetails
-                {
-                    Street1 = checkoutDetails.ShippingAddress1,
-                    Street2 = checkoutDetails.ShippingAddress2,
-                    City = checkoutDetails.City,
-                    State = checkoutDetails.State,
-                    ZipCode = checkoutDetails.ZipCode,
-                    Country = checkoutDetails.CountryRegion
-                }
+                Street1 = checkoutDetails.ShippingAddress1,
+                Street2 = checkoutDetails.ShippingAddress2,
+                City = checkoutDetails.City,
+                State = checkoutDetails.State,
+                ZipCode = checkoutDetails.ZipCode,
+                Country = checkoutDetails.CountryRegion
             };
 
-            var billingAddress = new PaymentInstrumentAddress
+            var billingAddress = new AddressDetails
             {
                 FirstName = checkoutDetails.FirstName,
                 LastName = checkoutDetails.LastName,
                 PhoneNumber = checkoutDetails.PhoneNumber,
-                BillingAddressDetails = new AddressDetails
-                {
-                    Street1 = checkoutDetails.BillingAddress1,
-                    Street2 = checkoutDetails.BillingAddress2,
-                    City = checkoutDetails.BillingCity,
-                    State = checkoutDetails.BillingState,
-                    ZipCode = checkoutDetails.BillingZipCode,
-                    Country = checkoutDetails.BillingCountryRegion
-                }
+                Street1 = checkoutDetails.BillingAddress1,
+                Street2 = checkoutDetails.BillingAddress2,
+                City = checkoutDetails.BillingCity,
+                State = checkoutDetails.BillingState,
+                ZipCode = checkoutDetails.BillingZipCode,
+                Country = checkoutDetails.BillingCountryRegion
             };
 
             var device = new DeviceContext
             {
                 DeviceContextId = _contextAccessor.GetSessionId(),
                 IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                DeviceContextDetails = new DeviceContextDetails
-                {
-                    DeviceContextDC = checkoutDetails.FingerPrintingDC,
-                    Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString()
-                }
+                DeviceContextDC = checkoutDetails.FingerPrintingDC,
+                Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString()
             };
 
             var productList = new List<PurchaseProduct>();
@@ -341,23 +331,20 @@ namespace Contoso.FraudProtection.Web.Controllers
             //If that isn't available - it always should be - create a new GUID.
             var userId = User?.Identity?.Name ?? basketViewModel.BuyerId ?? Guid.NewGuid().ToString();
 
-            var user = new User<UserDetails>
+            var user = new UserDetails
             {
                 UserId = userId,
-                UserDetails = new UserDetails
-                {
-                    CreationDate = DateTimeOffset.Now,
-                    UpdateDate = DateTimeOffset.Now,
-                    FirstName = checkoutDetails.FirstName,
-                    LastName = checkoutDetails.LastName,
-                    Country = checkoutDetails.CountryRegion,
-                    ZipCode = checkoutDetails.ZipCode,
-                    TimeZone = TimeZoneInfo.Local.Id,
-                    Language = "EN-US",
-                    PhoneNumber = checkoutDetails.PhoneNumber,
-                    Email = checkoutDetails.Email,
-                    ProfileType = UserProfileType.Consumer.ToString()
-                }
+                CreationDate = DateTimeOffset.Now,
+                UpdateDate = DateTimeOffset.Now,
+                FirstName = checkoutDetails.FirstName,
+                LastName = checkoutDetails.LastName,
+                Country = checkoutDetails.CountryRegion,
+                ZipCode = checkoutDetails.ZipCode,
+                TimeZone = TimeZoneInfo.Local.Id,
+                Language = "EN-US",
+                PhoneNumber = checkoutDetails.PhoneNumber,
+                Email = checkoutDetails.Email,
+                ProfileType = UserProfileType.Consumer.ToString()
             };
 
             var paymentInstrument = new PurchasePaymentInstrument
