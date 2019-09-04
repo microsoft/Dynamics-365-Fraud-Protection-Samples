@@ -40,6 +40,8 @@
                             <span>&nbsp;| &nbsp;</span>
                             <a class="esh-orders-link" asp-controller="Order" asp-action="Chargeback" asp-route-orderId="@item.OrderNumber">Chargeback</a>
                         }
+                        <span>&nbsp;| &nbsp;</span>
+                        <a class="esh-orders-link" asp-controller="Order" asp-action="FraudLabel" asp-route-orderId="@item.OrderNumber">Fraud Label</a>
                     </section>
                 </article>
             }
