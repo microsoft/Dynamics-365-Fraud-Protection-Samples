@@ -57,8 +57,9 @@ namespace Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent
 
     public enum ChargebackStatus
     {
-        INITIATED,
-        LOST,
-        WON
+        Enquiry,
+        Accepted,
+        Disputed,
+        Reversal
     }
 }

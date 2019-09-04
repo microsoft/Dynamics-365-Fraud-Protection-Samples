@@ -5,7 +5,7 @@
 
 @using Contoso.FraudProtection.Web.ViewModels
 @{
-    ViewData["Title"] = "Return Initiated";
+    ViewData["Title"] = "Return Done";
     @model OrderViewModel
 }
 @section TopBanner {
@@ -15,7 +15,7 @@
 }
 
 <div class="container">
-    <h1>Your return has been initiated!</h1>
-    <p>We will let you know once we have more updates</p>
+    <h1>Your return has been completed!</h1>
+    <p>Thank you for shopping with us and we hope to serve you again in the future.</p>
     <a asp-controller="Catalog" asp-action="Index">Continue Shopping...</a>
 </div>

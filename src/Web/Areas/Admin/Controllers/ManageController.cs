@@ -2,14 +2,10 @@
 // Licensed under the MIT license.
 
 using Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate;
-using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Contoso.FraudProtection.Infrastructure.Data;
-using Contoso.FraudProtection.Web.Extensions;
-using Contoso.FraudProtection.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Dynamics.FraudProtection.Models.RefundEvent;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -22,12 +18,10 @@ namespace Web.Areas.Admin.Controllers
     public class ManageController : Controller
     {
         private readonly CatalogContext _context;
-        private readonly IFraudProtectionService _fraudProtectionService;
 
-        public ManageController(CatalogContext context, IFraudProtectionService fraudProtectionService)
+        public ManageController(CatalogContext context)
         {
             _context = context;
-            _fraudProtectionService = fraudProtectionService;
         }
 
         // GET: Admin/Manage
@@ -111,28 +105,6 @@ namespace Web.Areas.Admin.Controllers
             {
                 try
                 {
-                    if (dbOrder.RiskRefundResponse == null && (order.Status == OrderStatus.ReturnInProgress || order.Status == OrderStatus.ReturnCompleted))
-                    {
-                        var refund = new Refund
-                        {
-                            RefundId = Guid.NewGuid().ToString(),
-                            Amount = dbOrder.Total,
-                            Currency = dbOrder.RiskPurchase?.Currency,
-                            BankEventTimestamp = DateTimeOffset.Now,
-                            PurchaseId = dbOrder.RiskPurchase.PurchaseId,
-                            Reason = order.ReturnOrChargebackReason,
-                            Status = order.Status == OrderStatus.ReturnInProgress ? RefundStatus.INITIATED.ToString(): RefundStatus.COMPLETED.ToString(),
-                            UserId = dbOrder.RiskPurchase?.User?.UserId,
-                        };
-
-                        var riskResponse = await _fraudProtectionService.PostRefund(refund);
-                        dbOrder.RiskRefund = refund;
-                        dbOrder.RiskRefundResponse = riskResponse;
-
-                        var fraudProtectionIO = new FraudProtectionIOModel(refund, riskResponse, "Refund");
-                        TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
-                    }
-
                     _context.Update(dbOrder);
                     await _context.SaveChangesAsync();
                 }
