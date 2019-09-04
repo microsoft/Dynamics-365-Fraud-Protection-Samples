@@ -38,9 +38,9 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent
     public enum PurchaseStatusType
     {
         Approved,
-        Canceled,
         Pending,
         Rejected,
-        Failed
+        Failed,
+        Canceled
     }
 }

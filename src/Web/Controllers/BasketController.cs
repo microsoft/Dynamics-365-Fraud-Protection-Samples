@@ -203,7 +203,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             if (!merchantRuleDecision.StartsWith("APPROVE", StringComparison.OrdinalIgnoreCase) &&
                 !creditCardBankResponse.IgnoreFraudRiskRecommendation)
             {
-                purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Canceled);
+                purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Rejected);
                 status = OrderStatus.Rejected;
             }
             else
@@ -214,7 +214,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                     //Auth Rejected
                     auth = SetupBankEvent(BankEventType.AUTH, DateTimeOffset.Now, purchaseId, BankStatus.REJECTED);
                     //Purchase Status - Rejected
-                    purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Canceled);
+                    purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Rejected);
                     status = OrderStatus.Rejected;
                 }
                 else
@@ -234,7 +234,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                         //Charge - Rejected
                         charge = SetupBankEvent(BankEventType.CHARGE, DateTimeOffset.Now, purchaseId, BankStatus.REJECTED);
                         //Purchase status Rejected
-                        purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Canceled);
+                        purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Rejected);
                         status = OrderStatus.Rejected;
                     }
                 }
