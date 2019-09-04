@@ -134,7 +134,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         {
             var basketViewModel = await GetBasketViewModelAsync();
 
-            var address = new ApplicationCore.Entities.OrderAggregate.Address(
+            var address = new Address(
                 string.Join(' ', checkoutDetails.ShippingAddress1, checkoutDetails.ShippingAddress2),
                 checkoutDetails.City,
                 checkoutDetails.State,
