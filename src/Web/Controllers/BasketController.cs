@@ -203,7 +203,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             if (!merchantRuleDecision.StartsWith("APPROVE", StringComparison.OrdinalIgnoreCase) &&
                 !creditCardBankResponse.IgnoreFraudRiskRecommendation)
             {
-                purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.CANCELED);
+                purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Rejected);
                 status = OrderStatus.Rejected;
             }
             else
@@ -214,7 +214,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                     //Auth Rejected
                     auth = SetupBankEvent(BankEventType.AUTH, DateTimeOffset.Now, purchaseId, BankStatus.REJECTED);
                     //Purchase Status - Rejected
-                    purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.CANCELED);
+                    purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Rejected);
                     status = OrderStatus.Rejected;
                 }
                 else
@@ -227,14 +227,14 @@ namespace Contoso.FraudProtection.Web.Controllers
                         //Charge - Approved
                         charge = SetupBankEvent(BankEventType.CHARGE, DateTimeOffset.Now, purchaseId, BankStatus.APPROVED);
                         //Purchase Status Approved
-                        purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.APPROVED);
+                        purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Approved);
                     }
                     else
                     {
                         //Charge - Rejected
                         charge = SetupBankEvent(BankEventType.CHARGE, DateTimeOffset.Now, purchaseId, BankStatus.REJECTED);
                         //Purchase status Rejected
-                        purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.CANCELED);
+                        purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Rejected);
                         status = OrderStatus.Rejected;
                     }
                 }

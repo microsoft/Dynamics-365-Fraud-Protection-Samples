@@ -141,7 +141,6 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             var signupUser = new User<SignupUserDetails>
             {
-                UserId = model.Email,
                 UserDetails = new SignupUserDetails
                 {
                     CreationDate = DateTimeOffset.Now,
@@ -206,7 +205,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             //2 out of 3 signups will succeed on average. Adjust if you want more or less signups blocked for tesing purposes.
             var random = new Random();
             var rejectSignup = random.NextDouble() >= 2.0 / 3;
-            var signupStatusType = rejectSignup ? SignupStatusType.REJECTED.ToString() : SignupStatusType.APPROVED.ToString();
+            var signupStatusType = rejectSignup ? SignupStatusType.Rejected.ToString() : SignupStatusType.Approved.ToString();
 
             var signupStatus = new SignupStatusEvent
             {
@@ -216,9 +215,13 @@ namespace Contoso.FraudProtection.Web.Controllers
                     StatusType = signupStatusType,
                     StatusDate = DateTimeOffset.Now,
                     Reason = "User is " + signupStatusType
-                },
-                User = rejectSignup ? null : new SignupStatusUser { UserId = signupUser.UserId }
+                }
             };
+
+            if (!rejectSignup)
+            {
+                signupStatus.User = new SignupStatusUser { UserId = model.Email };
+            }
 
             var signupStatusResponse = await _fraudProtectionService.PostSignupStatus(signupStatus, correlationId);
 
