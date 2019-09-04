@@ -137,7 +137,6 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             var signupUser = new SignupUser
             {
-                UserId = model.Email,
                 CreationDate = DateTimeOffset.Now,
                 UpdateDate = DateTimeOffset.Now,
                 FirstName = model.FirstName,
@@ -208,7 +207,7 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             if (!rejectSignup)
             {
-                signupStatus.User = new SignupStatusUser { UserId = signupUser.UserId };
+                signupStatus.User = new SignupStatusUser { UserId = model.Email };
             }
 
             var signupStatusResponse = await _fraudProtectionService.PostSignupStatus(signupStatus, correlationId);
