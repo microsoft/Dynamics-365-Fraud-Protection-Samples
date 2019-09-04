@@ -43,7 +43,7 @@
             var today = new Date();
             document.getElementById('ClientDate').value = today.toJSON();
             document.getElementById('ClientTimeZone').value = today.isDstObserved() ? today.stdTimezoneOffset() : today.getTimezoneOffset();
-            document.getElementById('FingerPrintingDC').value = a.dc;
+            document.getElementById('FingerPrintingDC').value = dfp.dc;
         }
     </script>
 </head>

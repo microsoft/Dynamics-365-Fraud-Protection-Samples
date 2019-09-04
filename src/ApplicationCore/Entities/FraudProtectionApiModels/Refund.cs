@@ -56,8 +56,16 @@ namespace Microsoft.Dynamics.FraudProtection.Models.RefundEvent
 
     public enum RefundStatus
     {
-        INITIATED,
-        COMPLETED,
+        Approved,
+        Rejected,
+        Failed
+    }
+
+    public enum RefundReason
+    {
+        FraudRefund,
+        CustomerRequest,
+        NonFraudRefund
     }
 
     /// <summary>

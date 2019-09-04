@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
+using Microsoft.Dynamics.FraudProtection.Models.RefundEvent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,12 +26,18 @@ namespace Contoso.FraudProtection.Web.Controllers
         private readonly IOrderRepository _orderRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IFraudProtectionService _fraudProtectionService;
+        private readonly IUriComposer _uriComposer;
 
-        public OrderController(IOrderRepository orderRepository, UserManager<ApplicationUser> userManager, IFraudProtectionService fraudProtectionService)
+        public OrderController(
+            IOrderRepository orderRepository,
+            UserManager<ApplicationUser> userManager,
+            IFraudProtectionService fraudProtectionService,
+            IUriComposer uriComposer)
         {
             _orderRepository = orderRepository;
             _userManager = userManager;
             _fraudProtectionService = fraudProtectionService;
+            _uriComposer = uriComposer;
         }
 
         public async Task<IActionResult> Index()
@@ -58,18 +65,39 @@ namespace Contoso.FraudProtection.Web.Controllers
             return await OrderDetailView("ChargeBack", orderId);
         }
 
-        public async Task<IActionResult> ReturnOrder(OrderViewModel viewModel)
+        [HttpPost]
+        public async Task<IActionResult> ReturnOrder(OrderViewModel viewModel, RefundStatus status, RefundReason reason)
         {
-            return await ModifyOrderView("ReturnInitiated", viewModel, order =>
+            return await ModifyOrderView("ReturnDone", viewModel, async order =>
             {
-                order.ReturnOrChargebackReason = viewModel.ReturnOrChargebackReason;
-                order.Status = OrderStatus.ReturnInitiated;
+                #region Fraud Protection Service
+                var refund = new Refund
+                {
+                    RefundId = Guid.NewGuid().ToString(),
+                    Amount = order.Total,
+                    Currency = order.RiskPurchase?.Currency,
+                    BankEventTimestamp = DateTimeOffset.Now,
+                    Purchase = new RefundPurchase { PurchaseId = order.RiskPurchase.PurchaseId },
+                    Reason = reason.ToString(),
+                    Status = status.ToString(),
+                    User = new RefundUser { UserId = order.RiskPurchase.User.UserId },
+                };
 
-                return Task.CompletedTask;
+                var response = await _fraudProtectionService.PostRefund(refund);
+
+                var fraudProtectionIO = new FraudProtectionIOModel(refund, response, "Refund");
+                TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
+                #endregion
+
+                order.ReturnOrChargebackReason = reason.ToString();
+                order.Status = status == RefundStatus.Approved ? OrderStatus.ReturnCompleted : OrderStatus.ReturnRejected;
+                order.RiskRefund = refund;
+                order.RiskRefundResponse = response;
             });
         }
 
-        public async Task<IActionResult> ChargebackOrder(OrderViewModel viewModel)
+        [HttpPost]
+        public async Task<IActionResult> ChargebackOrder(OrderViewModel viewModel, ChargebackStatus status)
         {
             return await ModifyOrderView("ChargebackDone", viewModel, async order =>
             {
@@ -81,7 +109,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                     Currency = order.RiskPurchase?.Currency,
                     BankEventTimestamp = DateTimeOffset.Now,
                     Reason = viewModel.ReturnOrChargebackReason,
-                    Status = ChargebackStatus.WON.ToString(),
+                    Status = status.ToString(),
                     Purchase = new ChargebackPurchase { PurchaseId = order.RiskPurchase.PurchaseId },
                     User = new ChargebackUser { UserId = order.RiskPurchase.User.UserId },
                 };
@@ -142,7 +170,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 OrderItems = order.OrderItems?.Select(oi => new OrderItemViewModel
                 {
                     Discount = 0,
-                    PictureUrl = oi.ItemOrdered.PictureUri,
+                    PictureUrl = _uriComposer.ComposePicUri(oi.ItemOrdered.PictureUri),
                     ProductId = oi.ItemOrdered.CatalogItemId,
                     ProductName = oi.ItemOrdered.ProductName,
                     UnitPrice = oi.UnitPrice,
