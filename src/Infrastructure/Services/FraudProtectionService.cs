@@ -54,7 +54,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         private async Task<HttpResponseMessage> PostAsync<T>(
             string endpoint,
             T content,
-            string correlationId) where T: BaseFraudProtectionEvent
+            string correlationId) where T : BaseFraudProtectionEvent
         {
             //All events have the following format
             content._metadata = new EventMetadata
@@ -82,15 +82,13 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             return response;
         }
 
-        private async Task<T> Read<T>(HttpResponseMessage rawResponse) where T : BaseResponse, new()
+        private async Task<T> Read<T>(HttpResponseMessage rawResponse) where T : new()
         {
             rawResponse.EnsureSuccessStatusCode();
             var rawContent = await rawResponse.Content.ReadAsStringAsync();
-            var response = JsonConvert.DeserializeObject<T>(rawContent);
-            response.StatusCode = rawResponse.StatusCode;
-            response.IsSuccessStatusCode = rawResponse.IsSuccessStatusCode;
+            rawResponse.Dispose();
 
-            return response;
+            return JsonConvert.DeserializeObject<T>(rawContent);
         }
 
         public async Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId = null)

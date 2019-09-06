@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels
 {
-    public class SignupResponse : BaseResponse
+    public class SignupResponse
     {
         [JsonProperty("resultDetails")]
         public SignupResponseDetails ResultDetails { get; set; }

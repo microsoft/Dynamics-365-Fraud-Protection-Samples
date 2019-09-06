@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels
 {
-    public class FraudProtectionResponse: BaseResponse
+    public class FraudProtectionResponse
     {
         public Dictionary<string, object> ResultDetails { get; set; }
     }
