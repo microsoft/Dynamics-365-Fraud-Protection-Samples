@@ -293,13 +293,13 @@ namespace Contoso.FraudProtection.Web.Helpers
         public static List<SelectListItem> PIYearList = new List<SelectListItem>
             {
                 new SelectListItem { Value = "", Text = "Year" },
-                new SelectListItem { Value = "18", Text = "2018" },
                 new SelectListItem { Value = "19", Text = "2019" },
                 new SelectListItem { Value = "20", Text = "2020" },
                 new SelectListItem { Value = "21", Text = "2021" },
                 new SelectListItem { Value = "22", Text = "2022" },
                 new SelectListItem { Value = "23", Text = "2023" },
                 new SelectListItem { Value = "24", Text = "2024" },
+                new SelectListItem { Value = "25", Text = "2025" },
             };
     }
 }
