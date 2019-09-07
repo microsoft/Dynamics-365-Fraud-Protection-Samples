@@ -6,6 +6,7 @@ using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Microsoft.Dynamics.FraudProtection.Models;
 using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
 using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
+using Microsoft.Dynamics.FraudProtection.Models.LabelEvent;
 using Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent;
 using Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent;
 using Microsoft.Dynamics.FraudProtection.Models.RefundEvent;
@@ -136,6 +137,12 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         public async Task<FraudProtectionResponse> PostSignupStatus(SignupStatusEvent signupStatus, string correlationId = null)
         {
             var response = await PostAsync(_settings.Endpoints.SignupStatus, signupStatus, correlationId);
+            return await Read<FraudProtectionResponse>(response);
+        }
+
+        public async Task<FraudProtectionResponse> PostLabel(Label label, string correlationId = null)
+        {
+            var response = await PostAsync(_settings.Endpoints.Label, label, correlationId);
             return await Read<FraudProtectionResponse>(response);
         }
     }

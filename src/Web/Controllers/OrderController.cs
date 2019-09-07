@@ -11,7 +11,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
+using Microsoft.Dynamics.FraudProtection.Models.LabelEvent;
+using Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent;
 using Microsoft.Dynamics.FraudProtection.Models.RefundEvent;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,7 +71,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         [HttpGet("{orderId}")]
         public async Task<IActionResult> FraudLabel(int orderId)
         {
-            return await OrderDetailView("Label", orderId);
+            return await OrderDetailView("FraudLabel", orderId);
         }
 
         [HttpPost]
@@ -132,10 +135,64 @@ namespace Contoso.FraudProtection.Web.Controllers
             });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> FraudLabelOrder(
+            OrderViewModel viewModel,
+            LabelSource source,
+            LabelObjectType objectType,
+            LabelState state,
+            LabelReasonCodes reason)
+        {
+            var order = await GetOrder(viewModel.OrderNumber);
+            if (order == null)
+            {
+                return BadRequest("No such order found for this user.");
+            }
+
+            #region Fraud Protection Service
+            string labelObjectId;
+            switch (objectType)
+            {
+                case LabelObjectType.Purchase:
+                    labelObjectId = order.RiskPurchase.PurchaseId;
+                    break;
+                case LabelObjectType.Account:
+                    labelObjectId = order.RiskPurchase.User.UserId;
+                    break;
+                case LabelObjectType.UserEmail:
+                    labelObjectId = order.RiskPurchase.User.Email;
+                    break;
+                case LabelObjectType.PI:
+                    labelObjectId = order.RiskPurchase.PaymentInstrumentList[0].MerchantPaymentInstrumentId;
+                    break;
+                default:
+                    throw new InvalidOperationException("Label object type not supported: " + objectType);
+            }
+
+            var label = new Label
+            {
+                LabelObjectType = objectType.ToString(),
+                LabelObjectId = labelObjectId,
+                LabelSource = source.ToString(),
+                LabelReasonCodes = reason.ToString(),
+                LabelState = state.ToString(),
+                EventTimeStamp = DateTimeOffset.Now,
+                Processor = "Fraud Protection sample site",
+                Amount = order.Total,
+                Currency = order.RiskPurchase?.Currency,
+            };
+            var response = await _fraudProtectionService.PostLabel(label);
+
+            var fraudProtectionIO = new FraudProtectionIOModel(label, response, "Label");
+            TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
+            #endregion
+
+            return View("FraudLabelDone");
+        }
+
         private async Task<IActionResult> OrderDetailView(string viewName, int orderId)
         {
-            var orders = await GetOrders();
-            var order = orders.FirstOrDefault(o => o.Id == orderId);
+            var order = await GetOrder(orderId);
             if (order == null)
             {
                 return BadRequest("No such order found for this user.");
@@ -149,8 +206,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             OrderViewModel viewModel,
             Func<Order, Task> modifyOrder)
         {
-            var orders = await GetOrders();
-            var order = orders.FirstOrDefault(o => o.Id == viewModel.OrderNumber);
+            var order = await GetOrder(viewModel.OrderNumber);
             if (order == null)
             {
                 return BadRequest("No such order found for this user.");
@@ -161,6 +217,12 @@ namespace Contoso.FraudProtection.Web.Controllers
             await _orderRepository.UpdateAsync(order);
 
             return View(viewName);
+        }
+
+        private async Task<Order> GetOrder(int orderId)
+        {
+            var orders = await GetOrders();
+            return orders.FirstOrDefault(o => o.Id == orderId);
         }
 
         private async Task<List<Order>> GetOrders()

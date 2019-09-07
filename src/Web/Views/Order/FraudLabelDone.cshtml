@@ -1,0 +1,21 @@
+@*
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.   
+*@
+
+@using Contoso.FraudProtection.Web.ViewModels
+@{
+    ViewData["Title"] = "Fraud Label Done";
+    @model OrderViewModel
+}
+@section TopBanner {
+    <div class="container">
+        <img class="esh-catalog-title" src="~/images/main_banner_text.png" />
+    </div>
+}
+
+<div class="container">
+    <h1>Your fraud label has been sent!</h1>
+    <p>Thank you for shopping with us and we hope to serve you again in the future.</p>
+    <a asp-controller="Catalog" asp-action="Index">Continue Shopping...</a>
+</div>

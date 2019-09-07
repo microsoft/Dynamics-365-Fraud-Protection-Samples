@@ -16,6 +16,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         public string PurchaseStatus { get; set; }
         public string BankEvent { get; set; }
         public string Chargeback { get; set; }
+        public string Label { get; set; }
         public string Refund { get; set; }
         public string Signup { get; set; }
         public string SignupStatus { get; set; }

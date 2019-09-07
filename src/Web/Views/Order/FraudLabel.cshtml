@@ -6,14 +6,10 @@
 @using Microsoft.Dynamics.FraudProtection.Models.LabelEvent
 @using Contoso.FraudProtection.Web.ViewModels
 
+@model OrderViewModel
+
 @{
     ViewData["Title"] = "Add Fraud Label";
-    @model OrderViewModel
-
-    var labelObjectTypes = Html.GetEnumSelectList<LabelObjectType>();
-    var labelSources = Html.GetEnumSelectList<LabelSource>();
-    var labelStates = Html.GetEnumSelectList<LabelState>();
-    var labelReasonCodes = Html.GetEnumSelectList<LabelReasonCodes>();
 }
 
 @section TopBanner {
@@ -75,8 +71,7 @@
                     <label for="LabelObjectType" class="col-md-2 control-label">Label Object Type</label>
                     <div class="col-md-3">
                         @Html.DropDownList("LabelObjectType",
-                            labelObjectTypes,
-                            labelObjectTypes.First().Value,
+                            Html.GetEnumSelectList<LabelObjectType>().Where(i => i.Text != "GenericEvent" && i.Text != "Signup"),
                             new { @class = "form-control", required = "required" })
                     </div>
                 </div>
@@ -86,8 +81,7 @@
                     <label for="LabelSource" class="col-md-2 control-label">Label Source</label>
                     <div class="col-md-3">
                         @Html.DropDownList("LabelSource",
-                            labelSources,
-                            labelSources.First().Value,
+                            Html.GetEnumSelectList<LabelSource>(),
                             new { @class = "form-control", required = "required" })
                     </div>
                 </div>
@@ -97,8 +91,7 @@
                     <label for="LabelStatus" class="col-md-2 control-label">Label Status</label>
                     <div class="col-md-3">
                         @Html.DropDownList("LabelStatus",
-                            labelStates,
-                            labelStates.First().Value,
+                            Html.GetEnumSelectList<LabelState>(),
                             new { @class = "form-control", required = "required" })
                     </div>
                 </div>
@@ -108,8 +101,7 @@
                     <label for="LabelReasonCode" class="col-md-2 control-label">Label Reason Code</label>
                     <div class="col-md-3">
                         @Html.DropDownList("LabelReasonCode",
-                            labelReasonCodes,
-                            labelReasonCodes.First().Value,
+                            Html.GetEnumSelectList<LabelReasonCodes>(),
                             new { @class = "form-control", required = "required" })
                     </div>
                 </div>

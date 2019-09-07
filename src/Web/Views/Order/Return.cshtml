@@ -71,7 +71,6 @@
                     <div class="col-md-3">
                         @Html.DropDownList("RefundStatus",
                             Html.GetEnumSelectList<RefundStatus>(),
-                            "Select refund status",
                             new { @class = "form-control", required = "required" })
                     </div>
                 </div>
@@ -82,7 +81,6 @@
                     <div class="col-md-3">
                         @Html.DropDownList("RefundReason",
                             Html.GetEnumSelectList<RefundReason>(),
-                            "Select refund reason",
                             new { @class = "form-control", required = "required" })
                     </div>
                 </div>
