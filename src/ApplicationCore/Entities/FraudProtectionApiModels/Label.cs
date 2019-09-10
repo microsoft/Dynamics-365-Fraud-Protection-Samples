@@ -48,12 +48,12 @@ namespace Microsoft.Dynamics.FraudProtection.Models.LabelEvent
         /// <summary>
         /// 	The beginning of when this label applies in the merchant time-zone (if different from MerchantLocalDate). Format is ISO8601.
         /// </summary>
-        public DateTimeOffset EffectiveStartDate { get; set; }
+        public DateTimeOffset? EffectiveStartDate { get; set; }
 
         /// <summary>
         /// 	The end of when this label applies in merchant time-zone or null for not-applicable/indeterminate. Format is ISO8601.
         /// </summary>
-        public DateTimeOffset EffectiveEndDate { get; set; }
+        public DateTimeOffset? EffectiveEndDate { get; set; }
 
         /// <summary>
         /// 	The monetary amount this label pertains to, e.g. of a partial refund. Units given by Currency field.
