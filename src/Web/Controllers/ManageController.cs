@@ -148,6 +148,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 var fraudProtectionUser = new User
                 {
                     UserId = user.Email,
+                    UpdateDate = DateTimeOffset.Now,
                     Email = user.Email,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
