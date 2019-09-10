@@ -1,15 +1,16 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Newtonsoft.Json;
 using System;
 
 namespace Microsoft.Dynamics.FraudProtection.Models
 {
-    public abstract class BaseFraudProtectionEvent
+    public abstract class BaseFraudProtectionEvent : IBaseFraudProtectionEvent
     {
-#pragma warning disable IDE1006 // Naming Styles
-        public EventMetadata _metadata { get; set; }
-#pragma warning restore IDE1006 // Naming Styles
+        // Inlining to avoid multi-inheritance but still take advantage of shared UserDetails
+        [JsonProperty(PropertyName = "_metadata")]
+        public EventMetadata Metadata { get; set; }
     }
 
     public class EventMetadata

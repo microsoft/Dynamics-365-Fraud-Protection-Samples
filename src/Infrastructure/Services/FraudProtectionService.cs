@@ -55,10 +55,10 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         private async Task<HttpResponseMessage> PostAsync<T>(
             string endpoint,
             T content,
-            string correlationId) where T : BaseFraudProtectionEvent
+            string correlationId) where T : IBaseFraudProtectionEvent
         {
             //All events have the following format
-            content._metadata = new EventMetadata
+            content.Metadata = new EventMetadata
             {
                 TrackingId = Guid.NewGuid().ToString(),
                 MerchantTimeStamp = DateTimeOffset.Now
