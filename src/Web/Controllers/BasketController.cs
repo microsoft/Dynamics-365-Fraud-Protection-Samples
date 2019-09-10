@@ -212,7 +212,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 if (!creditCardBankResponse.IsAuthApproved)
                 {
                     //Auth Rejected
-                    auth = SetupBankEvent(BankEventType.AUTH, DateTimeOffset.Now, purchaseId, BankStatus.REJECTED);
+                    auth = SetupBankEvent(BankEventType.Auth, DateTimeOffset.Now, purchaseId, BankEventStatus.Declined);
                     //Purchase Status - Rejected
                     purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Rejected);
                     status = OrderStatus.Rejected;
@@ -220,19 +220,19 @@ namespace Contoso.FraudProtection.Web.Controllers
                 else
                 {
                     //Auth Approved
-                    auth = SetupBankEvent(BankEventType.AUTH, DateTimeOffset.Now, purchaseId, BankStatus.APPROVED);
+                    auth = SetupBankEvent(BankEventType.Auth, DateTimeOffset.Now, purchaseId, BankEventStatus.Approved);
                     //Charge
                     if (creditCardBankResponse.IsChargeApproved)
                     {
                         //Charge - Approved
-                        charge = SetupBankEvent(BankEventType.CHARGE, DateTimeOffset.Now, purchaseId, BankStatus.APPROVED);
+                        charge = SetupBankEvent(BankEventType.Charge, DateTimeOffset.Now, purchaseId, BankEventStatus.Approved);
                         //Purchase Status Approved
                         purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Approved);
                     }
                     else
                     {
                         //Charge - Rejected
-                        charge = SetupBankEvent(BankEventType.CHARGE, DateTimeOffset.Now, purchaseId, BankStatus.REJECTED);
+                        charge = SetupBankEvent(BankEventType.Charge, DateTimeOffset.Now, purchaseId, BankEventStatus.Declined);
                         //Purchase status Rejected
                         purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Rejected);
                         status = OrderStatus.Rejected;
@@ -393,7 +393,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         /// <summary>
         /// Creates charge and auth bank events.
         /// </summary>
-        private BankEvent SetupBankEvent(BankEventType type, DateTimeOffset transactionDate, string PurchaseId, BankStatus status)
+        private BankEvent SetupBankEvent(BankEventType type, DateTimeOffset transactionDate, string PurchaseId, BankEventStatus status)
         {
             return new BankEvent
             {

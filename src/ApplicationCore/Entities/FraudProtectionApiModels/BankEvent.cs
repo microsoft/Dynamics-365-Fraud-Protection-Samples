@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Microsoft.Dynamics.FraudProtection.Models.BankEventEvent
 {
     /// <summary>
-    /// 	Provides information about a purchase transaction that was sent to the bank as being approved or rejected when the transaction was settled.
+    /// 	Provides information about a purchase transaction that was sent to the bank as being approved or rejected when the transaction settles.
     /// </summary>
     public class BankEvent : BaseFraudProtectionEvent
     {
@@ -18,7 +18,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.BankEventEvent
         public String BankEventId { get; set; }
 
         /// <summary>
-        /// 	Bank Event Type with possible values AUTH|CHARGE
+        /// 	See BankEventType enum.
         /// </summary>
         [Required]
         public String Type { get; set; }
@@ -29,7 +29,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.BankEventEvent
         public DateTimeOffset? BankEventTimestamp { get; set; }
 
         /// <summary>
-        /// 	Possible values 'APPROVED' | 'REJECTED'
+        /// 	See BankStatus enum.
         /// </summary>
         public String Status { get; set; }
 
@@ -39,7 +39,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.BankEventEvent
         public String BankResponseCode { get; set; }
 
         /// <summary>
-        /// 	Processor name (e.g. Fdc, Paypal etc.)
+        /// 	Processor name. Examples 'FDC', 'Adyen', 'TSYS', 'WorldPay', 'Chase', 'Stripe', 'PayPal'
         /// </summary>
         public String PaymentProcessor { get; set; }
 
@@ -49,7 +49,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.BankEventEvent
         public String MRN { get; set; }
 
         /// <summary>
-        /// 	N/A
+        /// 	The merchant ID (MID) sent to the bank.
         /// </summary>
         public String MID { get; set; }
 
@@ -62,13 +62,16 @@ namespace Microsoft.Dynamics.FraudProtection.Models.BankEventEvent
 
     public enum BankEventType
     {
-        AUTH,
-        CHARGE
+        Auth,
+        Charge,
+        AuthCancel,
+        ChargeReversal
     }
 
-    public enum BankStatus
+    public enum BankEventStatus
     {
-        APPROVED,
-        REJECTED
+        Approved,
+        Declined,
+        Unknown
     }
 }
