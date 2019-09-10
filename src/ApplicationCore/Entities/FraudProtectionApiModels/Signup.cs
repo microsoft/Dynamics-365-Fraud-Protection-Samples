@@ -25,7 +25,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SignupEvent
         /// <summary>
         /// 	The Signup creation date in the customer's local time zone. The format is ISO 8601.
         /// </summary>
-        public DateTimeOffset CustomerLocalDate { get; set; }
+        public DateTimeOffset? CustomerLocalDate { get; set; }
 
         /// <summary>
         /// 	The Signup ingestion date in the merchant's time zone. The format is ISO 8601.

@@ -43,7 +43,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.LabelEvent
         /// <summary>
         /// 	The event's ultimate creation date as reported from LabelSource/Processor. Format is ISO8601.
         /// </summary>
-        public DateTimeOffset EventTimeStamp { get; set; }
+        public DateTimeOffset? EventTimeStamp { get; set; }
 
         /// <summary>
         /// 	The beginning of when this label applies in the merchant time-zone (if different from MerchantLocalDate). Format is ISO8601.
