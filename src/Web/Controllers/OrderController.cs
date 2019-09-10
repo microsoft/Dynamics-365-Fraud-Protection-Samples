@@ -157,7 +157,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 case LabelObjectType.Account:
                     labelObjectId = order.RiskPurchase.User.UserId;
                     break;
-                case LabelObjectType.UserEmail:
+                case LabelObjectType.Email:
                     labelObjectId = order.RiskPurchase.User.Email;
                     break;
                 case LabelObjectType.PI:

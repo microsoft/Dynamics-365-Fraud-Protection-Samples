@@ -73,7 +73,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.LabelEvent
         GenericEvent,
         Account,
         PI,
-        UserEmail
+        Email
     }
 
     public enum LabelSource
@@ -98,11 +98,13 @@ namespace Microsoft.Dynamics.FraudProtection.Models.LabelEvent
 
     public enum LabelState
     {
-        Enquiry,
+        Inquiry,
+        Received,
         Accepted,
         Fraud,
         Disputed,
-        Reversal,
-        ResubmittedRequest
+        Reversed,
+        ResubmittedRequest,
+        Abuse
     }
 }
