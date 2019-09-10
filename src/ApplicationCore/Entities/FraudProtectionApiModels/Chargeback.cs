@@ -23,7 +23,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent
         public String Reason { get; set; }
 
         /// <summary>
-        /// 	Possible values INITIATED | LOST | WON )
+        /// 	See ChargebackStatus enum
         /// </summary>
         public String Status { get; set; }
 
@@ -57,9 +57,10 @@ namespace Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent
 
     public enum ChargebackStatus
     {
-        Enquiry,
+        Inquiry,
         Accepted,
         Disputed,
-        Reversal
+        Reversed,
+        ResubmittedRequest
     }
 }
