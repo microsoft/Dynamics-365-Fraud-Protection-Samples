@@ -162,7 +162,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                         DeviceContextId = _contextAccessor.GetSessionId(),
                         IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
                         DeviceContextDC = model.FingerPrintingDC,
-                        Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString()
+                        Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
                     }
                 };
 
@@ -276,7 +276,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                         DeviceContextId = _contextAccessor.GetSessionId(),
                         IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
                         DeviceContextDC = model.FingerPrintingDC,
-                        Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString()
+                        Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
                     }
                 };
 

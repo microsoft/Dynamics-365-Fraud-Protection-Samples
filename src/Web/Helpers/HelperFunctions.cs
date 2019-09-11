@@ -269,7 +269,7 @@ namespace Contoso.FraudProtection.Web.Helpers
                 new SelectListItem { Value = "", Text = "Card Type" },
                 new SelectListItem { Value = "Visa", Text = "Visa" },
                 new SelectListItem { Value = "Mastercard", Text = "Mastercard" },
-                new SelectListItem { Value = "American Express", Text = "American Express" },
+                new SelectListItem { Value = "Amex", Text = "Amex" },
                 new SelectListItem { Value = "Discover", Text = "Discover" }
             };
 

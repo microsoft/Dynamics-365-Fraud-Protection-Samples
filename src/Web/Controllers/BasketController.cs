@@ -295,7 +295,21 @@ namespace Contoso.FraudProtection.Web.Controllers
                 DeviceContextId = _contextAccessor.GetSessionId(),
                 IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
                 DeviceContextDC = checkoutDetails.FingerPrintingDC,
-                Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString()
+                Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
+            };
+
+            Func<string, string> getCategoryFromName = (productName) =>
+            {
+                if (productName.Contains("mug", StringComparison.InvariantCultureIgnoreCase))
+                    return ProductCategory.HomeGarden.ToString();
+
+                if (productName.Contains("shirt", StringComparison.InvariantCultureIgnoreCase))
+                    return ProductCategory.ClothingShoes.ToString();
+
+                if (productName.Contains("sheet", StringComparison.InvariantCultureIgnoreCase))
+                    return ProductCategory.Jewelry.ToString();
+
+                return "Other";
             };
 
             var productList = basketViewModel.Items
@@ -308,8 +322,8 @@ namespace Contoso.FraudProtection.Web.Controllers
                     IsPreorder = false,
                     ShippingMethod = PurchaseShippingMethod.Standard.ToString(),
                     ProductName = i.ProductName,
-                    Type = "digital",
-                    Category = i.CatalogItemId.ToString(),
+                    Type = ProductType.Digital.ToString(),
+                    Category = getCategoryFromName(i.ProductName),
                     Market = "US",
                     COGS = 0.11M,
                     IsRecurring = false,
@@ -347,7 +361,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             {
                 PurchaseAmount = basketViewModel.Total,
                 MerchantPaymentInstrumentId = $"{userId}-CreditCard",
-                Type = PaymentInstrumentType.CREDITCARD.ToString(),
+                Type = PaymentInstrumentType.CreditCard.ToString(),
                 CardType = checkoutDetails.CardType,
                 State = PaymentInstrumentState.Active.ToString(),
                 HolderName = checkoutDetails.CardName,

@@ -91,8 +91,10 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent
     public enum PurchaseShippingMethod
     {
         Standard,
-        Expedited,
-        Overnight
+        Express,
+        InStorePickup,
+        DirectEntitlement,
+        DigitalToken
     }
 
     public class PurchasePaymentInstrument : PaymentInstrument
@@ -193,5 +195,46 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent
         /// 	Indicates the method used to ship the product.
         /// </summary>
         public String ShippingMethod { get; set; }
+    }
+
+    /// <summary>
+    /// The possible product types
+    /// </summary>
+    public enum ProductType
+    {
+        Digital,
+        Physical
+    }
+
+    /// <summary>
+    /// The possible product categories
+    /// </summary>
+    public enum ProductCategory
+    {
+        Subscription,
+        Game,
+        GameConsumable,
+        GameDLC,
+        HardwareDevice,
+        HardwareAccessory,
+        SoftwareToken,
+        SoftwareDirectEntitlement,
+        ClothingShoes,
+        RecreationalEquipment,
+        Jewelry,
+        Hotel,
+        Ticket,
+        VehicleRental,
+        GiftCard,
+        Movies,
+        Music,
+        GarageIndustrial,
+        HomeGarden,
+        Tools,
+        Books,
+        HealthBeauty,
+        Furniture,
+        Toys,
+        FoodGrocery
     }
 }

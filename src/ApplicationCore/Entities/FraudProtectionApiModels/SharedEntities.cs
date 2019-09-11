@@ -23,7 +23,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public String IPAddress { get; set; }
 
         /// <summary>
-        /// 	Provider of Device info. Can be one of DFPFINGERPRINTING|MERCHANT. If not specified, default is DFPFINGERPRINTING
+        /// 	Provider of device info. The default is DFPFingerPrinting.
         /// </summary>
         public String Provider { get; set; }
 
@@ -38,7 +38,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public String ExternalDeviceId { get; set; }
 
         /// <summary>
-        /// 	Customer's Device Type provided and mastered by Merchant
+        /// 	The customer's device type, as provided and mastered by the merchant. Possible values 'Mobile, Computer, MerchantHardware, Tablet, GameConsole'
         /// </summary>
         public String ExternalDeviceType { get; set; }
     }
@@ -95,7 +95,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public String Language { get; set; }
 
         /// <summary>
-        /// 	Phone number of customer. Country code followed by phone number; with the country code and phone number separated by ‘-’ (for example, for US - +1-1234567890).
+        /// 	Phone number of customer. Country code followed by phone number; with the country code and phone number separated by '-' (for example, for US - +1-1234567890).
         /// </summary>
         public String PhoneNumber { get; set; }
 
@@ -120,7 +120,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public String ProfileName { get; set; }
 
         /// <summary>
-        /// 	The authentication provider of the customer, e.g Windows Live, Facebook, Google
+        /// 	The customers's authentication provider, if different from the merchant's. e.g. If they authenticate via a third party. See AuthenticationProviderType enum.
         /// </summary>
         public String AuthenticationProvider { get; set; }
 
@@ -238,12 +238,12 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public DateTimeOffset? UpdateDate { get; set; }
 
         /// <summary>
-        /// 	Defines the state of the PI. Sample: Active, Blocked, Expired
+        /// 	Defines the state of the PI. Possible values Active, Inactive
         /// </summary>
         public String State { get; set; }
 
         /// <summary>
-        /// 	For CREDITCARD/DEBITCARD only
+        /// 	The payment type: Examples values Visa, Mastercard, Amex, ACH, SEPA, UnionPay, Inicis, MobileBillingCarrier, Discover, AllPay, JCB, DiscoverDiners
         /// </summary>
         public String CardType { get; set; }
 
@@ -283,12 +283,12 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public String PayerId { get; set; }
 
         /// <summary>
-        /// 	For PAYPAL only, This indicates if PayPal has verified the payer.
+        /// 	For PayPal only. A value that indicates whether PayPal has verified the payer. Possible values Verified, Unverified
         /// </summary>
         public String PayerStatus { get; set; }
 
         /// <summary>
-        /// 	For PAYPAL only, This indicates if PayPal has verified the payer’s address.
+        /// 	For PayPal only. A value that indicates whether PayPal has verified the payer’s address. Possible values Confirmed, Unconfirmed
         /// </summary>
         public String AddressStatus { get; set; }
 
