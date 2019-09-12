@@ -400,7 +400,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 PurchaseId = purchaseId,
                 StatusDate = DateTimeOffset.Now,
                 StatusType = status.ToString(),
-                Reason = "Some reason for " + status
+                Reason = PurchaseStatusReason.RuleEngine.ToString()
             };
         }
 

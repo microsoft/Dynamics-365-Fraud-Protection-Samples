@@ -18,7 +18,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent
         public String PurchaseId { get; set; }
 
         /// <summary>
-        /// 	The type of the status. Possible values 'APPROVED' | 'CANCELED' | 'HELD' | 'FULFILLED'
+        /// 	The purchase status. See PurchaseStatusType enum.
         /// </summary>
         [Required]
         public String StatusType { get; set; }
@@ -30,7 +30,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent
         public DateTimeOffset StatusDate { get; set; }
 
         /// <summary>
-        /// 	Reason of the status transition
+        /// 	Reason of the status transition. See PurchaseStatusReason enum.
         /// </summary>
         public String Reason { get; set; }
     }
@@ -42,5 +42,23 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent
         Rejected,
         Failed,
         Canceled
+    }
+
+    public enum PurchaseStatusReason
+    {
+        RuleEngine,
+        MerchantOverride,
+        ChallengeSolved,
+        ChallengeFailed,
+        CustomerRequest,
+        FufillmentFailed,
+        InlineManualReview_General,
+        InlineManualReview_Fraud,
+        InlineManualReview_AccountCompromise,
+        OfflineManualReview_General,
+        OfflineManualReview_Fraud,
+        OfflineManualReview_AccountCompromise,
+        Safelist,
+        Blocklist
     }
 }
