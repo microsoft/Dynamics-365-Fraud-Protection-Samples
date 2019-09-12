@@ -18,12 +18,12 @@ namespace Microsoft.Dynamics.FraudProtection.Models.RefundEvent
         public String RefundId { get; set; }
 
         /// <summary>
-        /// 	User provided reason
+        /// 	User provided reason. See RefundReason enum.
         /// </summary>
         public String Reason { get; set; }
 
         /// <summary>
-        /// 	Possible values INITIATED | COMPLETED
+        /// 	See RefundStatus enum.
         /// </summary>
         public String Status { get; set; }
 
@@ -58,8 +58,8 @@ namespace Microsoft.Dynamics.FraudProtection.Models.RefundEvent
     public enum RefundStatus
     {
         Approved,
-        Rejected,
-        Failed
+        Declined,
+        Unknown
     }
 
     public enum RefundReason
