@@ -101,7 +101,7 @@ namespace Contoso.FraudProtection.Web.ViewModels
 
         public DateTimeOffset ClientDate { get; set; }
 
-        public string ClientCoutnryCode { get; set; }
+        public string ClientCountryCode { get; set; }
 
         public string FingerPrintingDC { get; set; }
 
