@@ -18,7 +18,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SignupEvent
         public String SignUpId { get; set; }
 
         /// <summary>
-        /// 	Indicates the assessment type for the event. Possible values are 'evaluate' or 'protect'. If not specified, default is 'protect'
+        /// 	Indicates the assessment type for the event. See AssessmentType enum. If not specified, default is 'Protect'
         /// </summary>
         public String AssessmentType { get; set; }
 

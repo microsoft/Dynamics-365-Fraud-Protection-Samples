@@ -19,7 +19,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent
         public String PurchaseId { get; set; }
 
         /// <summary>
-        /// 	Indicates the assessment type for the event. Possible values are 'evaluate' or 'protect'.
+        /// 	Indicates the assessment type for the event. See AssessmentType enum.
         /// </summary>
         public String AssessmentType { get; set; }
 

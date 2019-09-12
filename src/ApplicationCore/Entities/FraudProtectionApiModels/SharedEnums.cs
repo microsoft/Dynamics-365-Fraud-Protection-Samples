@@ -51,12 +51,9 @@ namespace Microsoft.Dynamics.FraudProtection.Models
 
     public enum StorefrontType
     {
-        None,
+        AppStore,
         Web,
-        Console,
-        MobileApp,
-        ComputerApp,
-        MobileWeb
+        App
     }
 
     public enum MarketingType

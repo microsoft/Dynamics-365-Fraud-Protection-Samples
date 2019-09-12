@@ -18,7 +18,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent
         public String SignUpId { get; set; }
 
         /// <summary>
-        /// 	The type of the status. Possible values 'APPROVED' | 'REJECTED' | 'HELD'
+        /// 	The type of the status. See SignupStatusType enum.
         /// </summary>
         [Required]
         public String StatusType { get; set; }

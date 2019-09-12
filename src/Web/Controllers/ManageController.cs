@@ -121,7 +121,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             {
                 var billingAddress = new UserAddress
                 {
-                    Type = UserAddressType.BILLING.ToString(),
+                    Type = UserAddressType.Billing.ToString(),
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Street1 = user.Address1,
@@ -134,7 +134,7 @@ namespace Contoso.FraudProtection.Web.Controllers
 
                 var shippingAddress = new UserAddress
                 {
-                    Type = UserAddressType.SHIPPING.ToString(),
+                    Type = UserAddressType.Shipping.ToString(),
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Street1 = user.Address1,

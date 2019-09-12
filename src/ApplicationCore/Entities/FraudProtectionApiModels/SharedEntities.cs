@@ -38,7 +38,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public String ExternalDeviceId { get; set; }
 
         /// <summary>
-        /// 	The customer's device type, as provided and mastered by the merchant. Possible values 'Mobile, Computer, MerchantHardware, Tablet, GameConsole'
+        /// 	The customer's device type, as provided and mastered by the merchant. Possible values Mobile, Computer, MerchantHardware, Tablet, GameConsole
         /// </summary>
         public String ExternalDeviceType { get; set; }
     }
@@ -110,7 +110,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public String MembershipId { get; set; }
 
         /// <summary>
-        /// 	The profile type, possible values: Consumer, Developer, Seller, Publisher, Tenant
+        /// 	The profile type. See UserProfileType enum.
         /// </summary>
         public String ProfileType { get; set; }
 
@@ -222,7 +222,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public String MerchantPaymentInstrumentId { get; set; }
 
         /// <summary>
-        /// 	Type of payment. Possible values 'CREDITCARD', 'DEBITCARD', 'PAYPAL', 'MOBILEPAYMENT', 'GIFTCARD'
+        /// 	Type of payment. See PaymentInstrumentType enum.
         /// </summary>
         [Required]
         public String Type { get; set; }
@@ -238,7 +238,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public DateTimeOffset? UpdateDate { get; set; }
 
         /// <summary>
-        /// 	Defines the state of the PI. Possible values Active, Inactive
+        /// 	Defines the state of the PI. See PaymentInstrumentState enum.
         /// </summary>
         public String State { get; set; }
 
@@ -306,7 +306,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
     public class MarketingContext
     {
         /// <summary>
-        /// 	The marketing type. Possible values: None, Email, Referral, SearchEngine, Direct, SocialNetwork, Other
+        /// 	The marketing type. See MarketingType enum.
         /// </summary>
         public String Type { get; set; }
 
@@ -316,7 +316,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public String TrafficSource { get; set; }
 
         /// <summary>
-        /// 	The incentive type for the new user. Possible values: None, CashBack, Discount, FreeTrial, BonusPoints, Gift, Other
+        /// 	The incentive type for the new user. See MarketingIncentiveType enum.
         /// </summary>
         public String IncentiveType { get; set; }
 
@@ -329,7 +329,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
     public class StoreFrontContext
     {
         /// <summary>
-        /// 	The type of the storefront. Possible values: None, Web, Console, MobileApp, ComputerApp, MobileWeb
+        /// 	The type of the storefront. See StorefrontType enum.
         /// </summary>
         public String Type { get; set; }
 

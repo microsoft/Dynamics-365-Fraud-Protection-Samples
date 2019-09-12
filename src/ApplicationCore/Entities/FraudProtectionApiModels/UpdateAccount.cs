@@ -34,9 +34,9 @@ namespace Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent
 
     public enum UserAddressType
     {
-        SHIPPING,
-        BILLING,
-        SIGNUP
+        Shipping,
+        Billing,
+        Signup
     }
 
     /// <summary>
