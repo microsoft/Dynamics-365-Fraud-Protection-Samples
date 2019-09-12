@@ -13,6 +13,7 @@
 <h3>@ViewData["Title"]</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
 <form asp-controller="Manage" method="post" class="form-horizontal" onsubmit="setUpClientDetails()">
+    @Html.HiddenFor(m => m.DeviceFingerPrinting.FingerPrintingDC)
     <div class="row">
         <div asp-validation-summary="All" class="text-danger"></div>
         <section>
@@ -100,8 +101,8 @@
             <div class="esh-catalog-items row">
                 <section class="esh-basket-item col-xs-push-8 col-xs-4">
                     <input type="submit" asp-action="ManagePaymentInstrument"
-                            class="btn esh-basket-checkout"
-                            value="[ Update ]" name="action" />
+                           class="btn esh-basket-checkout"
+                           value="[ Update ]" name="action" />
                 </section>
             </div>
         </div>
@@ -111,3 +112,5 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<partial name="_DeviceFingerPrinting" model="Model.DeviceFingerPrinting" />

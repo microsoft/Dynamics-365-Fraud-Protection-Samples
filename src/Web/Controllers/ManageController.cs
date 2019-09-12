@@ -79,7 +79,11 @@ namespace Contoso.FraudProtection.Web.Controllers
                 ZipCode = user.ZipCode,
                 CountryRegion = user.CountryRegion,
                 IsEmailConfirmed = user.EmailConfirmed,
-                StatusMessage = StatusMessage
+                StatusMessage = StatusMessage,
+                DeviceFingerPrinting = new DeviceFingerPrintingModel
+                {
+                    SessionId = _contextAccessor.GetSessionId()
+                }
             };
 
             return View(model);
@@ -161,7 +165,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                     {
                         DeviceContextId = _contextAccessor.GetSessionId(),
                         IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                        DeviceContextDC = model.FingerPrintingDC,
+                        DeviceContextDC = model.DeviceFingerPrinting.FingerPrintingDC,
                         Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
                     }
                 };
@@ -200,7 +204,11 @@ namespace Contoso.FraudProtection.Web.Controllers
                 State = user.BillingState,
                 ZipCode = user.BillingZipCode,
                 CountryRegion = user.BillingCountryRegion,
-                StatusMessage = StatusMessage
+                StatusMessage = StatusMessage,
+                DeviceFingerPrinting = new DeviceFingerPrintingModel
+                {
+                    SessionId = _contextAccessor.GetSessionId()
+                }
             };
 
             return View(paymentInstrument);
@@ -275,7 +283,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                     {
                         DeviceContextId = _contextAccessor.GetSessionId(),
                         IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                        DeviceContextDC = model.FingerPrintingDC,
+                        DeviceContextDC = model.DeviceFingerPrinting.FingerPrintingDC,
                         Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
                     }
                 };

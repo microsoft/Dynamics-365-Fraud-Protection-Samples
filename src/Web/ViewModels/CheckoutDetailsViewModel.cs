@@ -10,7 +10,7 @@ namespace Contoso.FraudProtection.Web.ViewModels
     {
         [Required]
         [Display(Name = "First Name")]
-        public string FirstName{ get; set; }
+        public string FirstName { get; set; }
 
         [Required]
         [Display(Name = "Last Name")]
@@ -54,7 +54,8 @@ namespace Contoso.FraudProtection.Web.ViewModels
         [RegularExpression("[0-9]{4}(-[0-9]{4}){2}-[0-9]{4}", ErrorMessage = "Card number must be 16 digits long and separated with -")]
         public string CardNumber { get; set; }
 
-        public string UnformattedCardNumber {
+        public string UnformattedCardNumber
+        {
             get
             {
                 return CardNumber?.Replace("-", "");
@@ -103,10 +104,8 @@ namespace Contoso.FraudProtection.Web.ViewModels
 
         public string ClientCountryCode { get; set; }
 
-        public string FingerPrintingDC { get; set; }
-
         public int NumberItems { get; set; }
 
-        public string SessionId { get; set; }
+        public DeviceFingerPrintingModel DeviceFingerPrinting { get; set; }
     }
 }

@@ -95,7 +95,14 @@ namespace Contoso.FraudProtection.Web.Controllers
             if (user == null)
             {
                 //Anonymous user checkout.
-                return View("CheckoutDetails", new CheckoutDetailsViewModel { NumberItems = basketViewModel.Items.Count, SessionId = sessionId });
+                return View("CheckoutDetails", new CheckoutDetailsViewModel
+                {
+                    NumberItems = basketViewModel.Items.Count,
+                    DeviceFingerPrinting = new DeviceFingerPrintingModel
+                    {
+                        SessionId = sessionId
+                    }
+                });
             }
 
             // Apply default user settings
@@ -124,7 +131,10 @@ namespace Contoso.FraudProtection.Web.Controllers
                 BillingState = user.BillingState,
                 BillingZipCode = user.BillingZipCode,
                 NumberItems = basketViewModel.Items.Count,
-                SessionId = sessionId
+                DeviceFingerPrinting = new DeviceFingerPrintingModel
+                {
+                    SessionId = sessionId
+                }
             };
 
             return View("CheckoutDetails", baseCheckoutModel);
@@ -294,7 +304,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             {
                 DeviceContextId = _contextAccessor.GetSessionId(),
                 IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                DeviceContextDC = checkoutDetails.FingerPrintingDC,
+                DeviceContextDC = checkoutDetails.DeviceFingerPrinting.FingerPrintingDC,
                 Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
             };
 

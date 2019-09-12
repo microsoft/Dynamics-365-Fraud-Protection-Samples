@@ -59,6 +59,6 @@ namespace Contoso.FraudProtection.Web.ViewModels.Account
 
         public string ClientCountryCode { get; set; }
 
-        public string FingerPrintingDC { get; set; }
+        public DeviceFingerPrintingModel DeviceFingerPrinting { get; set; }
     }
 }

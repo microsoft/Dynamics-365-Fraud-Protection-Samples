@@ -1,18 +1,13 @@
 @*
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.   
+    // Copyright (c) Microsoft Corporation.
+    // Licensed under the MIT license.
 *@
 
 @using Contoso.FraudProtection.Web.Helpers
 @using Contoso.FraudProtection.Web.ViewModels
-@using Microsoft.Extensions.Configuration
-@inject IConfiguration Configuration
 @{
     ViewData["Title"] = "Checkout Details";
     @model CheckoutDetailsViewModel
-    var fingerprintingDomain = Configuration.GetSection("FraudProtectionSettings")["DeviceFingerprintingDomain"];
-    var fingerprintingCustomerId = Configuration.GetSection("FraudProtectionSettings")["DeviceFingerprintingCustomerId"];
-    var fingerprintingSessionId = Model.SessionId;
 }
 @section TopBanner {
     <div class="container">
@@ -24,7 +19,7 @@
     @if (Model != null && Model.NumberItems > 0)
     {
         <form method="post" class="form-horizontal" onsubmit="setUpClientDetails()">
-            @Html.HiddenFor(m => m.FingerPrintingDC)
+            @Html.HiddenFor(m => m.DeviceFingerPrinting.FingerPrintingDC)
             @Html.HiddenFor(m => m.ClientCountryCode)
             @Html.HiddenFor(m => m.ClientDate)
             @Html.HiddenFor(m => m.ClientTimeZone)
@@ -190,9 +185,4 @@
     }
 </div>
 
-<script src='@fingerprintingDomain/mdt.js?session_id=@fingerprintingSessionId&customerId=@fingerprintingCustomerId' type="text/javascript"></script>
-<script>
-    (function () {
-        dfp.doFpt(this.document);
-    })();
-</script>
+<partial name="_DeviceFingerPrinting" model="Model.DeviceFingerPrinting" />

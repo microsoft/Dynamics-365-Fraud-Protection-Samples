@@ -69,6 +69,9 @@
     <Content Update="Views\Order\ChargebackDone.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Shared\_DeviceFingerPrinting.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Shared\_FraudProtectionIO.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

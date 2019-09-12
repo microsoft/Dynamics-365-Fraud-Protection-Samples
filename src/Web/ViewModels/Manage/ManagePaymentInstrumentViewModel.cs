@@ -52,6 +52,6 @@ namespace Contoso.FraudProtection.Web.ViewModels.Manage
 
         public string StatusMessage { get; set; }
 
-        public string FingerPrintingDC { get; set; }
+        public DeviceFingerPrintingModel DeviceFingerPrinting { get; set; }
     }
 }

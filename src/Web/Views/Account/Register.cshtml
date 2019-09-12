@@ -14,7 +14,8 @@
 
 <div class="container account-login-container">
     <form asp-controller="Account" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" onsubmit="setUpClientDetails()">
-        @Html.HiddenFor(m => m.FingerPrintingDC)
+        @Html.HiddenFor(m => m.DeviceFingerPrinting.FingerPrintingDC)
+        @Html.HiddenFor(m => m.DeviceFingerPrinting.SessionId)
         @Html.HiddenFor(m => m.ClientCountryCode)
         @Html.HiddenFor(m => m.ClientDate)
         @Html.HiddenFor(m => m.ClientTimeZone)
@@ -122,3 +123,5 @@
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
+
+<partial name="_DeviceFingerPrinting" model="Model.DeviceFingerPrinting" />

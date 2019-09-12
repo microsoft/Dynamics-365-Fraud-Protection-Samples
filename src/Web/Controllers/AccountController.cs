@@ -101,7 +101,14 @@ namespace Contoso.FraudProtection.Web.Controllers
         [AllowAnonymous]
         public IActionResult Register()
         {
-            return View();
+            var model = new RegisterViewModel
+            {
+                DeviceFingerPrinting = new DeviceFingerPrintingModel
+                {
+                    SessionId = _contextAccessor.GetSessionId()
+                }
+            };
+            return View(model);
         }
 
         [HttpPost]
@@ -155,7 +162,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             {
                 DeviceContextId = _contextAccessor.GetSessionId(),
                 IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                DeviceContextDC = model.FingerPrintingDC,
+                DeviceContextDC = model.DeviceFingerPrinting.FingerPrintingDC,
                 Provider = DeviceContextProvider.DFPFingerPrinting.ToString(),
             };
 
