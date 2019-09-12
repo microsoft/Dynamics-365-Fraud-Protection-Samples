@@ -260,7 +260,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                         new PaymentInstrument
                         {
                             MerchantPaymentInstrumentId = $"{userId}-CreditCard",
-                            Type = PaymentInstrumentType.CREDITCARD.ToString(),
+                            Type = PaymentInstrumentType.CreditCard.ToString(),
                             CardType = user.DefaultCardType,
                             HolderName = model.CardName,
                             BIN = user.BIN,
