@@ -73,7 +73,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ReturnOrder(OrderViewModel viewModel, RefundStatus status, RefundReason reason)
+        public async Task<IActionResult> ReturnOrder(OrderViewModel viewModel, RefundStatus refundStatus, RefundReason refundReason)
         {
             return await ModifyOrderView("ReturnDone", viewModel, async order =>
             {
@@ -85,8 +85,8 @@ namespace Contoso.FraudProtection.Web.Controllers
                     Currency = order.RiskPurchase?.Currency,
                     BankEventTimestamp = DateTimeOffset.Now,
                     PurchaseId = order.RiskPurchase.PurchaseId,
-                    Reason = reason.ToString(),
-                    Status = status.ToString(),
+                    Reason = refundReason.ToString(),
+                    Status = refundStatus.ToString(),
                     UserId = order.RiskPurchase.User.UserId,
                 };
 
@@ -96,15 +96,15 @@ namespace Contoso.FraudProtection.Web.Controllers
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
                 #endregion
 
-                order.ReturnOrChargebackReason = reason.ToString();
-                order.Status = status == RefundStatus.Approved ? OrderStatus.ReturnCompleted : OrderStatus.ReturnRejected;
+                order.ReturnOrChargebackReason = refundReason.ToString();
+                order.Status = refundStatus == RefundStatus.Approved ? OrderStatus.ReturnCompleted : OrderStatus.ReturnRejected;
                 order.RiskRefund = refund;
                 order.RiskRefundResponse = response;
             });
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChargebackOrder(OrderViewModel viewModel, ChargebackStatus status)
+        public async Task<IActionResult> ChargebackOrder(OrderViewModel viewModel, ChargebackStatus chargebackStatus)
         {
             return await ModifyOrderView("ChargebackDone", viewModel, async order =>
             {
@@ -116,7 +116,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                     Currency = order.RiskPurchase?.Currency,
                     BankEventTimestamp = DateTimeOffset.Now,
                     Reason = viewModel.ReturnOrChargebackReason,
-                    Status = status.ToString(),
+                    Status = chargebackStatus.ToString(),
                     PurchaseId = order.RiskPurchase.PurchaseId,
                     UserId = order.RiskPurchase.User.UserId,
                 };
