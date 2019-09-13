@@ -136,10 +136,10 @@ namespace Contoso.FraudProtection.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> FraudLabelOrder(
             OrderViewModel viewModel,
-            LabelSource source,
-            LabelObjectType objectType,
-            LabelState state,
-            LabelReasonCodes reason)
+            LabelSource labelSource,
+            LabelObjectType labelObjectType,
+            LabelState labelStatus,
+            LabelReasonCodes labelReasonCode)
         {
             var order = await GetOrder(viewModel.OrderNumber);
             if (order == null)
@@ -149,7 +149,7 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             #region Fraud Protection Service
             string labelObjectId;
-            switch (objectType)
+            switch (labelObjectType)
             {
                 case LabelObjectType.Purchase:
                     labelObjectId = order.RiskPurchase.PurchaseId;
@@ -164,16 +164,16 @@ namespace Contoso.FraudProtection.Web.Controllers
                     labelObjectId = order.RiskPurchase.PaymentInstrumentList[0].MerchantPaymentInstrumentId;
                     break;
                 default:
-                    throw new InvalidOperationException("Label object type not supported: " + objectType);
+                    throw new InvalidOperationException("Label object type not supported: " + labelObjectType);
             }
 
             var label = new Label
             {
-                LabelObjectType = objectType.ToString(),
+                LabelObjectType = labelObjectType.ToString(),
                 LabelObjectId = labelObjectId,
-                LabelSource = source.ToString(),
-                LabelReasonCodes = reason.ToString(),
-                LabelState = state.ToString(),
+                LabelSource = labelSource.ToString(),
+                LabelReasonCodes = labelReasonCode.ToString(),
+                LabelState = labelStatus.ToString(),
                 EventTimeStamp = DateTimeOffset.Now,
                 Processor = "Fraud Protection sample site",
                 Amount = order.Total,
