@@ -1,7 +1,7 @@
 # Microsoft Dynamics 365 Fraud Protection - API examples
 ## Make a purchase – Guest user
 
-You can request Dynamics 365 Fraud Protection for a risk decision when guest users make purchases. A guest user is simply a customer who has not registered with your business. The only difference in Dynamics 365 Fraud Protection between guest checkout and non-guest checkout is the user ID you send in the purchase event.
+Request that Dynamics 365 Fraud Protection make a risk decision when guest users try to make purchases. A guest user is simply a customer who has not registered with your business. The only difference in Dynamics 365 Fraud Protection between guest checkout and non-guest checkout is the user ID you send in the purchase event.
 
 ## Helpful links
 - [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
@@ -22,9 +22,9 @@ You can request Dynamics 365 Fraud Protection for a risk decision when guest use
 - Device info (IP, session ID, etc.)
 
 **NOTES**
-- You should set the AssessmentType field based on if you plan to use the Dynamics 365 Fraud Protection risk recommendation:
-  - Pass 'Evaluate' if you do not plan to use the Dynamics 365 Fraud Protection risk recommendation, and are still evaluating Dynamics 365 Fraud Protection against your existing fraud solution.
-  - Pass 'Protect' if you plan to use the Dynamics 365 Fraud Protection risk recommendation. Consequently, Dynamics 365 Fraud Protection identifies that we must inform your bank about an incoming transaction via our Trusted MID program to potentially lift the bank acceptance rate. It also creates more accurate and detailed reports when we can distinguish between your 'Evaluate' and 'Protect' API calls.
+- Set the AssessmentType field based on if you plan to use the Dynamics 365 Fraud Protection risk recommendation:
+  - Pass 'Evaluate' if you do not plan to use the Dynamics 365 Fraud Protection risk recommendation and are still evaluating Dynamics 365 Fraud Protection against your existing fraud solution.
+  - Pass 'Protect' if you plan to use the Dynamics 365 Fraud Protection risk recommendation. If so, we must inform your bank about an incoming transaction via our Trusted MID program to potentially lift the bank acceptance rate. It also creates more accurate and detailed reports when we can distinguish between your 'Evaluate' and 'Protect' API calls.
 - In the sample site, a guest user's ID is set to a random GUID to avoid matches with known or future user IDs. You can decide what format to use for guest user IDs. It doesn't have to be a random GUID, but be careful not to use an ID of a non-guest user. We do not recommend trying to detect if multiple guest customers are the same, real customer. Instead, include Microsoft device fingerprinting context in the purchase request.
 
 ## Example purchase request
@@ -56,7 +56,7 @@ Host: <Merchant API Endpoint>
     "timeZone": "Pacific Standard Time",
     "language": "EN-US",
     "phoneNumber": "+1-1234567890",
-    "email": "tami.shorts2@microsoft.com",
+    "email": "tami.shorts@microsoft.com",
     "profileType": "Consumer"
   },
   "deviceContext": {
@@ -78,7 +78,7 @@ Host: <Merchant API Endpoint>
   "paymentInstrumentList": [
     {
       "purchaseAmount": 65.10,
-      "merchantPaymentInstrumentId": "tami.shorts2@microsoft.com-CreditCard",
+      "merchantPaymentInstrumentId": "tami.shorts@microsoft.com-CreditCard",
       "type": "CreditCard",
       "creationDate": "<date credit card added to merchant's system in ISO 8601 format>",
       "state": "Active",

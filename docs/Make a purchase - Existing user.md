@@ -11,11 +11,10 @@ Request that Dynamics 365 Fraud Protection make a risk decision when your existi
 
 ## Required data
 - Purchase ID
-- User ID
 - Merchant local date
 
 ## Optional data
-- Basic user data (name, email, phone, create/update date, etc.)
+- Basic user data (ID, name, email, phone, create/update date, etc.)
 - Order details (tax, total, currency, etc.)
 - Order line items
 - Shipping address
@@ -30,133 +29,119 @@ Request that Dynamics 365 Fraud Protection make a risk decision when your existi
 
 ## Example purchase request
 ```http
-POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/Purchase HTTP/1.1
-Host: api.dfp.microsoft.com
-Content-Type: application/json; charset=utf-8
+POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/Purchase HTTP/1.1
 x-ms-correlation-id: <correlation ID>
-x-ms-tracking-id: <tracking ID>
+Content-Type: application/json; charset=utf-8
 Authorization: bearer <token>
 Content-Length: <content length>
+Host: <Merchant API Endpoint>
 
 {
-  "MerchantLocalDate": "<event date in ISO 8601 format>",
-  "Data": {
-    "PurchaseId": "<merchant mastered purchase ID>",
-    "AssessmentType": "<'Evaluate' or 'Protect' based on if you are using the Fraud Protection recommendation or not>",
-    "CustomerLocalDate": "<customer local date in ISO 8601 format>",
-    "MerchantLocalDate": "<merchant local date in ISO 8601 format>",
-    "TotalAmount": 76.49,
-    "SalesTax": 5.99,
-    "Currency": "USD",
-    "ShippingMethod": "Standard",
-    "User": {
-      "UserId": "<Sample Site uses existing user's email address, e.g. tami.shorts@microsoft.com>",
-      "UserDetails": {
-        "CreationDate": "<user create date in ISO 8601 format>",
-        "UpdateDate": "<user update date in ISO 8601 format>",
-        "FirstName": "Tami",
-        "LastName": "Shorts",
-        "Country": "US",
-        "ZipCode": "98033",
-        "TimeZone": "Pacific Standard Time",
-        "Language": "EN",
-        "PhoneNumber": "(455)-789-9875",
-        "Email": "tami.shorts@microsoft.com",
-        "ProfileType": "Consumer"
+  "purchaseId": "<merchant mastered purchase ID>",
+  "assessmentType": "<'Evaluate' or 'Protect' based on if you are using the Fraud Protection recommendation or not>",
+  "customerLocalDate": "<customer local date in ISO 8601 format>",
+  "merchantLocalDate": "<merchant local date in ISO 8601 format>",
+  "totalAmount": 65.10,
+  "salesTax": 5.10,
+  "currency": "USD",
+  "shippingMethod": "Standard",
+  "user": {
+    "userId": "<This demo application uses the existing user's email address, e.g. tami.shorts@microsoft.com>",
+    "creationDate": "<user create date in ISO 8601 format>",
+    "updateDate": "<user update date in ISO 8601 format>",
+    "firstName": "Tami",
+    "lastName": "Shorts",
+    "country": "US",
+    "zipCode": "98033",
+    "timeZone": "Pacific Standard Time",
+    "language": "EN-US",
+    "phoneNumber": "+1-1234567890",
+    "email": "tami.shorts@microsoft.com",
+    "profileType": "Consumer"
+  },
+  "deviceContext": {
+    "deviceContextId": "<Device Fingerprinting ID>",
+    "ipAddress": "115.155.53.248",
+    "provider": "DFPFingerPrinting",
+    "deviceContextDC": "uswest"
+  },
+  "shippingAddress": {
+    "firstName": "Tami",
+    "lastName": "Shorts",
+    "phoneNumber": "+1-1234567890",
+    "street1": "123 State St",
+    "city": "Bothell",
+    "state": "WA",
+    "zipCode": "98033",
+    "country": "US"
+  },
+  "paymentInstrumentList": [
+    {
+      "purchaseAmount": 65.10,
+      "merchantPaymentInstrumentId": "tami.shorts@microsoft.com-CreditCard",
+      "type": "CreditCard",
+      "creationDate": "<date credit card added to merchant's system in ISO 8601 format>",
+      "state": "Active",
+      "cardType": "Visa",
+      "holderName": "Tami Shorts",
+      "bin": "456978",
+      "expirationDate": "03/21",
+      "lastFourDigits": "6547",
+      "billingAddress": {
+        "firstName": "Tami",
+        "lastName": "Shorts",
+        "phoneNumber": "+1-1234567890",
+        "street1": "123 State St",
+        "city": "Bothell",
+        "state": "WA",
+        "zipCode": "98033",
+        "country": "US"
       }
+    }
+  ],
+  "productList": [
+    {
+      "productId": "1",
+      "productName": ".NET Foundation Sweatshirt",
+      "type": "Digital",
+      "sku": "1",
+      "category": "ClothingShoes",
+      "market": "US",
+      "salesPrice": 12.0,
+      "currency": "USD",
+      "cogs": 0.11,
+      "isRecurring": false,
+      "isFree": false,
+      "language": "EN-US",
+      "purchasePrice": 12.0,
+      "margin": 2.1,
+      "quantity": 2,
+      "isPreorder": false,
+      "shippingMethod": "Standard"
     },
-    "DeviceContext": {
-      "DeviceContextId": "<Device Fingerprinting ID>",
-      "IPAddress": "115.155.53.248",
-      "DeviceContextDetails": {
-        "DeviceContextDC": "uswest",
-        "Provider": "DFPFINGERPRINTING",
-        "ExternalDeviceId": ""
-      }
-    },
-    "ShippingAddress": {
-      "FirstName": "Tami",
-      "LastName": "Shorts",
-      "PhoneNumber": "(455)-789-9875",
-      "ShippingAddressDetails": {
-        "Street1": "123 State St",
-        "City": "Bothell",
-        "State": "WA",
-        "ZipCode": "98033",
-        "Country": "US"
-      }
-    },
-    "PaymentInstrumentList": [
-      {
-        "PurchaseAmount": 76.49,
-        "PaymentInstrumentDetails": {
-          "Type": "CREDITCARD",
-          "CreationDate": "<date credit card added to merchant's system in ISO 8601 format>",
-          "State": "Active",
-          "CardType": "Visa",
-          "HolderName": "Tami Shorts",
-          "BIN": "654398",
-          "ExpirationDate": "02/23",
-          "LastFourDigits": "8743",
-          "BillingAddress": {
-            "FirstName": "Tami",
-            "LastName": "Shorts",
-            "PhoneNumber": "(455)-789-9875",
-            "BillingAddressDetails": {
-              "Street1": "123 State St",
-              "City": "Bothell",
-              "State": "WA",
-              "ZipCode": "98033",
-              "Country": "US"
-            }
-          }
-        }
-      }
-    ],
-    "ProductList": [
-      {
-        "ProductId": "123",
-        "PurchasePrice": 19.5,
-        "Margin": 2.1,
-        "Quantity": 3,
-        "IsPreorder": false,
-        "ShippingMethod": "Standard",
-        "ProductDetails": {
-          "ProductName": ".NET Bot Black Sweatshirt",
-          "Type": "digital",
-          "Sku": "1",
-          "Category": "1",
-          "Market": "US",
-          "SalesPrice": 19.5,
-          "Currency": "USD",
-          "COGS": 0.11,
-          "IsRecurring": false,
-          "IsFree": false,
-          "Language": "EN"
-        }
-      },
-      {
-        "ProductId": "245",
-        "PurchasePrice": 12.0,
-        "Margin": 2.1,
-        "Quantity": 1,
-        "IsPreorder": false,
-        "ShippingMethod": "Standard",
-        "ProductDetails": {
-          "ProductName": "Prism White T-Shirt",
-          "Type": "digital",
-          "Sku": "2",
-          "Category": "3",
-          "Market": "US",
-          "SalesPrice": 12.0,
-          "Currency": "USD",
-          "COGS": 0.11,
-          "IsRecurring": false,
-          "IsFree": false,
-          "Language": "EN"
-        }
-      }
-    ]
+    {
+      "productId": "2",
+      "productName": "Cup<T> White Mug",
+      "type": "Digital",
+      "sku": "2",
+      "category": "HomeGarden",
+      "market": "US",
+      "salesPrice": 12.0,
+      "currency": "USD",
+      "cogs": 0.11,
+      "isRecurring": false,
+      "isFree": false,
+      "language": "EN-US",
+      "purchasePrice": 12.0,
+      "margin": 2.1,
+      "quantity": 3,
+      "isPreorder": false,
+      "shippingMethod": "Standard"
+    }
+  ],
+  "_metadata": {
+    "trackingId": "<tracking ID>",
+    "merchantTimeStamp": "<event date in ISO 8601 format>"
   }
 }
 ```
