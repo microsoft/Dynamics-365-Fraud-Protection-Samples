@@ -57,7 +57,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             T content,
             string correlationId) where T : IBaseFraudProtectionEvent
         {
-            //All events have the following format
+            //All events have the following data
             content.Metadata = new EventMetadata
             {
                 TrackingId = Guid.NewGuid().ToString(),
