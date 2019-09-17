@@ -4,13 +4,13 @@
 You must send an authentication token with Dynamics 365 Fraud Protection API calls. See the following example for one way to do that. It then walks you through the process of creating a request and handling the response.
 
 ## Helpful links
-- [API spec](https://apidocs.microsoft.com/services/dynamics365fraudprotection)
+- [API contracts](https://apidocs.microsoft.com/services/dynamics365fraudprotection)
 - [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs)
 - [Configure the sample site](./Configure&#32;the&#32;sample&#32;site.md)
 - [Integrate real-time APIs](https://go.microsoft.com/fwlink/?linkid=2085128)
 
 ## Authenticate with Dynamics 365 Fraud Protection API
-This C# example below assumes you have already configured the sample site.
+This C# example below assumes you have already [configured the sample site](./Configure&#32;the&#32;sample&#32;site.md).
 
 ```csharp
 public class TokenProviderService : ITokenProvider

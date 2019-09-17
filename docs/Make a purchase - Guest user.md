@@ -30,11 +30,11 @@ Request that Dynamics 365 Fraud Protection make a risk decision when guest users
 ## Example purchase request
 ```http
 POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/Purchase HTTP/1.1
-x-ms-correlation-id: <correlation ID>
-Content-Type: application/json; charset=utf-8
-Authorization: bearer <token>
-Content-Length: <content length>
 Host: <Merchant API Endpoint>
+Authorization: bearer <token>
+Content-Type: application/json; charset=utf-8
+Content-Length: <content length>
+x-ms-correlation-id: <correlation ID>
 
 {
   "purchaseId": "<merchant mastered purchase ID>",

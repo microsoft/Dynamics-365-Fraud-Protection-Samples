@@ -33,12 +33,12 @@ After you send a purchase ID, you cannot send the same purchase ID again; purcha
 - Purchase ID
 - Purchase status
 - Purchase status date
-- User ID
 - Bank auth ID
 - Bank charge ID
 - Merchant local date
 
 ## Optional data
+- Purchase data (user ID, email, etc.)
 - Bank auth data (status, response code, etc.)
 - Bank charge data (status, response code, etc.)
 - Purchase status reason
@@ -51,25 +51,26 @@ Examples:
 ## Bank auth event
 This example request sends a bank auth event to Dynamics 365 Fraud Protection informing it that the bank authorization was successful.
 ```http
-POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/BankEvent HTTP/1.1
-Host: api.dfp.microsoft.com
-Content-Type: application/json; charset=utf-8
-x-ms-correlation-id: <correlation ID 1>
-x-ms-tracking-id: <tracking ID 1>
+POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/BankEvent HTTP/1.1
+Host: <Merchant API Endpoint>
 Authorization: bearer <token>
+Content-Type: application/json; charset=utf-8
 Content-Length: <content length>
+x-ms-correlation-id: <correlation ID 1>
 
 {
-  "MerchantLocalDate": "<event date in ISO 8601 format>",
-  "Data": {
-    "BankEventId": "<merchant mastered bank event ID>",
-    "Type": "AUTH",
-    "Status": "APPROVED",
-    "BankEventTimestamp": "<timestamp from bank in ISO 8601 format>",
-    "BankResponseCode": "<bank response code>",
-    "PaymentProcessor": "<payment processor name>",
-    "MID": "<merchant ID sent to bank>",
-    "Purchase": { "PurchaseId": "<purchase ID>" }
+  "bankEventId": "<merchant mastered bank event ID>",
+  "type": "Auth",
+  "bankEventTimestamp": "<timestamp from bank in ISO 8601 format>",
+  "status": "Approved",
+  "bankResponseCode": "<bank response code>",
+  "paymentProcessor": "<payment processor name>",
+  "mrn": "<merchant reference number>",
+  "mid": "<merchant ID sent to bank>",
+  "purchaseId": "<related purchase ID>",
+  "_metadata": {
+    "trackingId": "<tracking ID 1>",
+    "merchantTimeStamp": "<event date in ISO 8601 format>"
   }
 }
 ```
@@ -77,24 +78,26 @@ Content-Length: <content length>
 ## Bank charge event
 This example request sends a bank charge event to Dynamics 365 Fraud Protection informing it that the bank charge was successful.
 ```http
-POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/BankEvent HTTP/1.1
-Host: api.dfp.microsoft.com
-Content-Type: application/json; charset=utf-8
-x-ms-correlation-id: <correlation ID 1>
-x-ms-tracking-id: <tracking ID 2>
+POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/BankEvent HTTP/1.1
+Host: <Merchant API Endpoint>
 Authorization: bearer <token>
+Content-Type: application/json; charset=utf-8
 Content-Length: <content length>
+x-ms-correlation-id: <correlation ID 1>
 
 {
-  "MerchantLocalDate": "<event date in ISO 8601 format>",
-  "Data": {
-    "BankEventId": "<merchant mastered bank event ID>",
-    "Type": "CHARGE",
-    "Status": "APPROVED",
-    "BankEventTimestamp": "<timestamp from bank in ISO 8601 format>",
-    "BankResponseCode": "<bank response code>",
-    "MID": "<merchant ID sent to bank>",
-    "Purchase": { "PurchaseId": "<purchase ID>" }
+  "bankEventId": "<merchant mastered bank event ID>",
+  "type": "Charge",
+  "bankEventTimestamp": "<timestamp from bank in ISO 8601 format>",
+  "status": "Approved",
+  "bankResponseCode": "<bank response code>",
+  "paymentProcessor": "<payment processor name>",
+  "mrn": "<merchant reference number>",
+  "mid": "<merchant ID sent to bank>",
+  "purchaseId": "<related purchase ID>",
+  "_metadata": {
+    "trackingId": "<tracking ID 2>",
+    "merchantTimeStamp": "<event date in ISO 8601 format>"
   }
 }
 ```
@@ -102,23 +105,21 @@ Content-Length: <content length>
 ## Purchase status event
 This example request sends a purchase status event to Dynamics 365 Fraud Protection informing it that the purchase was successful from your perspective. The purchase status may differ from bank event statuses and is completely up to you to determine.
 ```http
-POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/PurchaseStatus HTTP/1.1
-Host: api.dfp.microsoft.com
-Content-Type: application/json; charset=utf-8
-x-ms-correlation-id: <correlation ID 1>
-x-ms-tracking-id: <tracking ID 3>
+POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/PurchaseStatus HTTP/1.1
+Host: <Merchant API Endpoint>
 Authorization: bearer <token>
+Content-Type: application/json; charset=utf-8
 Content-Length: <content length>
+x-ms-correlation-id: <correlation ID 1>
 
 {
-  "MerchantLocalDate": "<event date in ISO 8601 format>",
-  "Data": {
-    "PurchaseId": "<purchase ID>",
-    "Status": {
-      "StatusType": "APPROVED",
-      "StatusDate": "<purchase status change date in ISO 8601 format>",
-      "Reason": "Some reason for APPROVED"
-    }
+  "purchaseId": "<related purchase ID>",
+  "statusType": "Approved",
+  "statusDate": "<purchase status change date in ISO 8601 format>",
+  "reason": "RuleEngine",
+  "_metadata": {
+    "trackingId": "<tracking ID 3>",
+    "merchantTimeStamp": "<event date in ISO 8601 format>"
   }
 }
 ```
