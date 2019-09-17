@@ -74,9 +74,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
                serializedContent,
                new Dictionary<string, string>
                {
-                    //TODO - still needed?
                     { Constants.CORRELATION_ID, correlationId ?? Guid.NewGuid().ToString() },
-                    { Constants.TRACKING_ID, Guid.NewGuid().ToString() },
                     { Constants.AUTHORIZATION, $"{Constants.BEARER} {authToken}" }
                });
 
