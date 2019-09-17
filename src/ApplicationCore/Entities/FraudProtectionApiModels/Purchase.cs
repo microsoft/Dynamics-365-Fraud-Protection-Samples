@@ -189,7 +189,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent
         /// <summary>
         /// 	Indicates if the product is offered for preorder.
         /// </summary>
-        public Boolean IsPreorder { get; set; }
+        public Boolean? IsPreorder { get; set; }
 
         /// <summary>
         /// 	Indicates the method used to ship the product.

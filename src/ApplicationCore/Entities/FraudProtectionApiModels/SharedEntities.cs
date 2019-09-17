@@ -132,7 +132,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         /// <summary>
         /// 	If customer-provided email has been verified to be owned by the customer.
         /// </summary>
-        public Boolean IsEmailValidated { get; set; }
+        public Boolean? IsEmailValidated { get; set; }
 
         /// <summary>
         /// 	Date customer-provided email verified to be owned by the customer.
@@ -142,7 +142,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         /// <summary>
         /// 	If customer-provided phone number has been verified to be owned by the customer.
         /// </summary>
-        public Boolean IsPhoneNumberValidated { get; set; }
+        public Boolean? IsPhoneNumberValidated { get; set; }
 
         /// <summary>
         /// 	Date customer-provided phone number has been verified to be owned by the customer.
