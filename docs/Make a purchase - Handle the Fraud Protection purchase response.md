@@ -22,16 +22,19 @@ Example HTTP response when Dynamics 365 Fraud Protection recommends that you *
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
+x-ms-correlation-id: 7f02a163-5fbb-4ed4-bb92-775473d03963
+x-ms-appversion: 1.0:1.23:132104537452173612
 Date: <date>
-Content-Length: 98
+Content-Length: <content length>
 
 {
   "resultDetails": {
     "MerchantRuleDecision": "Approve",
-    "MIDFlag": "Control",
-    "RiskScore": 2,
-    "ReasonCodes": "",
-    "PurchaseId": "<purchase id>"
+    "RiskScore": 15,
+    "ReasonCodes": "500-LOCATION_CONSISTENCY:GENERAL,800-ACCOUNT_CONSISTENCY:GENERAL,1100-DEVICE_INFORMATION:GENERAL,700-ACCOUNT_INFORMATION:GENERAL",
+    "MIDFlag": "Standard",
+    "PolicyApplied": "Default",
+    "PurchaseId": "<purchase ID>"
   }
 }
 ```
@@ -40,16 +43,19 @@ Example HTTP response when Dynamics 365 Fraud Protection recommends that you *
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
+x-ms-correlation-id: 7f02a163-5fbb-4ed4-bb92-775473d03964
+x-ms-appversion: 1.0:1.23:132104537452173612
 Date: <date>
-Content-Length: 98
+Content-Length: <content length>
 
 {
   "resultDetails": {
+    "MIDFlag": "Standard",
+    "PolicyApplied": "<merchant rule name, e.g. Reject very high scores>",
     "MerchantRuleDecision": "Reject",
-    "MIDFlag": "Control",
-    "RiskScore": 93,
-    "ReasonCodes": "RISKY PAYMENT METHOD,RISKY ACCOUNT LOCATION,SUSPICIOUS DEVICE IP,RISKY BILLING LOCATION,SUSPICIOUS NUMBER OF IPS FOR A DEVICE,RISKY PRODUCT",
-    "PurchaseId": "<purchase id>"
+    "RiskScore": 120,
+    "ReasonCodes": "900-PAYMENT_INFORMATION:GENERAL,500-LOCATION_CONSISTENCY:GENERAL,1100-DEVICE_INFORMATION:GENERAL,700-ACCOUNT_INFORMATION:GENERAL"
+    "PurchaseId": "<purchase ID>"
   }
 }
 ```
