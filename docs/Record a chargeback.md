@@ -12,7 +12,6 @@ While Dynamics 365 Fraud Protection tries to minimize chargebacks, they may stil
 ## Required data
 - Chargeback ID
 - Purchase ID
-- Merchant local date
 
 ## Optional data
 - User ID
@@ -20,33 +19,35 @@ While Dynamics 365 Fraud Protection tries to minimize chargebacks, they may stil
 
 **NOTE**
 
-In the sample site, a user clicks **Chargeback** from their **Orders** page. In reality, customers would contact their bank, for instance, to request a chargeback, and the bank would ultimately inform you. At this point, you would send the chargeback event to Dynamics 365 Fraud Protection. You may negotiate with the bank to dispute the chargeback. In this instance, you can send multiple chargeback events to Dynamics 365 Fraud Protection with various statuses:
-- "WON": You win the chargeback dispute.
-- "LOST": You lose the chargeback dispute.
-- "INITIATED": A chargeback starts, but is not finalized.
+In the sample site, a user clicks **Chargeback** from their **My orders** page. In reality, customers would contact their bank, for instance, to request a chargeback, and the bank would ultimately inform you. At this point, you would send the chargeback event to Dynamics 365 Fraud Protection. You may negotiate with the bank to dispute the chargeback. In this instance, you can send multiple chargeback events to Dynamics 365 Fraud Protection with various statuses:
+- "Accepted": You, the merchant, accepted the chargeback.
+- "Reversed": You, the merchant, won the chargeback dispute.
+- "Disputed": You, the merchant, is disputing the chargeback. Until you send a chargeback update (e.g. reversed if you win the dispute) we will keep the previous status.
+- "Inquiry": A pre-chargeback step. Customers can inquire about a transaction to get more details before filing a chargeback. Most of the time these turn into chargebacks.
+- "ResubmittedRequest": The customer has requested another chargeback, even after a prior chargeback was reversed (you won the dispute).
 
 ## Example chargeback event
-The following example request sends a chargeback event to Dynamics 365 Fraud Protection. In this instance, you lost the chargeback dispute.
+The following example request sends a chargeback event to Dynamics 365 Fraud Protection. In this instance, you accepted the chargeback.
 ```http
-POST https://api.dfp.microsoft.com/v0.5/MerchantServices/events/Chargeback HTTP/1.1
-Host: api.dfp.microsoft.com
-Content-Type: application/json; charset=utf-8
-x-ms-correlation-id: <correlation ID 1>
-x-ms-tracking-id: <tracking ID 1>
+POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/Chargeback HTTP/1.1
+Host: <Merchant API Endpoint>
 Authorization: bearer <token>
+Content-Type: application/json; charset=utf-8
 Content-Length: <content length>
+x-ms-correlation-id: <correlation ID>
 
 {
-  "MerchantLocalDate": "<event date in ISO 8601 format>",
-  "Data": {
-    "ChargebackId": "<merchant mastered chargeback ID>",
-    "Reason": "<reason for chargeback>",
-    "Status": "LOST",
-    "BankEventTimestamp": "<timestamp from bank in ISO 8601 format>",
-    "Amount": 70.5,
-    "Currency": "USD",
-    "User": { "UserId": "<user ID>" },
-    "Purchase": { "PurchaseId": "<purchase ID>" }
+  "chargebackId": "<merchant mastered chargeback ID>",
+  "reason": "Customer claims they didn't order this.",
+  "status": "Accepted",
+  "bankEventTimestamp": "<timestamp from bank in ISO 8601 format>",
+  "amount": 13.02,
+  "currency": "USD",
+  "userId": "<user ID>",
+  "purchaseId": "<purchase ID>",
+  "_metadata": {
+    "trackingId": "<tracking ID>",
+    "merchantTimeStamp": "<event date in ISO 8601 format>"
   }
 }
 ```
