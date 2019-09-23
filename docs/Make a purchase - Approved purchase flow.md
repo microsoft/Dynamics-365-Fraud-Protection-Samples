@@ -12,7 +12,7 @@ After sending Dynamics 365 Fraud Protection a purchase event, it is up to you to
 - [Sample site - Sending bank and purchase status events](../src/Web/Controllers/BasketController.cs) (see ApproveOrRejectPurchase, SetupBankEvent, and SetupPurchaseStatus methods)
 - [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostPurchase, PostBankEvent, and PostPurchaseStatus methods)
 
-## Purchase Flow
+## Purchase flow
 A typical purchase event flow consists of:
 1. Purchase event
 1. Bank auth event

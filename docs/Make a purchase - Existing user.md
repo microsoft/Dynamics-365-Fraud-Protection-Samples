@@ -22,7 +22,7 @@ Request that Dynamics 365 Fraud Protection make a risk decision when your existi
 - Device info (IP, session ID, etc.)
 
 **NOTES**
-- Set the AssessmentType field based on if you plan to use the Dynamics 365 Fraud Protection risk recommendation:
+- Set the 'assessmentType' field based on if you plan to use the Dynamics 365 Fraud Protection risk recommendation:
   - Pass 'Evaluate' if you do not plan to use the Dynamics 365 Fraud Protection risk recommendation and are still evaluating Dynamics 365 Fraud Protection against your existing fraud solution.
   - Pass 'Protect' if you plan to use the Dynamics 365 Fraud Protection risk recommendation. If so, we must inform your bank about an incoming transaction via our Trusted MID program to potentially lift the bank acceptance rate. It also creates more accurate and detailed reports when we can distinguish between your 'Evaluate' and 'Protect' API calls.
 - In the sample site, an existing user's ID is set to their email address which is also tied to how they log in to the sample site. Furthermore, the sample site ensures that no two customers have the same email address. This ensures user IDs will be unique for the sample site, as well as unique when sent to Dynamics 365 Fraud Protection. Decide what format to use for existing user IDs. It does not have to be an email address, but you should be careful not to duplicate user IDs.

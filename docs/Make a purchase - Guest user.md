@@ -22,7 +22,7 @@ Request that Dynamics 365 Fraud Protection make a risk decision when guest users
 - Device info (IP, session ID, etc.)
 
 **NOTES**
-- Set the AssessmentType field based on if you plan to use the Dynamics 365 Fraud Protection risk recommendation:
+- Set the 'assessmentType' field based on if you plan to use the Dynamics 365 Fraud Protection risk recommendation:
   - Pass 'Evaluate' if you do not plan to use the Dynamics 365 Fraud Protection risk recommendation and are still evaluating Dynamics 365 Fraud Protection against your existing fraud solution.
   - Pass 'Protect' if you plan to use the Dynamics 365 Fraud Protection risk recommendation. If so, we must inform your bank about an incoming transaction via our Trusted MID program to potentially lift the bank acceptance rate. It also creates more accurate and detailed reports when we can distinguish between your 'Evaluate' and 'Protect' API calls.
 - In the sample site, a guest user's ID is set to a random GUID to avoid matches with known or future user IDs. You can decide what format to use for guest user IDs. It doesn't have to be a random GUID, but be careful not to use an ID of a non-guest user. We do not recommend trying to detect if multiple guest customers are the same, real customer. Instead, include Microsoft device fingerprinting context in the purchase request.

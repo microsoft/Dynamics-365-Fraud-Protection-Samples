@@ -21,10 +21,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "info", "info", "{723B95A0-0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{31E6802C-EA18-41FB-8392-4DC40DFF3184}"
 	ProjectSection(SolutionItems) = preProject
+		docs\Account sign up - Approved and rejected sign up flows.md = docs\Account sign up - Approved and rejected sign up flows.md
+		docs\Account updates - Update credit cards.md = docs\Account updates - Update credit cards.md
+		docs\Account updates - Update user profile.md = docs\Account updates - Update user profile.md
 		docs\Authenticate and call Fraud Protection.md = docs\Authenticate and call Fraud Protection.md
 		docs\Configure the sample site.md = docs\Configure the sample site.md
-		docs\Create or update a user credit card.md = docs\Create or update a user credit card.md
-		docs\Create or update a user.md = docs\Create or update a user.md
 		docs\Make a purchase - Approved purchase flow.md = docs\Make a purchase - Approved purchase flow.md
 		docs\Make a purchase - Existing user.md = docs\Make a purchase - Existing user.md
 		docs\Make a purchase - Guest user.md = docs\Make a purchase - Guest user.md
