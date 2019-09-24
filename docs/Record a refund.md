@@ -17,8 +17,7 @@ Customers may request refunds from you. To improve Dynamics 365 Fraud Protection
 - User ID
 - Refund details (amount, currency, reason, etc.)
 
-**NOTE**
-In the sample site, to request a refund, a signed in user selects **Refund** from their **My orders** page.
+**NOTE:** To send a refund from the sample site, click **Refund** from the **My orders** page.
 
 ## Example refund event
 This example request sends a completed refund event to Dynamics 365 Fraud Protection:
@@ -38,7 +37,7 @@ x-ms-correlation-id: <correlation ID>
   "amount": 65.10,
   "currency": "USD",
   "userId": "<user ID>",
-  "purchaseId": "<purchase ID>",
+  "purchaseId": "<related purchase ID>",
   "_metadata": {
     "trackingId": "<tracking ID>",
     "merchantTimeStamp": "<event date in ISO 8601 format>"

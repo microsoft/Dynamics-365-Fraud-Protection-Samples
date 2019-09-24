@@ -17,8 +17,7 @@ While Dynamics 365 Fraud Protection tries to minimize chargebacks, they may stil
 - User ID
 - Chargeback details (amount, currency, reason, etc.)
 
-**NOTE**
-
+**NOTE:** 
 In the sample site, a user clicks **Chargeback** from their **My orders** page. In reality, customers would contact their bank, for instance, to request a chargeback, and the bank would ultimately inform you. At this point, you would send the chargeback event to Dynamics 365 Fraud Protection. You may negotiate with the bank to dispute the chargeback. In this instance, you can send multiple chargeback events to Dynamics 365 Fraud Protection with various statuses:
 - "Accepted": You, the merchant, accepted the chargeback.
 - "Reversed": You, the merchant, won the chargeback dispute.
@@ -44,7 +43,7 @@ x-ms-correlation-id: <correlation ID>
   "amount": 13.02,
   "currency": "USD",
   "userId": "<user ID>",
-  "purchaseId": "<purchase ID>",
+  "purchaseId": "<related purchase ID>",
   "_metadata": {
     "trackingId": "<tracking ID>",
     "merchantTimeStamp": "<event date in ISO 8601 format>"

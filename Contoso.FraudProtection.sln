@@ -34,6 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{31E6802C-E
 		docs\README.md = docs\README.md
 		docs\Record a chargeback.md = docs\Record a chargeback.md
 		docs\Record a refund.md = docs\Record a refund.md
+		docs\Send additional fraud signals using labels.md = docs\Send additional fraud signals using labels.md
 	EndProjectSection
 EndProject
 Global

@@ -176,9 +176,14 @@ namespace Contoso.FraudProtection.Web.Controllers
                 LabelState = labelStatus.ToString(),
                 EventTimeStamp = DateTimeOffset.Now,
                 Processor = "Fraud Protection sample site",
-                Amount = order.Total,
-                Currency = order.RiskPurchase?.Currency,
             };
+
+            if (labelObjectType == LabelObjectType.Purchase)
+            {
+                label.Amount = order.Total;
+                label.Currency = order.RiskPurchase?.Currency;
+            }
+
             var response = await _fraudProtectionService.PostLabel(label);
 
             var fraudProtectionIO = new FraudProtectionIOModel(label, response, "Label");

@@ -19,9 +19,10 @@ These documents are largely based on a sample application developed to demonstra
   * [Make a purchase - Rejected purchase flow](./Make&#32;a&#32;purchase&#32;-&#32;Rejected&#32;purchase&#32;flow.md)
   * [Make a purchase - Existing user](./Make&#32;a&#32;purchase&#32;-&#32;Existing&#32;user.md)
   * [Make a purchase - Guest user](./Make&#32;a&#32;purchase&#32;-&#32;Guest&#32;user.md)
-- **Refunds and chargebacks**
+- **Send refunds, chargebacks, and additional fraud signals**
   * [Record a refund](./Record&#32;a&#32;refund.md)
   * [Record a chargeback](./Record&#32;a&#32;chargeback.md)
+  * [Send additional fraud signals using labels](./Send&#32;additional&#32;fraud&#32;signals&#32;using&#32;labels.md)
 
 ## Product documentation
 In addition to this API documentation, you can read the complimentary [product documentation for Dynamics 365 Fraud Protection](https://go.microsoft.com/fwlink/?linkid=2082391). It covers the broad set of Dynamics 365 Fraud Protection features such as the rules engine, reporting, and customer support. It also contains release notes and highlights planned, upcoming features.
