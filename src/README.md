@@ -1,12 +1,6 @@
 # Microsoft Dynamics 365 Fraud Protection - Sample merchant application
 The Microsoft Dynamics 365 Fraud Protection sample merchant application demonstrates how to call the [Dynamics 365 Fraud Protection APIs](https://apidocs.microsoft.com/services/dynamics365fraudprotection) in the context of an online merchant who sells clothing and other goods. This sample may be useful if you are in the process of integrating with the Dynamics 365 Fraud Protection APIs, or if you want to see how new API endpoints/features are integrated when there are new API versions.
 
-It demonstrates the primary uses of the Dynamics 365 Fraud Protection APIs:
-- Requesting a Dynamics 365 Fraud Protection risk recommendation for purchases and using the recommendation to decide whether to charge the customer.
-- Requesting a Dynamics 365 Fraud Protection risk recommendation for account sign ups and using the recommendation to decide whether to allow the customer to register for an account.
-- Managing users and their associated information in the Dynamics 365 Fraud Protection system (for example, basic info, payment methods, addresses, and so on).
-- Reporting chargebacks, refunds, and additional fraud signals.
-
 ## Local development setup
 Before running the solution, you must install these prerequisites:
 
