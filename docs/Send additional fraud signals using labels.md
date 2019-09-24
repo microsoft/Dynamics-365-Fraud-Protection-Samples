@@ -10,7 +10,7 @@ You can send additional fraud signals to Microsoft Dynamics 365 Fraud Protection
 
 ## Helpful links
 - [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
-- [Label - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/Events/v1.0/V1.0MerchantservicesEventsLabelPost)
+- [Label - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/v1.0/V1.0MerchantservicesEventsLabelPost)
 - [Sample site - Send label event](../src/Web/Controllers/OrderController.cs) (see FraudLabelOrder POST method)
 - [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostLabel method)
 

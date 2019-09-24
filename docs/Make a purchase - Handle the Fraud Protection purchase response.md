@@ -5,7 +5,7 @@ One of many core values of Dynamics 365 Fraud Protection is providing you a risk
 
 ## Helpful links
 - [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
-- [Purchase - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/Events/V0.5MerchantservicesEventsPurchasePost)
+- [Purchase - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/v1.0/V1.0MerchantservicesEventsPurchasePost)
 - [Sample site - Handle the purchase response](../src/Web/Controllers/BasketController.cs) (see ApproveOrRejectPurchase method)
 
 ## Returned data
