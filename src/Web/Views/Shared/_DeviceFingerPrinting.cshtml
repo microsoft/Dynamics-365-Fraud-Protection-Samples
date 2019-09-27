@@ -3,10 +3,11 @@
     // Licensed under the MIT license.
 *@
 
+@using Contoso.FraudProtection.Web.ViewModels.Shared
 @using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
 @{
-    @model DeviceFingerPrintingModel
+    @model DeviceFingerPrintingViewModel
     var fingerprintingDomain = Configuration.GetSection("FraudProtectionSettings")["DeviceFingerprintingDomain"];
     var fingerprintingCustomerId = Configuration.GetSection("FraudProtectionSettings")["DeviceFingerprintingCustomerId"];
     var fingerprintingSessionId = Model.SessionId;

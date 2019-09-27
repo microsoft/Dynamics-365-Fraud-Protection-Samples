@@ -6,6 +6,7 @@ using Contoso.FraudProtection.Infrastructure.Identity;
 using Contoso.FraudProtection.Web.Extensions;
 using Contoso.FraudProtection.Web.ViewModels;
 using Contoso.FraudProtection.Web.ViewModels.Account;
+using Contoso.FraudProtection.Web.ViewModels.Shared;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -103,7 +104,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         {
             var model = new RegisterViewModel
             {
-                DeviceFingerPrinting = new DeviceFingerPrintingModel
+                DeviceFingerPrinting = new DeviceFingerPrintingViewModel
                 {
                     SessionId = _contextAccessor.GetSessionId()
                 }
@@ -130,17 +131,17 @@ namespace Contoso.FraudProtection.Web.Controllers
             //Create the user object and validate it before calling Fraud Protection
             var user = new ApplicationUser
             {
-                UserName = model.Email,
-                Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                PhoneNumber = model.Phone,
-                Address1 = model.Address1,
-                Address2 = model.Address2,
-                City = model.City,
-                State = model.State,
-                ZipCode = model.ZipCode,
-                CountryRegion = model.CountryRegion
+                UserName = model.User.Email,
+                Email = model.User.Email,
+                FirstName = model.User.FirstName,
+                LastName = model.User.LastName,
+                PhoneNumber = model.User.Phone,
+                Address1 = model.Address.Address1,
+                Address2 = model.Address.Address2,
+                City = model.Address.City,
+                State = model.Address.State,
+                ZipCode = model.Address.ZipCode,
+                CountryRegion = model.Address.CountryRegion
             };
 
             foreach (var v in _userManager.UserValidators)
@@ -170,29 +171,29 @@ namespace Contoso.FraudProtection.Web.Controllers
             // Ask Fraud Protection to assess this signup/registration before registering the user in our database, etc.
             var signupAddress = new AddressDetails
             {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                PhoneNumber = model.Phone,
-                Street1 = model.Address1,
-                Street2 = model.Address2,
-                City = model.City,
-                State = model.State,
-                ZipCode = model.ZipCode,
-                Country = model.CountryRegion
+                FirstName = model.User.FirstName,
+                LastName = model.User.LastName,
+                PhoneNumber = model.User.Phone,
+                Street1 = model.Address.Address1,
+                Street2 = model.Address.Address2,
+                City = model.Address.City,
+                State = model.Address.State,
+                ZipCode = model.Address.ZipCode,
+                Country = model.Address.CountryRegion
             };
 
             var signupUser = new SignupUser
             {
                 CreationDate = DateTimeOffset.Now,
                 UpdateDate = DateTimeOffset.Now,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Country = model.CountryRegion,
-                ZipCode = model.ZipCode,
-                TimeZone = new TimeSpan(0, 0, -model.ClientTimeZone, 0).ToString(),
+                FirstName = model.User.FirstName,
+                LastName = model.User.LastName,
+                Country = model.Address.CountryRegion,
+                ZipCode = model.Address.ZipCode,
+                TimeZone = new TimeSpan(0, 0, -model.DeviceFingerPrinting.ClientTimeZone, 0).ToString(),
                 Language = "EN-US",
-                PhoneNumber = model.Phone,
-                Email = model.Email,
+                PhoneNumber = model.User.Phone,
+                Email = model.User.Email,
                 ProfileType = UserProfileType.Consumer.ToString(),
                 Address = signupAddress
             };
@@ -225,7 +226,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 AssessmentType = AssessmentType.Protect.ToString(),
                 User = signupUser,
                 MerchantLocalDate = DateTimeOffset.Now,
-                CustomerLocalDate = model.ClientDate,
+                CustomerLocalDate = model.DeviceFingerPrinting.ClientDate,
                 MarketingContext = marketingContext,
                 StoreFrontContext = storefrontContext,
                 DeviceContext = deviceContext,
@@ -252,7 +253,7 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             if (!rejectSignup)
             {
-                signupStatus.User = new SignupStatusUser { UserId = model.Email };
+                signupStatus.User = new SignupStatusUser { UserId = model.User.Email };
             }
 
             var signupStatusResponse = await _fraudProtectionService.PostSignupStatus(signupStatus, correlationId);

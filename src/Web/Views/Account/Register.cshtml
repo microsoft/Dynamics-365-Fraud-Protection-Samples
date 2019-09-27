@@ -16,9 +16,9 @@
     <form asp-controller="Account" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" onsubmit="setUpClientDetails()">
         @Html.HiddenFor(m => m.DeviceFingerPrinting.FingerPrintingDC)
         @Html.HiddenFor(m => m.DeviceFingerPrinting.SessionId)
-        @Html.HiddenFor(m => m.ClientCountryCode)
-        @Html.HiddenFor(m => m.ClientDate)
-        @Html.HiddenFor(m => m.ClientTimeZone)
+        @Html.HiddenFor(m => m.DeviceFingerPrinting.ClientCountryCode)
+        @Html.HiddenFor(m => m.DeviceFingerPrinting.ClientDate)
+        @Html.HiddenFor(m => m.DeviceFingerPrinting.ClientTimeZone)
         <div class="row">
             <div asp-validation-summary="All" class="text-danger"></div>
 
@@ -29,25 +29,25 @@
                         <div class="form-group">
                             <div class="col-md-10">
                                 <label for="firstName">First Name</label>
-                                @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
+                                @Html.TextBoxFor(model => model.User.FirstName, new { @class = "form-control" })
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-10">
                                 <label for="lastName">Last Name</label>
-                                @Html.TextBoxFor(model => model.LastName, new { @class = "form-control" })
+                                @Html.TextBoxFor(model => model.User.LastName, new { @class = "form-control" })
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-10">
                                 <label for="email">Email</label>
-                                @Html.TextBoxFor(model => model.Email, new { @class = "form-control", @type = "email" })
+                                @Html.TextBoxFor(model => model.User.Email, new { @class = "form-control", @type = "email" })
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-10">
                                 <label for="phone">Phone Number</label>
-                                @Html.TextBoxFor(model => model.Phone, new { @class = "form-control", @placeholder = "+#-##########" })
+                                @Html.TextBoxFor(model => model.User.Phone, new { @class = "form-control", @placeholder = "+#-##########" })
                             </div>
                         </div>
                         <div class="form-group">
@@ -71,37 +71,37 @@
                         <div class="form-group">
                             <div class="col-md-10">
                                 <label for="address1">Address Line 1</label>
-                                @Html.TextBoxFor(model => model.Address1, new { @class = "form-control" })
+                                @Html.TextBoxFor(model => model.Address.Address1, new { @class = "form-control" })
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-10">
                                 <label for="address2">Address Line 2</label>
-                                @Html.TextBoxFor(model => model.Address2, new { @class = "form-control" })
+                                @Html.TextBoxFor(model => model.Address.Address2, new { @class = "form-control" })
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-10">
                                 <label for="city">City</label>
-                                @Html.TextBoxFor(model => model.City, new { @class = "form-control" })
+                                @Html.TextBoxFor(model => model.Address.City, new { @class = "form-control" })
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-10">
                                 <label for="state">State</label>
-                                @Html.TextBoxFor(model => model.State, new { @class = "form-control" })
+                                @Html.TextBoxFor(model => model.Address.State, new { @class = "form-control" })
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-10">
                                 <label for="zipCode">Zip Code</label>
-                                @Html.TextBoxFor(model => model.ZipCode, new { @class = "form-control" })
+                                @Html.TextBoxFor(model => model.Address.ZipCode, new { @class = "form-control" })
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-10">
                                 <label for="countryRegion">Country/Region</label>
-                                @Html.DropDownListFor(model => model.CountryRegion, HelperFunctions.CountryRegionList, new { @class = "form-control" })
+                                @Html.DropDownListFor(model => model.Address.CountryRegion, HelperFunctions.CountryRegionList, new { @class = "form-control" })
                             </div>
                         </div>
                     </div>
