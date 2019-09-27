@@ -29,7 +29,7 @@ In the sample site, click **Add Label** from the **My orders** page to send a la
 ## Example label event - TC40 / SAFE report related to a purchase
 The following example request sends a label event to Dynamics 365 Fraud Protection. In this example, you have received a TC40 / SAFE report from a card issuer indicating a transaction may be potentially fraudulent. Let Dynamics 365 Fraud Protection know about this to improve fraud detection.
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/Label HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/Label HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8
@@ -56,7 +56,7 @@ x-ms-correlation-id: <correlation ID>
 ## Example label event - Suspicious account activity
 The following example request sends a label event to Dynamics 365 Fraud Protection. In this example, your own fraud review team suspects fraudulent account behavior. Let Dynamics 365 Fraud Protection know about this to improve fraud detection.
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/Label HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/Label HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8

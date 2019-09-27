@@ -29,7 +29,7 @@ Request that Dynamics 365 Fraud Protection make a risk recommendation when guest
 
 ## Example purchase request
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/Purchase HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/Purchase HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8

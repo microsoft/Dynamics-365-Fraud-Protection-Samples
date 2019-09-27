@@ -51,7 +51,7 @@ Examples:
 ## Bank auth event
 This example request sends a bank auth event to Dynamics 365 Fraud Protection informing it that the bank authorization was successful.
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/BankEvent HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/BankEvent HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8
@@ -78,7 +78,7 @@ x-ms-correlation-id: <correlation ID 1>
 ## Bank charge event
 This example request sends a bank charge event to Dynamics 365 Fraud Protection informing it that the bank charge was successful.
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/BankEvent HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/BankEvent HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8
@@ -105,7 +105,7 @@ x-ms-correlation-id: <correlation ID 1>
 ## Purchase status event
 This example request sends a purchase status event to Dynamics 365 Fraud Protection informing it that the purchase was successful from your perspective. The purchase status may differ from bank event statuses and is completely up to you to determine.
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/PurchaseStatus HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/PurchaseStatus HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8

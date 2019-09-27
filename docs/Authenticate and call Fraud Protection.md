@@ -110,7 +110,7 @@ For example, see the following request and response when sending a refund event 
 ### Request
 
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/Refund HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/Refund HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8

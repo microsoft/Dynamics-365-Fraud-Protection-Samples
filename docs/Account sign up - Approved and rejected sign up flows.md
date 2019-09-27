@@ -40,7 +40,7 @@ The sign up event flow consists of:
 ## Sign up event
 This example request sends a sign up event to Dynamics 365 Fraud Protection asking for a risk assessment of the sign up.
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/SignUp HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/SignUp HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8
@@ -103,7 +103,7 @@ x-ms-correlation-id: <correlation ID 1>
 ## Approved sign up status event
 This example request sends a sign up status event to Dynamics 365 Fraud Protection informing it that the sign up was **approved** and providing the newly created user's ID.
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/SignUpStatus HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/SignUpStatus HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8
@@ -128,7 +128,7 @@ x-ms-correlation-id: <correlation ID 2>
 ## Rejected sign up status event
 This example request sends a sign up status event to Dynamics 365 Fraud Protection informing it that the sign up was **rejected**. Notice that no user ID is sent.
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/SignUpStatus HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/SignUpStatus HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8
