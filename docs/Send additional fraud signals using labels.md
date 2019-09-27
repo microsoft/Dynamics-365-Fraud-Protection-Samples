@@ -4,7 +4,7 @@
 You can send additional fraud signals to Microsoft Dynamics 365 Fraud Protection about the following:
 - Fraudulent activity, account abuse, or payment instrument abuse identified by your review team.
 - Fraudulent transactions escalated by your customers.
-- TC40 / SAFE signals received.
+- TC-40 / SAFE signals received.
 - Offline analysis like behavior analysis or discovered connections to existing fraud cases.
 - Account takeover scenarios escalated by your customers.
 
@@ -26,8 +26,8 @@ You can send additional fraud signals to Microsoft Dynamics 365 Fraud Protection
 **NOTE:**
 In the sample site, click **Add Label** from the **My orders** page to send a label event. In reality, you will receive label data from a variety of sources and so it is up to you to identify those places in your system and and send corresponding label events.
 
-## Example label event - TC40 / SAFE report related to a purchase
-The following example request sends a label event to Dynamics 365 Fraud Protection. In this example, you have received a TC40 / SAFE report from a card issuer indicating a transaction may be potentially fraudulent. Let Dynamics 365 Fraud Protection know about this to improve fraud detection.
+## Example label event - TC-40 / SAFE report related to a purchase
+The following example request sends a label event to Dynamics 365 Fraud Protection. In this example, you have received a TC-40 / SAFE report from a card issuer indicating a transaction may be potentially fraudulent. Let Dynamics 365 Fraud Protection know about this to improve fraud detection.
 ```http
 POST <Merchant API Endpoint>/v1.0/MerchantServices/events/Label HTTP/1.1
 Host: <Merchant API Endpoint>
