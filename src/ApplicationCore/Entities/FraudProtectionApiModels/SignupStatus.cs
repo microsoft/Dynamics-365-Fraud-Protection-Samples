@@ -43,7 +43,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent
     public class SignupStatusUser
     {
         /// <summary>
-        /// Identifier of the customer, if merchant accepts customer’s sign up request.
+        /// Identifier of the customer, if merchant accepts customer's sign up request.
         /// </summary>
         [Required]
         public String UserId { get; set; }

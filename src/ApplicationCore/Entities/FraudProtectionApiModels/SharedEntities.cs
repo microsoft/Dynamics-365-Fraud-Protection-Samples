@@ -288,7 +288,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public String PayerStatus { get; set; }
 
         /// <summary>
-        /// For PayPal only. A value that indicates whether PayPal has verified the payer’s address. Possible values Confirmed, Unconfirmed
+        /// For PayPal only. A value that indicates whether PayPal has verified the payer's address. Possible values Confirmed, Unconfirmed
         /// </summary>
         public String AddressStatus { get; set; }
 
