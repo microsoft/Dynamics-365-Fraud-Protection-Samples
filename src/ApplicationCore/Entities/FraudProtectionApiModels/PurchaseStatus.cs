@@ -7,30 +7,30 @@ using System.ComponentModel.DataAnnotations;
 namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent
 {
     /// <summary>
-    /// 	Enables the merchant to update Fraud Protection about the status of a purchase, such as if the purchase has been cancelled.
+    /// Enables the merchant to update Fraud Protection about the status of a purchase, such as if the purchase has been cancelled.
     /// </summary>
     public class PurchaseStatusEvent : BaseFraudProtectionEvent
     {
         /// <summary>
-        /// 	Transaction (or purchase/order) identifier in merchant system.
+        /// Transaction (or purchase/order) identifier in merchant system.
         /// </summary>
         [Required]
         public String PurchaseId { get; set; }
 
         /// <summary>
-        /// 	The purchase status. See PurchaseStatusType enum.
+        /// The purchase status. See PurchaseStatusType enum.
         /// </summary>
         [Required]
         public String StatusType { get; set; }
 
         /// <summary>
-        /// 	The DateTime when this status was applied
+        /// The DateTime when this status was applied
         /// </summary>
         [Required]
         public DateTimeOffset StatusDate { get; set; }
 
         /// <summary>
-        /// 	Reason of the status transition. See PurchaseStatusReason enum.
+        /// Reason of the status transition. See PurchaseStatusReason enum.
         /// </summary>
         public String Reason { get; set; }
     }
