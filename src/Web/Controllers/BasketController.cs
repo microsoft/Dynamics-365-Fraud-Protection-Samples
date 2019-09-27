@@ -311,13 +311,19 @@ namespace Contoso.FraudProtection.Web.Controllers
             Func<string, string> getCategoryFromName = (productName) =>
             {
                 if (productName.Contains("mug", StringComparison.InvariantCultureIgnoreCase))
+                {
                     return ProductCategory.HomeGarden.ToString();
+                }
 
                 if (productName.Contains("shirt", StringComparison.InvariantCultureIgnoreCase))
+                {
                     return ProductCategory.ClothingShoes.ToString();
+                }
 
                 if (productName.Contains("sheet", StringComparison.InvariantCultureIgnoreCase))
+                {
                     return ProductCategory.Jewelry.ToString();
+                }
 
                 return "Other";
             };
