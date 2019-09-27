@@ -12,6 +12,8 @@ Follow these steps to configure the sample site before running it.
 1. Gather the following pieces of information from the dashboard:
    1. Copy the "Instance ID" GUID and set the "DeviceFingerprintingCustomerId" setting in your appsettings.json file to it.
    1. Copy the "Directory ID" GUID and set the "Authority" setting in your appsettings.json file to "https://login.microsoftonline.com/[Directory_ID]".
+   1. Copy the "API Resource URI" value and set the "Resource" setting in your appsettings.json file to it. It may already match the default appsettings value.
+   1. Copy the "API Endpoint" value and set the "ApiBaseUrl" setting in your appsettings.json file to it.
 1. If you aren't using Microsoft Device Fingerprinting, you can skip this step. If you are using Microsoft Device Fingerprinting or will in the future, follow the [Set up Azure DNS](https://docs.microsoft.com/en-us/dynamics365/fraud-protection/device-fingerprinting#set-up-azure-dns) steps from our product documentation.
    1. Then, put your merchant domain name in your appsettings.json file as the value for the "DeviceFingerprintingDomain" setting. 
 1. On the portal, go to the [Configuration --> Real Time APIs](https://dfp.microsoft-int.com/configuration/realTimeApis) page. Use it to set up API access via an Azure Active Directory (AAD) application:
@@ -47,17 +49,20 @@ Follow these steps to configure the sample site before running it.
   "FraudProtectionSettings": {
     "DeviceFingerprintingDomain": "https://fpt.yourwebsite.com",
     "DeviceFingerprintingCustomerId": "00112233-4455-6677-8899-aabbccddeeff",
-    "ApiBaseUrl": "https://api.dfp.microsoft-int.com",
+    "ApiBaseUrl": "https://api.dfp.dynamics-int.com",
     "Endpoints": {
-      "Purchase": "/v0.5/MerchantServices/events/Purchase",
-      "PurchaseStatus": "/v0.5/MerchantServices/events/PurchaseStatus",
-      "BankEvent": "/v0.5/MerchantServices/events/BankEvent",
-      "Chargeback": "/v0.5/MerchantServices/events/Chargeback",
-      "Refund": "/v0.5/MerchantServices/events/Refund",
-      "UpdateAccount": "/v0.5/MerchantServices/events/UpdateAccount"
+      "BankEvent": "/v1.0/MerchantServices/events/BankEvent",
+      "Chargeback": "/v1.0/MerchantServices/events/Chargeback",
+      "Label": "/v1.0/MerchantServices/events/Label",
+      "Purchase": "/v1.0/MerchantServices/events/Purchase",
+      "PurchaseStatus": "/v1.0/MerchantServices/events/PurchaseStatus",
+      "Refund": "/v1.0/MerchantServices/events/Refund",
+      "Signup": "/v1.0/MerchantServices/events/Signup",
+      "SignupStatus": "/v1.0/MerchantServices/events/SignUpStatus",
+      "UpdateAccount": "/v1.0/MerchantServices/events/UpdateAccount"
     },
     "TokenProviderConfig": {
-      "Resource": "https://api.dfp.microsoft-int.com",
+      "Resource": "https://api.dfp.dynamics-int.com",
       "ClientId": "00112233-4455-6677-8899-aabbccddeefg",
       "Authority": "https://login.microsoftonline.com/11112222-3333-4444-5555-666677778888",
       "CertificateThumbprint": "111122223333444455556666777788889999000",
