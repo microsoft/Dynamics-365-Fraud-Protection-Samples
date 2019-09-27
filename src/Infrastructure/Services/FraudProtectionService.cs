@@ -143,6 +143,12 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             var response = await PostAsync(_settings.Endpoints.Label, label, correlationId);
             return await Read<FraudProtectionResponse>(response);
         }
+
+        public async Task<FraudProtectionResponse> PostSignIn(SignInRequest request, string correlationId = null)
+        {
+            var response = await PostAsync(_settings.Endpoints.SignIn, request, correlationId);
+            return await Read<FraudProtectionResponse>(response);
+        }
     }
     #endregion
 }

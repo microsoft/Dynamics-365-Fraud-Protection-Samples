@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Contoso.FraudProtection.Infrastructure.Identity;
 using Contoso.FraudProtection.Web.Extensions;
@@ -71,6 +72,17 @@ namespace Contoso.FraudProtection.Web.Controllers
                 return View(model);
             }
             ViewData["ReturnUrl"] = returnUrl;
+
+            SignInRequest req = new SignInRequest()
+            {
+                SignInId = model.Email,
+                PasswordHash = "test"
+
+            };
+
+            var checkSignIn = await _fraudProtectionService.PostSignIn(req, _fraudProtectionService.NewCorrelationId);
+
+            //var checkSignIn = await _fraudProtectionService.PostSignIn("signId", "passwordHash", "currentIPAddress", "assessmentType", new DateTime(), new DateTime(), "userId", model.DeviceFingerPrinting.FingerPrintingDC);
 
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
@@ -180,6 +192,8 @@ namespace Contoso.FraudProtection.Web.Controllers
                 Market = "US"
             };
 
+            var correlationId = _fraudProtectionService.NewCorrelationId;
+
             var signupEvent = new SignUp
             {
                 SignUpId = Guid.NewGuid().ToString(),
@@ -191,8 +205,6 @@ namespace Contoso.FraudProtection.Web.Controllers
                 StoreFrontContext = storefrontContext,
                 DeviceContext = deviceContext,
             };
-
-            var correlationId = _fraudProtectionService.NewCorrelationId;
 
             var signupAssessment = await _fraudProtectionService.PostSignup(signupEvent, correlationId);
 

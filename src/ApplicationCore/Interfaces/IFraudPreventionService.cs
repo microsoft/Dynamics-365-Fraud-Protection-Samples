@@ -37,6 +37,9 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
         Task<FraudProtectionResponse> PostSignupStatus(SignupStatusEvent signupStatus, string correlationId = null);
 
         Task<FraudProtectionResponse> PostLabel(Label label, string correlationId = null);
+
+        Task<FraudProtectionResponse> PostSignIn(SignInRequest request, string correlationId = null);
     }
+
     #endregion
 }

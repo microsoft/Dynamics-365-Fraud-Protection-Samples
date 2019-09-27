@@ -14,6 +14,11 @@
         <div class="col-md-12">
             <section>
                 <form asp-controller="Account" asp-action="SignIn" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                    @Html.HiddenFor(m => m.DeviceFingerPrinting.FingerPrintingDC)
+                    @Html.HiddenFor(m => m.DeviceFingerPrinting.SessionId)
+                    @Html.HiddenFor(m => m.ClientCountryCode)
+                    @Html.HiddenFor(m => m.ClientDate)
+                    @Html.HiddenFor(m => m.ClientTimeZone)
                     <h3>Login</h3>
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="form-group">
@@ -47,3 +52,5 @@
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
+
+<partial name="_DeviceFingerPrinting" model="Model.DeviceFingerPrinting" />
