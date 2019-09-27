@@ -127,6 +127,45 @@ namespace Contoso.FraudProtection.Web.Controllers
             if (_contextAccessor.HttpContext.Connection == null)
                 throw new Exception(nameof(_contextAccessor.HttpContext.Connection));
 
+            //Create the user object and validate it before calling Fraud Protection
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                PhoneNumber = model.Phone,
+                Address1 = model.Address1,
+                Address2 = model.Address2,
+                City = model.City,
+                State = model.State,
+                ZipCode = model.ZipCode,
+                CountryRegion = model.CountryRegion
+            };
+
+            foreach (var v in _userManager.UserValidators)
+            {
+                var validationResult = await v.ValidateAsync(_userManager, user);
+                if (!validationResult.Succeeded)
+                {
+                    AddErrors(validationResult);
+                }
+            };
+
+            foreach (var v in _userManager.PasswordValidators)
+            {
+                var validationResult = await v.ValidateAsync(_userManager, user, model.Password);
+                if (!validationResult.Succeeded)
+                {
+                    AddErrors(validationResult);
+                }
+            };
+
+            if (ModelState.ErrorCount > 0)
+            {
+                return View(model);
+            }
+
             #region Fraud Protection Service
             // Ask Fraud Protection to assess this signup/registration before registering the user in our database, etc.
             var signupAddress = new AddressDetails
@@ -200,8 +239,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             var fraudProtectionIO = new FraudProtectionIOModel(signupEvent, signupAssessment, "Signup");
 
             //2 out of 3 signups will succeed on average. Adjust if you want more or less signups blocked for tesing purposes.
-            var random = new Random();
-            var rejectSignup = random.NextDouble() >= 2.0 / 3;
+            var rejectSignup = new Random().Next(0, 3) != 0;
             var signupStatusType = rejectSignup ? SignupStatusType.Rejected.ToString() : SignupStatusType.Approved.ToString();
 
             var signupStatus = new SignupStatusEvent
@@ -222,29 +260,13 @@ namespace Contoso.FraudProtection.Web.Controllers
             fraudProtectionIO.Add(signupStatus, signupStatusResponse, "Signup Status");
 
             TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
-            #endregion
 
             if (rejectSignup)
             {
                 ModelState.AddModelError("", "Signup rejected by Fraud Protection. You can try again as it has a random likelyhood of happening in this sample site.");
                 return View(model);
             }
-
-            //Only create the user in the sample site if the Fraud Protection merchant decision is APPROVE
-            var user = new ApplicationUser
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                PhoneNumber = model.Phone,
-                Address1 = model.Address1,
-                Address2 = model.Address2,
-                City = model.City,
-                State = model.State,
-                ZipCode = model.ZipCode,
-                CountryRegion = model.CountryRegion
-            };
+            #endregion
 
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
@@ -252,9 +274,6 @@ namespace Contoso.FraudProtection.Web.Controllers
                 AddErrors(result);
                 return View(model);
             }
-
-            if (user == null)
-                throw new Exception(nameof(user));
 
             await _signInManager.SignInAsync(user, isPersistent: false);
 
