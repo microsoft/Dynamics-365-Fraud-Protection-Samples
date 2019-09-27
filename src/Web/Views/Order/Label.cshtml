@@ -9,7 +9,7 @@
 @model OrderViewModel
 
 @{
-    ViewData["Title"] = "Add Fraud Label";
+    ViewData["Title"] = "Add Label";
 }
 
 @section TopBanner {
@@ -107,9 +107,9 @@
                 </div>
             </div>
             <section class="esh-basket-item col-xs-push-8 col-xs-4">
-                <input type="submit" asp-action="FraudLabelOrder" asp-controller="Order"
+                <input type="submit" asp-action="LabelOrder" asp-controller="Order"
                        class="btn esh-basket-checkout"
-                       value="[ Add Fraud Label ]" name="action" />
+                       value="[ Add Label ]" name="action" />
             </section>
         </div>
     </form>
