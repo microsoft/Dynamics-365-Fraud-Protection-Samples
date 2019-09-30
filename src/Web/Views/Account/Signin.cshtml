@@ -1,9 +1,11 @@
 @*
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.   
+    // Copyright (c) Microsoft Corporation.
+    // Licensed under the MIT license.
 *@
 
 @using Contoso.FraudProtection.Web.ViewModels.Account
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 @model LoginViewModel
 @{
     ViewData["Title"] = "Log in";
@@ -14,7 +16,7 @@
         <div class="col-md-12">
             <section>
                 <form asp-controller="Account" asp-action="SignIn" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
-                    @Html.HiddenFor(m => m.DeviceFingerPrinting.FingerPrintingDC)
+                   @* @Html.HiddenFor(m => m.DeviceFingerPrinting.FingerPrintingDC)*@
                     @Html.HiddenFor(m => m.DeviceFingerPrinting.SessionId)
                     @Html.HiddenFor(m => m.ClientCountryCode)
                     @Html.HiddenFor(m => m.ClientDate)

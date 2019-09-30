@@ -50,7 +50,13 @@ namespace Contoso.FraudProtection.Web.Controllers
         public async Task<IActionResult> SignIn(string returnUrl = null)
         {
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-
+            var model = new LoginViewModel
+            {
+                DeviceFingerPrinting = new DeviceFingerPrintingModel
+                {
+                    SessionId = _contextAccessor.GetSessionId()
+                }
+            };
             ViewData["ReturnUrl"] = returnUrl;
             if (!String.IsNullOrEmpty(returnUrl) &&
                 returnUrl.IndexOf("checkout", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -58,7 +64,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 ViewData["ReturnUrl"] = "/Basket/Index";
             }
 
-            return View();
+            return View(model);
         }
 
         // POST: /Account/SignIn
@@ -73,14 +79,14 @@ namespace Contoso.FraudProtection.Web.Controllers
             }
             ViewData["ReturnUrl"] = returnUrl;
 
-            SignInRequest req = new SignInRequest()
+            /*SignInRequest req = new SignInRequest()
             {
                 SignInId = model.Email,
                 PasswordHash = "test"
 
-            };
+            };*/
 
-            var checkSignIn = await _fraudProtectionService.PostSignIn(req, _fraudProtectionService.NewCorrelationId);
+            //var checkSignIn = await _fraudProtectionService.PostSignIn(req, _fraudProtectionService.NewCorrelationId);
 
             //var checkSignIn = await _fraudProtectionService.PostSignIn("signId", "passwordHash", "currentIPAddress", "assessmentType", new DateTime(), new DateTime(), "userId", model.DeviceFingerPrinting.FingerPrintingDC);
 
