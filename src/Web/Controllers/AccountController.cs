@@ -17,6 +17,7 @@ using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
 using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Contoso.FraudProtection.Web.Controllers
 {
@@ -29,19 +30,23 @@ namespace Contoso.FraudProtection.Web.Controllers
         private readonly IBasketService _basketService;
         private readonly IFraudProtectionService _fraudProtectionService;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IBasketService basketService,
             IFraudProtectionService fraudProtectionService,
-            IHttpContextAccessor contextAccessor)
+            IHttpContextAccessor contextAccessor,
+            IPasswordHasher<ApplicationUser> passwordHasher)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _basketService = basketService;
             _fraudProtectionService = fraudProtectionService;
             _contextAccessor = contextAccessor;
+            _passwordHasher = passwordHasher;
+
         }
 
         // GET: /Account/SignIn 
@@ -79,22 +84,29 @@ namespace Contoso.FraudProtection.Web.Controllers
             }
             ViewData["ReturnUrl"] = returnUrl;
 
-            /*SignInRequest req = new SignInRequest()
+            ApplicationUser applicationUser = new ApplicationUser()
+            {
+                UserName = model.Email
+            };
+            var passwordHash = _passwordHasher.HashPassword(applicationUser, model.Password);
+            SignInRequest req = new SignInRequest()
             {
                 SignInId = model.Email,
-                PasswordHash = "test"
+                PasswordHash = passwordHash,
+                MerchantLocalDate = new DateTime(),
+                UserId = model.Email
 
-            };*/
+            };
 
-            //var checkSignIn = await _fraudProtectionService.PostSignIn(req, _fraudProtectionService.NewCorrelationId);
-
-            //var checkSignIn = await _fraudProtectionService.PostSignIn("signId", "passwordHash", "currentIPAddress", "assessmentType", new DateTime(), new DateTime(), "userId", model.DeviceFingerPrinting.FingerPrintingDC);
-
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-            if (result.Succeeded)
-            {
-                await TransferBasketToEmailAsync(model.Email);
-                return RedirectToLocal(returnUrl);
+            var signInAssessmentResponse = await _fraudProtectionService.PostSignIn(req, _fraudProtectionService.NewCorrelationId);
+            if (signInAssessmentResponse != null && signInAssessmentResponse.ResultDetails["MerchantRuleDecision"].Equals("Approve"))
+            { 
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                if (result.Succeeded)
+                {
+                    await TransferBasketToEmailAsync(model.Email);
+                    return RedirectToLocal(returnUrl);
+                }
             }
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             return View(model);
