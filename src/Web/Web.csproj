@@ -45,12 +45,6 @@
     <Content Update="Areas\Admin\Views\Shared\Components\Basket\Default.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Areas\Admin\Views\Shared\DisplayTemplates\PurchaseResponse.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Areas\Admin\Views\Shared\DisplayTemplates\RefundResponse.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
     <Content Update="Areas\Admin\Views\Shared\Error.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
@@ -73,6 +67,12 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\Order\ChargebackDone.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Shared\_DeviceFingerPrinting.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Shared\_FraudProtectionIO.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\Shared\DisplayTemplates\DateTimeOffset.cshtml">

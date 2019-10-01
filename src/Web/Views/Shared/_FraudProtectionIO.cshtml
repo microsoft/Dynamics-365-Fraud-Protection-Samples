@@ -1,0 +1,31 @@
+@*
+    // Copyright (c) Microsoft Corporation.
+    // Licensed under the MIT license.
+*@
+
+@model Contoso.FraudProtection.Web.ViewModels.FraudProtectionIOModel
+
+@if (Model != null)
+{
+    @foreach (var io in Model.RequestResponsePairs)
+    {
+        <hr />
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <section>
+                        @if (io.Name != null) { <h3>@io.Name</h3> }
+                        <div class="col-md-6">
+                            <h4>Fraud Protection Request</h4>
+                            <pre>@io.Request</pre>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Fraud Protection Response</h4>
+                            <pre>@io.Response</pre>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    }
+}

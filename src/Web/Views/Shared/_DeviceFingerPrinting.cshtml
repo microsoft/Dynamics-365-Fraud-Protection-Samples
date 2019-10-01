@@ -1,0 +1,21 @@
+@*
+    // Copyright (c) Microsoft Corporation.
+    // Licensed under the MIT license.
+*@
+
+@using Contoso.FraudProtection.Web.ViewModels.Shared
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    @model DeviceFingerPrintingViewModel
+    var fingerprintingDomain = Configuration.GetSection("FraudProtectionSettings")["DeviceFingerprintingDomain"];
+    var fingerprintingCustomerId = Configuration.GetSection("FraudProtectionSettings")["DeviceFingerprintingCustomerId"];
+    var fingerprintingSessionId = Model.SessionId;
+}
+
+<script src='@fingerprintingDomain/mdt.js?session_id=@fingerprintingSessionId&customerId=@fingerprintingCustomerId' type="text/javascript"></script>
+<script>
+    (function () {
+        dfp.doFpt(this.document);
+    })();
+</script>

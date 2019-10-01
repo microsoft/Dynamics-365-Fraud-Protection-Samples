@@ -1,10 +1,6 @@
 # Microsoft Dynamics 365 Fraud Protection - Sample merchant application
 The Microsoft Dynamics 365 Fraud Protection sample merchant application demonstrates how to call the [Dynamics 365 Fraud Protection APIs](https://apidocs.microsoft.com/services/dynamics365fraudprotection) in the context of an online merchant who sells clothing and other goods. This sample may be useful if you are in the process of integrating with the Dynamics 365 Fraud Protection APIs, or if you want to see how new API endpoints/features are integrated when there are new API versions.
 
-It demonstrates two primary operations using the Dynamics 365 Fraud Protection APIs:
-- Setting up the user and their associated information in the Dynamics 365 Fraud Protection system (for example, basic info, payment methods, addresses, and so on).
-- Requesting a Dynamics 365 Fraud Protection recommendation for a purchase and using that recommendation to decide whether to charge the customer.
-
 ## Local development setup
 Before running the solution, you must install these prerequisites:
 
@@ -42,6 +38,7 @@ dotnet ef migrations add <migration name> -c appidentitydbcontext -p ../Infrastr
 ```
 
 ## Default login credentials
+Use these accounts if you want to login without registering a new user account.
 
 Admin:
 ```

@@ -3,19 +3,21 @@
 
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Contoso.FraudProtection.Infrastructure.Identity;
+using Contoso.FraudProtection.Web.Extensions;
+using Contoso.FraudProtection.Web.ViewModels;
+using Contoso.FraudProtection.Web.ViewModels.Manage;
+using Contoso.FraudProtection.Web.ViewModels.Shared;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Contoso.FraudProtection.Web.ViewModels.Manage;
-using System;
-using System.Linq;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Dynamics.FraudProtection.Models;
 using Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Contoso.FraudProtection.Web.Controllers
 {
@@ -25,28 +27,20 @@ namespace Contoso.FraudProtection.Web.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IEmailSender _emailSender;
         private readonly IAppLogger<ManageController> _logger;
-        private readonly UrlEncoder _urlEncoder;
         private readonly IFraudProtectionService _fraudProtectionService;
         private readonly IHttpContextAccessor _contextAccessor;
-
-        private const string AuthenicatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
         public ManageController(
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
-          IEmailSender emailSender,
           IAppLogger<ManageController> logger,
-          UrlEncoder urlEncoder,
           IFraudProtectionService fraudProtectionService,
           IHttpContextAccessor contextAccessor)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _emailSender = emailSender;
             _logger = logger;
-            _urlEncoder = urlEncoder;
             _fraudProtectionService = fraudProtectionService;
             _contextAccessor = contextAccessor;
         }
@@ -66,18 +60,28 @@ namespace Contoso.FraudProtection.Web.Controllers
             var model = new IndexViewModel
             {
                 Username = user.UserName,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                Address1 = user.Address1,
-                Address2 = user.Address2,
-                City = user.City,
-                State = user.State,
-                ZipCode = user.ZipCode,
-                CountryRegion = user.CountryRegion,
+                User = new UserViewModel
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Phone = user.PhoneNumber,
+                },
+                Address = new AddressViewModel
+                {
+                    Address1 = user.Address1,
+                    Address2 = user.Address2,
+                    City = user.City,
+                    State = user.State,
+                    ZipCode = user.ZipCode,
+                    CountryRegion = user.CountryRegion,
+                },
                 IsEmailConfirmed = user.EmailConfirmed,
-                StatusMessage = StatusMessage
+                StatusMessage = StatusMessage,
+                DeviceFingerPrinting = new DeviceFingerPrintingViewModel
+                {
+                    SessionId = _contextAccessor.GetSessionId()
+                }
             };
 
             return View(model);
@@ -99,17 +103,17 @@ namespace Contoso.FraudProtection.Web.Controllers
             }
 
             // Update the Application User
-            user.FirstName = model.FirstName;
-            user.LastName = model.LastName;
-            user.Email = model.Email;
+            user.FirstName = model.User.FirstName;
+            user.LastName = model.User.LastName;
+            user.Email = model.User.Email;
             user.UserName = model.Username;
-            user.PhoneNumber = model.PhoneNumber;
-            user.Address1 = model.Address1;
-            user.Address2 = model.Address2;
-            user.City = model.City;
-            user.State = model.State;
-            user.ZipCode = model.ZipCode;
-            user.CountryRegion = model.CountryRegion;
+            user.PhoneNumber = model.User.Phone;
+            user.Address1 = model.Address.Address1;
+            user.Address2 = model.Address.Address2;
+            user.City = model.Address.City;
+            user.State = model.Address.State;
+            user.ZipCode = model.Address.ZipCode;
+            user.CountryRegion = model.Address.CountryRegion;
 
             var result = await _userManager.UpdateAsync(user);
 
@@ -119,39 +123,34 @@ namespace Contoso.FraudProtection.Web.Controllers
             {
                 var billingAddress = new UserAddress
                 {
-                    Type = UserAddressType.BILLING.ToString(),
+                    Type = UserAddressType.Billing.ToString(),
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    AddressDetails = new Address
-                    {
-                        Street1 = user.Address1,
-                        Street2 = user.Address2,
-                        City = user.City,
-                        State = user.State,
-                        ZipCode = user.ZipCode,
-                        Country = user.CountryRegion
-                    }
+                    Street1 = user.Address1,
+                    Street2 = user.Address2,
+                    City = user.City,
+                    State = user.State,
+                    ZipCode = user.ZipCode,
+                    Country = user.CountryRegion
                 };
 
                 var shippingAddress = new UserAddress
                 {
-                    Type = UserAddressType.SHIPPING.ToString(),
+                    Type = UserAddressType.Shipping.ToString(),
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    AddressDetails = new Address
-                    {
-                        Street1 = user.Address1,
-                        Street2 = user.Address2,
-                        City = user.City,
-                        State = user.State,
-                        ZipCode = user.ZipCode,
-                        Country = user.CountryRegion
-                    }
+                    Street1 = user.Address1,
+                    Street2 = user.Address2,
+                    City = user.City,
+                    State = user.State,
+                    ZipCode = user.ZipCode,
+                    Country = user.CountryRegion
                 };
 
                 var fraudProtectionUser = new User
                 {
                     UserId = user.Email,
+                    UpdateDate = DateTimeOffset.Now,
                     Email = user.Email,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
@@ -159,20 +158,20 @@ namespace Contoso.FraudProtection.Web.Controllers
                     AddressList = new List<UserAddress> { billingAddress, shippingAddress },
                     ZipCode = user.ZipCode,
                     Country = user.CountryRegion,
-                    TimeZone = new TimeSpan(0, 0, -model.ClientTimeZone, 0).ToString(),
-                    DeviceContext = new UserDeviceContext
+                    TimeZone = new TimeSpan(0, 0, -model.DeviceFingerPrinting.ClientTimeZone, 0).ToString(),
+                    DeviceContext = new DeviceContext
                     {
                         DeviceContextId = _contextAccessor.GetSessionId(),
                         IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                        DeviceContextDetails = new DeviceContext
-                        {
-                            DeviceContextDC = model.FingerPrintingDC,
-                            Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString()
-                        }
+                        DeviceContextDC = model.DeviceFingerPrinting.FingerPrintingDC,
+                        Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
                     }
                 };
 
-                await _fraudProtectionService.PostUser(fraudProtectionUser);
+                var response = await _fraudProtectionService.PostUser(fraudProtectionUser);
+
+                var fraudProtectionIO = new FraudProtectionIOModel(fraudProtectionUser, response, "UpdateAccount");
+                TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
             }
             #endregion
 
@@ -191,19 +190,29 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             var paymentInstrument = new ManagePaymentInstrumentViewModel
             {
-                CardType = user.DefaultCardType,
-                CardNumber = user.DefaultCardNumber,
-                ExpirationMonth = user.DefaultExpirationMonth,
-                ExpirationYear = user.DefaultExpirationYear,
-                CardName = user.DefaultCardName,
-                CVV = user.DefaultCVV,
-                Address1 = user.BillingAddress1,
-                Address2 = user.BillingAddress2,
-                City = user.BillingCity,
-                State = user.BillingState,
-                ZipCode = user.BillingZipCode,
-                CountryRegion = user.BillingCountryRegion,
-                StatusMessage = StatusMessage
+                CreditCard = new CreditCardViewModel
+                {
+                    CardType = user.DefaultCardType,
+                    CardNumber = user.DefaultCardNumber,
+                    ExpirationMonth = user.DefaultExpirationMonth,
+                    ExpirationYear = user.DefaultExpirationYear,
+                    CardName = user.DefaultCardName,
+                    CVV = user.DefaultCVV,
+                },
+                BillingAddress = new AddressViewModel
+                {
+                    Address1 = user.BillingAddress1,
+                    Address2 = user.BillingAddress2,
+                    City = user.BillingCity,
+                    State = user.BillingState,
+                    ZipCode = user.BillingZipCode,
+                    CountryRegion = user.BillingCountryRegion,
+                },
+                StatusMessage = StatusMessage,
+                DeviceFingerPrinting = new DeviceFingerPrintingViewModel
+                {
+                    SessionId = _contextAccessor.GetSessionId()
+                }
             };
 
             return View(paymentInstrument);
@@ -220,20 +229,20 @@ namespace Contoso.FraudProtection.Web.Controllers
             }
 
             // Set card info
-            user.DefaultCardType = model.CardType;
-            user.DefaultCardNumber = model.CardNumber;
-            user.DefaultCardName = model.CardName;
-            user.DefaultCVV = model.CVV;
-            user.DefaultExpirationMonth = model.ExpirationMonth;
-            user.DefaultExpirationYear = model.ExpirationYear;
+            user.DefaultCardType = model.CreditCard.CardType;
+            user.DefaultCardNumber = model.CreditCard.CardNumber;
+            user.DefaultCardName = model.CreditCard.CardName;
+            user.DefaultCVV = model.CreditCard.CVV;
+            user.DefaultExpirationMonth = model.CreditCard.ExpirationMonth;
+            user.DefaultExpirationYear = model.CreditCard.ExpirationYear;
 
             // Set billing address info
-            user.BillingAddress1 = model.Address1;
-            user.BillingAddress2 = model.Address2;
-            user.BillingCity = model.City;
-            user.BillingState = model.State;
-            user.BillingZipCode = model.ZipCode;
-            user.BillingCountryRegion = model.CountryRegion;
+            user.BillingAddress1 = model.BillingAddress.Address1;
+            user.BillingAddress2 = model.BillingAddress.Address2;
+            user.BillingCity = model.BillingAddress.City;
+            user.BillingState = model.BillingAddress.State;
+            user.BillingZipCode = model.BillingAddress.ZipCode;
+            user.BillingCountryRegion = model.BillingAddress.CountryRegion;
 
             var updateResult = await _userManager.UpdateAsync(user);
 
@@ -241,19 +250,16 @@ namespace Contoso.FraudProtection.Web.Controllers
             // If storing the user's payment information succeeds, update Fraud Protection.
             if (updateResult.Succeeded)
             {
-                var billingAddress = new PaymentInstrumentAddress
+                var billingAddress = new AddressDetails
                 {
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    BillingAddressDetails = new Address
-                    {
-                        Street1 = user.BillingAddress1,
-                        Street2 = user.BillingAddress2,
-                        City = user.BillingCity,
-                        State = user.BillingState,
-                        ZipCode = user.BillingZipCode,
-                        Country = user.BillingCountryRegion
-                    }
+                    Street1 = user.BillingAddress1,
+                    Street2 = user.BillingAddress2,
+                    City = user.BillingCity,
+                    State = user.BillingState,
+                    ZipCode = user.BillingZipCode,
+                    Country = user.BillingCountryRegion
                 };
 
                 var userId = user.Email;
@@ -261,38 +267,35 @@ namespace Contoso.FraudProtection.Web.Controllers
                 var fraudProtectionUser = new User
                 {
                     UserId = userId,
-                    PaymentInstrumentList = new List<UserPaymentInstrument>
+                    PaymentInstrumentList = new List<PaymentInstrument>
                     {
-                        new UserPaymentInstrument
+                        new PaymentInstrument
                         {
-                            PaymentInstrumentDetails = new PaymentInstrument
-                            {
-                                MerchantPaymentInstrumentId = $"{userId}-CreditCard",
-                                Type = PaymentInstrumentType.CREDITCARD.ToString(),
-                                CardType = user.DefaultCardType,
-                                HolderName = model.CardName,
-                                BIN = user.BIN,
-                                ExpirationDate = user.ExpirationDate,
-                                LastFourDigits = user.LastFourDigits,
-                                BillingAddress = billingAddress,
-                                CreationDate = DateTimeOffset.Now,
-                                State = PaymentInstrumentState.Active.ToString(),
-                            }
+                            MerchantPaymentInstrumentId = $"{userId}-CreditCard",
+                            Type = PaymentInstrumentType.CreditCard.ToString(),
+                            CardType = model.CreditCard.CardType,
+                            HolderName = model.CreditCard.CardName,
+                            BIN = model.CreditCard.BIN,
+                            ExpirationDate = model.CreditCard.ExpirationDate,
+                            LastFourDigits = model.CreditCard.LastFourDigits,
+                            BillingAddress = billingAddress,
+                            CreationDate = DateTimeOffset.Now,
+                            State = PaymentInstrumentState.Active.ToString(),
                         }
                     },
-                    DeviceContext = new UserDeviceContext
+                    DeviceContext = new DeviceContext
                     {
                         DeviceContextId = _contextAccessor.GetSessionId(),
                         IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                        DeviceContextDetails = new DeviceContext
-                        {
-                            DeviceContextDC = model.FingerPrintingDC,
-                            Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString()
-                        }
+                        DeviceContextDC = model.DeviceFingerPrinting.FingerPrintingDC,
+                        Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
                     }
                 };
 
-                await _fraudProtectionService.PostUser(fraudProtectionUser);
+                var response = await _fraudProtectionService.PostUser(fraudProtectionUser);
+
+                var fraudProtectionIO = new FraudProtectionIOModel(fraudProtectionUser, response, "UpdateAccount");
+                TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
             }
             #endregion
 

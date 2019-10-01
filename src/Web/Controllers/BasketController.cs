@@ -1,25 +1,25 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate;
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Contoso.FraudProtection.Infrastructure.Identity;
+using Contoso.FraudProtection.Web.Extensions;
 using Contoso.FraudProtection.Web.Interfaces;
-using Contoso.FraudProtection.Web.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Contoso.FraudProtection.Web.Services;
+using Contoso.FraudProtection.Web.ViewModels;
+using Contoso.FraudProtection.Web.ViewModels.Shared;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Dynamics.FraudProtection.Models;
+using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
 using Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent;
 using Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent;
-using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
-using PurchaseEvent = Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent.Purchase;
-using PurchaseStatusEvent = Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent.Purchase;
-using PurchaseEventAddress = Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent.Address;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Contoso.FraudProtection.Web.Controllers
 {
@@ -29,7 +29,6 @@ namespace Contoso.FraudProtection.Web.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IBasketService _basketService;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IAppLogger<BasketController> _logger;
         private readonly IOrderService _orderService;
         private readonly IBasketViewModelService _basketViewModelService;
         private readonly IFraudProtectionService _fraudProtectionService;
@@ -39,14 +38,12 @@ namespace Contoso.FraudProtection.Web.Controllers
             IBasketViewModelService basketViewModelService,
             IOrderService orderService,
             SignInManager<ApplicationUser> signInManager,
-            IAppLogger<BasketController> logger,
-            IFraudProtectionService fraudProtectionService, 
+            IFraudProtectionService fraudProtectionService,
             IHttpContextAccessor contextAccessor,
             UserManager<ApplicationUser> userManager)
         {
             _basketService = basketService;
             _signInManager = signInManager;
-            _logger = logger;
             _orderService = orderService;
             _basketViewModelService = basketViewModelService;
             _fraudProtectionService = fraudProtectionService;
@@ -70,7 +67,6 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             return View(await GetBasketViewModelAsync());
         }
-
 
         // POST: /Basket/AddToBasket
         [HttpPost]
@@ -100,36 +96,58 @@ namespace Contoso.FraudProtection.Web.Controllers
             if (user == null)
             {
                 //Anonymous user checkout.
-                return View("CheckoutDetails", new CheckoutDetailsViewModel { NumberItems = basketViewModel.Items.Count, SessionId = sessionId });
+                return View("CheckoutDetails", new CheckoutDetailsViewModel
+                {
+                    NumberItems = basketViewModel.Items.Count,
+                    DeviceFingerPrinting = new DeviceFingerPrintingViewModel
+                    {
+                        SessionId = sessionId
+                    }
+                });
             }
 
             // Apply default user settings
             var baseCheckoutModel = new CheckoutDetailsViewModel
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                ShippingAddress1 = user.Address1,
-                ShippingAddress2 = user.Address2,
-                City = user.City,
-                State = user.State,
-                ZipCode = user.ZipCode,
-                CountryRegion = user.CountryRegion,
-                CardType = user.DefaultCardType,
-                CardName = user.DefaultCardName,
-                CardNumber = user.DefaultCardNumber,
-                ExpirationMonth = user.DefaultExpirationMonth,
-                ExpirationYear = user.DefaultExpirationYear,
-                CVV = user.DefaultCVV,
-                BillingAddress1 = user.BillingAddress1,
-                BillingAddress2 = user.BillingAddress2,
-                BillingCity = user.BillingCity,
-                BillingCountryRegion = user.BillingCountryRegion,
-                BillingState = user.BillingState,
-                BillingZipCode = user.BillingZipCode,
+                User = new UserViewModel
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Phone = user.PhoneNumber,
+                },
+                ShippingAddress = new AddressViewModel
+                {
+                    Address1 = user.Address1,
+                    Address2 = user.Address2,
+                    City = user.City,
+                    State = user.State,
+                    ZipCode = user.ZipCode,
+                    CountryRegion = user.CountryRegion,
+                },
+                CreditCard = new CreditCardViewModel
+                {
+                    CardType = user.DefaultCardType,
+                    CardName = user.DefaultCardName,
+                    CardNumber = user.DefaultCardNumber,
+                    ExpirationMonth = user.DefaultExpirationMonth,
+                    ExpirationYear = user.DefaultExpirationYear,
+                    CVV = user.DefaultCVV,
+                },
+                BillingAddress = new AddressViewModel
+                {
+                    Address1 = user.BillingAddress1,
+                    Address2 = user.BillingAddress2,
+                    City = user.BillingCity,
+                    CountryRegion = user.BillingCountryRegion,
+                    State = user.BillingState,
+                    ZipCode = user.BillingZipCode,
+                },
                 NumberItems = basketViewModel.Items.Count,
-                SessionId = sessionId
+                DeviceFingerPrinting = new DeviceFingerPrintingViewModel
+                {
+                    SessionId = sessionId
+                }
             };
 
             return View("CheckoutDetails", baseCheckoutModel);
@@ -138,20 +156,20 @@ namespace Contoso.FraudProtection.Web.Controllers
         public async Task<IActionResult> CheckoutDetails(CheckoutDetailsViewModel checkoutDetails)
         {
             var basketViewModel = await GetBasketViewModelAsync();
-          
-            var address = new ApplicationCore.Entities.OrderAggregate.Address(
-                string.Join(' ', checkoutDetails.ShippingAddress1, checkoutDetails.ShippingAddress2),
-                checkoutDetails.City,
-                checkoutDetails.State,
-                checkoutDetails.CountryRegion,
-                checkoutDetails.ZipCode);
+
+            var address = new Address(
+                string.Join(' ', checkoutDetails.ShippingAddress.Address1, checkoutDetails.ShippingAddress.Address2),
+                checkoutDetails.ShippingAddress.City,
+                checkoutDetails.ShippingAddress.State,
+                checkoutDetails.ShippingAddress.CountryRegion,
+                checkoutDetails.ShippingAddress.ZipCode);
 
             var paymentInfo = new PaymentInfo(
-                string.Join(' ', checkoutDetails.FirstName, checkoutDetails.LastName),
-                checkoutDetails.CardNumber,
-                checkoutDetails.CardType,
-                checkoutDetails.CVV,
-                string.Join('/', checkoutDetails.ExpirationMonth, checkoutDetails.ExpirationYear));
+                string.Join(' ', checkoutDetails.User.FirstName, checkoutDetails.User.LastName),
+                checkoutDetails.CreditCard.CardNumber,
+                checkoutDetails.CreditCard.CardType,
+                checkoutDetails.CreditCard.CVV,
+                string.Join('/', checkoutDetails.CreditCard.ExpirationMonth, checkoutDetails.CreditCard.ExpirationYear));
 
             #region Fraud Protection Service
             //Call Fraud Protection to get the risk score for this purchase.
@@ -160,9 +178,18 @@ namespace Contoso.FraudProtection.Web.Controllers
             var purchase = SetupPurchase(checkoutDetails, basketViewModel);
             var correlationId = _fraudProtectionService.NewCorrelationId;
             var result = await _fraudProtectionService.PostPurchase(purchase, correlationId);
-            
+
+            var fraudProtectionIO = new FraudProtectionIOModel(purchase, result, "Purchase");
+
             //Check the risk score that was returned and possibly complete the purchase.
-            var status = await ApproveOrRejectPurchase(result.ResultDetails.MerchantRuleDecision, checkoutDetails.UnformattedCardNumber, purchase.PurchaseId, purchase.User.UserId, correlationId);
+            var status = await ApproveOrRejectPurchase(
+                result.ResultDetails.MerchantRuleDecision,
+                checkoutDetails.CreditCard.UnformattedCardNumber,
+                purchase.PurchaseId,
+                correlationId,
+                fraudProtectionIO);
+
+            TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
             #endregion
 
             await _orderService.CreateOrderAsync(basketViewModel.Id, address, paymentInfo, status, purchase, result);
@@ -178,15 +205,14 @@ namespace Contoso.FraudProtection.Web.Controllers
         ///    If the purchase is not approved, submit a REJECTED purchase status.
         ///    If the purchase is approved, submit the bank AUTH, bank CHARGE, and purchase status (approved if the bank also approves the auth and charge, or rejected otherwise).
         /// </summary>
-        private async Task<OrderStatus> ApproveOrRejectPurchase(string merchantRuleDecision, string cardNumber, string purchaseId, string userId, string correlationId)
+        private async Task<OrderStatus> ApproveOrRejectPurchase(string merchantRuleDecision, string cardNumber, string purchaseId, string correlationId, FraudProtectionIOModel fraudProtectionIO)
         {
             var status = OrderStatus.Received;
-            FakeCreditCardBankResponses creditCardBankResponse = null;
             BankEvent auth = null;
             BankEvent charge = null;
-            PurchaseStatusEvent purchaseStatus = null;
+            PurchaseStatusEvent purchaseStatus;
 
-            if (!FakeCreditCardBankResponses.CreditCardResponses.TryGetValue(cardNumber, out creditCardBankResponse))
+            if (!FakeCreditCardBankResponses.CreditCardResponses.TryGetValue(cardNumber, out FakeCreditCardBankResponses creditCardBankResponse))
             {
                 //default response
                 creditCardBankResponse = new FakeCreditCardBankResponses
@@ -197,57 +223,60 @@ namespace Contoso.FraudProtection.Web.Controllers
                 };
             }
 
-            if (!merchantRuleDecision.StartsWith("APPROVE", StringComparison.OrdinalIgnoreCase) && 
+            if (!merchantRuleDecision.StartsWith("APPROVE", StringComparison.OrdinalIgnoreCase) &&
                 !creditCardBankResponse.IgnoreFraudRiskRecommendation)
             {
-                purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.CANCELED);
+                purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Rejected);
                 status = OrderStatus.Rejected;
             }
             else
             {
                 //Auth
-                if(!creditCardBankResponse.IsAuthApproved)
+                if (!creditCardBankResponse.IsAuthApproved)
                 {
                     //Auth Rejected
-                    auth = SetupBankEvent(BankEventType.AUTH, DateTimeOffset.Now, userId, purchaseId, BankStatus.REJECTED);
+                    auth = SetupBankEvent(BankEventType.Auth, DateTimeOffset.Now, purchaseId, BankEventStatus.Declined);
                     //Purchase Status - Rejected
-                    purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.CANCELED);
+                    purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Rejected);
                     status = OrderStatus.Rejected;
                 }
                 else
                 {
                     //Auth Approved
-                    auth = SetupBankEvent(BankEventType.AUTH, DateTimeOffset.Now, userId, purchaseId, BankStatus.APPROVED);
+                    auth = SetupBankEvent(BankEventType.Auth, DateTimeOffset.Now, purchaseId, BankEventStatus.Approved);
                     //Charge
                     if (creditCardBankResponse.IsChargeApproved)
                     {
                         //Charge - Approved
-                        charge = SetupBankEvent(BankEventType.CHARGE, DateTimeOffset.Now, userId, purchaseId, BankStatus.APPROVED);
+                        charge = SetupBankEvent(BankEventType.Charge, DateTimeOffset.Now, purchaseId, BankEventStatus.Approved);
                         //Purchase Status Approved
-                        purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.APPROVED);
+                        purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Approved);
                     }
                     else
                     {
                         //Charge - Rejected
-                        charge = SetupBankEvent(BankEventType.CHARGE, DateTimeOffset.Now, userId, purchaseId, BankStatus.REJECTED);
+                        charge = SetupBankEvent(BankEventType.Charge, DateTimeOffset.Now, purchaseId, BankEventStatus.Declined);
                         //Purchase status Rejected
-                        purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.CANCELED);
+                        purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Rejected);
                         status = OrderStatus.Rejected;
                     }
                 }
             }
-          
+
             if (auth != null)
             {
-                await _fraudProtectionService.PostBankEvent(auth, correlationId);
+                var response = await _fraudProtectionService.PostBankEvent(auth, correlationId);
+                fraudProtectionIO.Add(auth, response, "BankEvent Auth");
             }
             if (charge != null)
             {
-                await _fraudProtectionService.PostBankEvent(charge, correlationId);
+                var response = await _fraudProtectionService.PostBankEvent(charge, correlationId);
+                fraudProtectionIO.Add(charge, response, "BankEvent Charge");
             }
-            if (purchaseStatus != null )
+            if (purchaseStatus != null)
             {
-                await _fraudProtectionService.PostPurchaseStatus(purchaseStatus, correlationId);
+                var response = await _fraudProtectionService.PostPurchaseStatus(purchaseStatus, correlationId);
+                fraudProtectionIO.Add(purchaseStatus, response, "PurchaseStatus");
             }
 
             return status;
@@ -256,78 +285,84 @@ namespace Contoso.FraudProtection.Web.Controllers
         /// <summary>
         /// Creates the purchase event.
         /// </summary>
-        private PurchaseEvent SetupPurchase(CheckoutDetailsViewModel checkoutDetails, BasketViewModel basketViewModel)
+        private Purchase SetupPurchase(CheckoutDetailsViewModel checkoutDetails, BasketViewModel basketViewModel)
         {
-            var shippingAddress = new PurchaseAddress
+            var shippingAddress = new AddressDetails
             {
-                FirstName = checkoutDetails.FirstName,
-                LastName = checkoutDetails.LastName,
-                PhoneNumber = checkoutDetails.PhoneNumber,
-                ShippingAddressDetails = new PurchaseEventAddress
-                {
-                    Street1 = checkoutDetails.ShippingAddress1,
-                    Street2 = checkoutDetails.ShippingAddress2,
-                    City = checkoutDetails.City,
-                    State = checkoutDetails.State,
-                    ZipCode = checkoutDetails.ZipCode,
-                    Country = checkoutDetails.CountryRegion
-                }
+                FirstName = checkoutDetails.User.FirstName,
+                LastName = checkoutDetails.User.LastName,
+                PhoneNumber = checkoutDetails.User.Phone,
+                Street1 = checkoutDetails.ShippingAddress.Address1,
+                Street2 = checkoutDetails.ShippingAddress.Address2,
+                City = checkoutDetails.ShippingAddress.City,
+                State = checkoutDetails.ShippingAddress.State,
+                ZipCode = checkoutDetails.ShippingAddress.ZipCode,
+                Country = checkoutDetails.ShippingAddress.CountryRegion
             };
 
-            var billingAddress = new PaymentInstrumentAddress
+            var billingAddress = new AddressDetails
             {
-                FirstName = checkoutDetails.FirstName,
-                LastName = checkoutDetails.LastName,
-                PhoneNumber = checkoutDetails.PhoneNumber,
-                BillingAddressDetails = new PurchaseEventAddress
-                {
-                    Street1 = checkoutDetails.BillingAddress1,
-                    Street2 = checkoutDetails.BillingAddress2,
-                    City = checkoutDetails.BillingCity,
-                    State = checkoutDetails.BillingState,
-                    ZipCode = checkoutDetails.BillingZipCode,
-                    Country = checkoutDetails.BillingCountryRegion
-                }
+                FirstName = checkoutDetails.User.FirstName,
+                LastName = checkoutDetails.User.LastName,
+                PhoneNumber = checkoutDetails.User.Phone,
+                Street1 = checkoutDetails.BillingAddress.Address1,
+                Street2 = checkoutDetails.BillingAddress.Address2,
+                City = checkoutDetails.BillingAddress.City,
+                State = checkoutDetails.BillingAddress.State,
+                ZipCode = checkoutDetails.BillingAddress.ZipCode,
+                Country = checkoutDetails.BillingAddress.CountryRegion
             };
 
-            var device = new PurchaseDeviceContext
+            var device = new DeviceContext
             {
                 DeviceContextId = _contextAccessor.GetSessionId(),
                 IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                DeviceContextDetails = new DeviceContext
-                {
-                    DeviceContextDC = checkoutDetails.FingerPrintingDC,
-                    Provider = DeviceContextProvider.DFPFINGERPRINTING.ToString()
-                }
+                DeviceContextDC = checkoutDetails.DeviceFingerPrinting.FingerPrintingDC,
+                Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
             };
 
-            var productList = new List<PurchaseProduct>();
-            foreach (var item in basketViewModel.Items)
+            Func<string, string> getCategoryFromName = (productName) =>
             {
-                productList.Add(new PurchaseProduct
+                if (productName.Contains("mug", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    ProductId = item.Id.ToString(),
-                    PurchasePrice = item.UnitPrice,
-                    Quantity = item.Quantity,
+                    return ProductCategory.HomeGarden.ToString();
+                }
+
+                if (productName.Contains("shirt", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return ProductCategory.ClothingShoes.ToString();
+                }
+
+                if (productName.Contains("sheet", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return ProductCategory.Jewelry.ToString();
+                }
+
+                return "Other";
+            };
+
+            var productList = basketViewModel.Items
+                .Select(i => new Product
+                {
+                    ProductId = i.Id.ToString(),
+                    PurchasePrice = i.UnitPrice,
+                    Quantity = i.Quantity,
                     Margin = 2.1M,
                     IsPreorder = false,
                     ShippingMethod = PurchaseShippingMethod.Standard.ToString(),
-                    ProductDetails = new Product
-                    {
-                        ProductName = item.ProductName,
-                        Type = "digital",
-                        Category = item.CatalogItemId.ToString(),
-                        Market = "US",
-                        COGS = 0.11M,
-                        IsRecurring = false,
-                        SalesPrice = item.UnitPrice,
-                        Currency = "USD",
-                        IsFree = false,
-                        Language = "EN-US",
-                        Sku = item.Id.ToString()
-                    }
-                });
-            }
+                    ProductName = i.ProductName,
+                    Type = ProductType.Digital.ToString(),
+                    Category = getCategoryFromName(i.ProductName),
+                    Market = "US",
+                    COGS = 0.11M,
+                    IsRecurring = false,
+                    SalesPrice = i.UnitPrice,
+                    Currency = "USD",
+                    IsFree = false,
+                    Language = "EN-US",
+                    Sku = i.Id.ToString()
+                })
+                .ToList();
 
             //Logged in vs. anonymous user checkout.
             //If they are logged in, use their email.
@@ -335,53 +370,47 @@ namespace Contoso.FraudProtection.Web.Controllers
             //If that isn't available - it always should be - create a new GUID.
             var userId = User?.Identity?.Name ?? basketViewModel.BuyerId ?? Guid.NewGuid().ToString();
 
-            var user = new PurchaseUser
+            var user = new UserDetails
             {
                 UserId = userId,
-                UserDetails = new User
-                {
-                    CreationDate = DateTimeOffset.Now,
-                    UpdateDate = DateTimeOffset.Now,
-                    FirstName = checkoutDetails.FirstName,
-                    LastName = checkoutDetails.LastName,
-                    Country = checkoutDetails.CountryRegion,
-                    ZipCode = checkoutDetails.ZipCode,
-                    TimeZone = TimeZoneInfo.Local.Id,
-                    Language = "EN-US",
-                    PhoneNumber = checkoutDetails.PhoneNumber,
-                    Email = checkoutDetails.Email,
-                    ProfileType = UserProfileType.Consumer.ToString()
-                }
+                CreationDate = DateTimeOffset.Now,
+                UpdateDate = DateTimeOffset.Now,
+                FirstName = checkoutDetails.User.FirstName,
+                LastName = checkoutDetails.User.LastName,
+                Country = checkoutDetails.ShippingAddress.CountryRegion,
+                ZipCode = checkoutDetails.ShippingAddress.ZipCode,
+                TimeZone = TimeZoneInfo.Local.Id,
+                Language = "EN-US",
+                PhoneNumber = checkoutDetails.User.Phone,
+                Email = checkoutDetails.User.Email,
+                ProfileType = UserProfileType.Consumer.ToString()
             };
 
             var paymentInstrument = new PurchasePaymentInstrument
             {
                 PurchaseAmount = basketViewModel.Total,
-                PaymentInstrumentDetails = new PaymentInstrument
-                {
-                    MerchantPaymentInstrumentId = $"{userId}-CreditCard",
-                    Type = PaymentInstrumentType.CREDITCARD.ToString(),
-                    CardType = checkoutDetails.CardType,
-                    State = PaymentInstrumentState.Active.ToString(),
-                    HolderName = checkoutDetails.CardName,
-                    BIN = checkoutDetails.UnformattedCardNumber.Substring(0, 6),
-                    ExpirationDate = string.Join('/', checkoutDetails.ExpirationMonth, checkoutDetails.ExpirationYear),
-                    LastFourDigits = checkoutDetails.UnformattedCardNumber.Substring(checkoutDetails.UnformattedCardNumber.Length - 4),
-                    CreationDate = DateTimeOffset.Now.AddMonths(-14),
-                    BillingAddress = billingAddress,
-                }
+                MerchantPaymentInstrumentId = $"{userId}-CreditCard",
+                Type = PaymentInstrumentType.CreditCard.ToString(),
+                CardType = checkoutDetails.CreditCard.CardType,
+                State = PaymentInstrumentState.Active.ToString(),
+                HolderName = checkoutDetails.CreditCard.CardName,
+                BIN = checkoutDetails.CreditCard.UnformattedCardNumber.Substring(0, 6),
+                ExpirationDate = string.Join('/', checkoutDetails.CreditCard.ExpirationMonth, checkoutDetails.CreditCard.ExpirationYear),
+                LastFourDigits = checkoutDetails.CreditCard.UnformattedCardNumber.Substring(checkoutDetails.CreditCard.UnformattedCardNumber.Length - 4),
+                CreationDate = DateTimeOffset.Now.AddMonths(-14),
+                BillingAddress = billingAddress,
             };
 
-            return new PurchaseEvent
+            return new Purchase
             {
                 PurchaseId = Guid.NewGuid().ToString(),
-                AssessmentType = PurchaseAssessmentType.protect.ToString(),
+                AssessmentType = AssessmentType.Protect.ToString(),
                 ShippingAddress = shippingAddress,
                 ShippingMethod = PurchaseShippingMethod.Standard.ToString(),
                 Currency = "USD",
                 DeviceContext = device,
                 MerchantLocalDate = DateTimeOffset.Now,
-                CustomerLocalDate = checkoutDetails.ClientDate,
+                CustomerLocalDate = checkoutDetails.DeviceFingerPrinting.ClientDate,
                 ProductList = productList,
                 TotalAmount = basketViewModel.Total,
                 SalesTax = basketViewModel.Tax,
@@ -398,19 +427,16 @@ namespace Contoso.FraudProtection.Web.Controllers
             return new PurchaseStatusEvent
             {
                 PurchaseId = purchaseId,
-                Status = new PurchaseStatus
-                {
-                    StatusDate = DateTimeOffset.Now,
-                    StatusType = status.ToString(),
-                    Reason = "Some reason for " + status
-                }
+                StatusDate = DateTimeOffset.Now,
+                StatusType = status.ToString(),
+                Reason = PurchaseStatusReason.RuleEngine.ToString()
             };
         }
 
         /// <summary>
         /// Creates charge and auth bank events.
         /// </summary>
-        private BankEvent SetupBankEvent(BankEventType type, DateTimeOffset transactionDate, string userId, string PurchaseId, BankStatus status)
+        private BankEvent SetupBankEvent(BankEventType type, DateTimeOffset transactionDate, string PurchaseId, BankEventStatus status)
         {
             return new BankEvent
             {
@@ -422,7 +448,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 PaymentProcessor = "CitiAch", //this is something the bank sent, here we just hardcode a possible one
                 MRN = "Z20LY1SSB3WY", //this is something the bank sent, here we just hardcode a possible one
                 MID = "A1010EUSD01", //this is something the bank sent, here we just hardcode a possible one
-                Purchase = new BankEventPurchase { PurchaseId = PurchaseId }
+                PurchaseId = PurchaseId
             };
         }
         #endregion

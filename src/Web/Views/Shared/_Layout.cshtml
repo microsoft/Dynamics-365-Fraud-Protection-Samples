@@ -1,10 +1,16 @@
-@*
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.   
+﻿@*
+    // Copyright (c) Microsoft Corporation.
+    // Licensed under the MIT license.
 *@
 
+@using Contoso.FraudProtection.Web.Extensions;
 @using Microsoft.Extensions.Configuration
+
 @inject IConfiguration Configuration
+@{
+    var apiBaseUrl = Configuration.GetSection("FraudProtectionSettings")["ApiBaseUrl"];
+}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,9 +18,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Microsoft Fraud Protection Merchant Application</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.5/css/bootstrap.min.css"
-          asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-          asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" />
     <environment names="Development">
         <link rel="stylesheet" href="~/css/app.css" />
     </environment>
@@ -41,9 +45,18 @@
             }
 
             var today = new Date();
-            document.getElementById('ClientDate').value = today.toJSON();
-            document.getElementById('ClientTimeZone').value = today.isDstObserved() ? today.stdTimezoneOffset() : today.getTimezoneOffset();
-            document.getElementById('FingerPrintingDC').value = dfp.dc;
+            var clientDate = document.getElementById('DeviceFingerPrinting_ClientDate');
+            if (clientDate) {
+                clientDate.value = today.toJSON();
+            }
+            var clientTimeZone = document.getElementById('DeviceFingerPrinting_ClientTimeZone');
+            if (clientTimeZone) {
+                clientTimeZone.value = today.isDstObserved() ? today.stdTimezoneOffset() : today.getTimezoneOffset();
+            }
+            var fingerPrintingDc = document.getElementById('DeviceFingerPrinting_FingerPrintingDC');
+            if (fingerPrintingDc) {
+                fingerPrintingDc.value = dfp.dc;
+            }
         }
     </script>
 </head>
@@ -51,10 +64,9 @@
     <header class="navbar navbar-light navbar-static-top">
         <div class="container">
             <article class="row">
-
                 <section class="col-lg-6 col-md-5 col-xs-11">
                     <a asp-area="" asp-controller="Catalog" asp-action="Index" class="navbar-brand">
-                        <img src="~/images/brand.png" alt="Microsoft Fraud Protection Merchant Application" />
+                        <img src="~/images/brand.png" alt="Microsoft Fraud Protection Merchant Application" title="@apiBaseUrl" />
                     </a>
                 </section>
                 <partial name="_LoginPartial" />
@@ -66,6 +78,8 @@
     </section>
 
     @RenderBody()
+
+    <partial name="_FraudProtectionIO" model="TempData.Get<FraudProtectionIOModel>(FraudProtectionIOModel.TempDataKey)" />
 
     <footer class="esh-app-footer">
         <div class="container">
@@ -79,14 +93,8 @@
         </div>
     </footer>
 
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
-            asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-            asp-fallback-test="window.jQuery">
-    </script>
-    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"
-            asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
-    </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"></script>
 
     <environment names="Development">
         <script src="~/js/bundle/bundle.js" asp-append-version="true"></script>

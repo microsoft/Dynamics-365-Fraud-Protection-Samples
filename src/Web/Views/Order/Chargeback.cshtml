@@ -1,9 +1,11 @@
 @*
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT license.   
+    // Copyright (c) Microsoft Corporation.
+    // Licensed under the MIT license.
 *@
 
+@using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent
 @using Contoso.FraudProtection.Web.ViewModels
+
 @{
     ViewData["Title"] = "Chargeback Items";
     @model OrderViewModel
@@ -39,37 +41,46 @@
                         <section class="esh-basket-item esh-basket-item--middle col-xs-2">@item.Units</section>
                         <section class="esh-basket-item esh-basket-item--middle esh-basket-item--mark col-xs-2">@((item.Units * item.UnitPrice).AsMoney())</section>
                     </div>
-                    <div class="row">
-
-                    </div>
                 </article>
             }
-                <div class="container">
-                    <article class="esh-basket-titles esh-basket-titles--clean row">
-                        <section class="esh-basket-title col-xs-10"></section>
-                        <section class="esh-basket-title col-xs-2">Tax</section>
-                    </article>
+            <div class="container">
+                <article class="esh-basket-titles esh-basket-titles--clean row">
+                    <section class="esh-basket-title col-xs-10"></section>
+                    <section class="esh-basket-title col-xs-2">Tax</section>
+                </article>
 
-                    <article class="esh-basket-items row">
-                        <section class="esh-basket-item col-xs-10"></section>
-                        <section class="esh-basket-item esh-basket-item--mark col-xs-2">@Model.Tax.AsMoney()</section>
-                    </article>
+                <article class="esh-basket-items row">
+                    <section class="esh-basket-item col-xs-10"></section>
+                    <section class="esh-basket-item esh-basket-item--mark col-xs-2">@Model.Tax.AsMoney()</section>
+                </article>
 
-                    <article class="esh-basket-titles esh-basket-titles--clean row">
-                        <section class="esh-basket-title col-xs-10"></section>
-                        <section class="esh-basket-title col-xs-2">Total</section>
-                    </article>
+                <article class="esh-basket-titles esh-basket-titles--clean row">
+                    <section class="esh-basket-title col-xs-10"></section>
+                    <section class="esh-basket-title col-xs-2">Total</section>
+                </article>
 
-                    <article class="esh-basket-items row">
-                        <section class="esh-basket-item col-xs-10"></section>
-                        <section class="esh-basket-item esh-basket-item--mark col-xs-2">@Model.Total.AsMoney()</section>
-                    </article>
+                <article class="esh-basket-items row">
+                    <section class="esh-basket-item col-xs-10"></section>
+                    <section class="esh-basket-item esh-basket-item--mark col-xs-2">@Model.Total.AsMoney()</section>
+                </article>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    @Html.HiddenFor(m => m.OrderNumber)
+                    <label asp-for="ReturnOrChargebackReason" class="col-md-2 control-label">Chargeback Reason (Optional)</label>
+                    <div class="col-md-5">
+                        @Html.TextAreaFor(m => m.ReturnOrChargebackReason, new { @class = "form-control" })
+                    </div>
                 </div>
-            <div class="form-group">
-                @Html.HiddenFor(m => m.OrderNumber)
-                <label asp-for="ReturnOrChargebackReason" class="col-md-2 control-label">Chargeback Reason (Optional)</label>
-                <div class="col-md-10">
-                    @Html.TextAreaFor(m => m.ReturnOrChargebackReason, new { @class = "form-control" })
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="ChargebackStatus" class="col-md-2 control-label">Chargeback Status</label>
+                    <div class="col-md-3">
+                        @Html.DropDownList("ChargebackStatus",
+                            Html.GetEnumSelectList<ChargebackStatus>(),
+                            new { @class = "form-control", required = "required" })
+                    </div>
                 </div>
             </div>
             <section class="esh-basket-item col-xs-push-8 col-xs-4">

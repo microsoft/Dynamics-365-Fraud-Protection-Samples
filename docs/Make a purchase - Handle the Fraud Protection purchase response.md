@@ -1,11 +1,11 @@
 # Microsoft Dynamics 365 Fraud Protection - API examples
 ## Make a purchase - Handling the Dynamics 365 Fraud Protection purchase response
 
-One of many core values of Dynamics 365 Fraud Protection is providing you a risk decision when you send it a purchase event. Use this decision to help guide your purchase workflow. For instance, you can display an error message to your customer if the risk decision indicates rejecting the purchase; oppositely, you can continue with the purchase workflow if the risk decision is to approve the purchase. You do not have to honor the risk decision, but we recommend doing so unless there are special considerations for specific purchases/customers. Even then, we recommend that you configure Dynamics 365 Fraud Protection rules in the Dynamics 365 Fraud Protection portal so that your risk decisions already include those custom rules.
+One of many core values of Dynamics 365 Fraud Protection is providing you a risk recommendation when you send it a purchase event. Use your merchant rule decision returned by Dynamics 365 Fraud Protection to help guide your purchase workflow. For instance, you can display an error message to your customer if the risk decision indicates rejecting the purchase; oppositely, you can continue with the purchase workflow if the risk decision is to approve the purchase. You do not have to honor the risk decision, but we recommend doing so unless there are special considerations for specific purchases/customers. Even then, we recommend that you configure Dynamics 365 Fraud Protection rules in the Dynamics 365 Fraud Protection portal so that your risk decisions already include those custom rules.
 
 ## Helpful links
 - [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
-- [Purchase - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/Events/V0.5MerchantservicesEventsPurchasePost)
+- [Purchase - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/v1.0/V1.0MerchantservicesEventsPurchasePost)
 - [Sample site - Handle the purchase response](../src/Web/Controllers/BasketController.cs) (see ApproveOrRejectPurchase method)
 
 ## Returned data
@@ -22,16 +22,19 @@ Example HTTP response when Dynamics 365 Fraud Protection recommends that you *
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
+x-ms-correlation-id: 7f02a163-5fbb-4ed4-bb92-775473d03963
+x-ms-appversion: 1.0:1.23:132104537452173612
 Date: <date>
-Content-Length: 98
+Content-Length: <content length>
 
 {
   "resultDetails": {
     "MerchantRuleDecision": "Approve",
-    "MIDFlag": "Control",
-    "RiskScore": 2,
-    "ReasonCodes": "",
-    "PurchaseId": "<purchase id>"
+    "RiskScore": 15,
+    "ReasonCodes": "500-LOCATION_CONSISTENCY:GENERAL,800-ACCOUNT_CONSISTENCY:GENERAL,1100-DEVICE_INFORMATION:GENERAL,700-ACCOUNT_INFORMATION:GENERAL",
+    "MIDFlag": "Standard",
+    "PolicyApplied": "Default",
+    "PurchaseId": "<purchase ID>"
   }
 }
 ```
@@ -40,16 +43,19 @@ Example HTTP response when Dynamics 365 Fraud Protection recommends that you *
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
+x-ms-correlation-id: 7f02a163-5fbb-4ed4-bb92-775473d03964
+x-ms-appversion: 1.0:1.23:132104537452173612
 Date: <date>
-Content-Length: 98
+Content-Length: <content length>
 
 {
   "resultDetails": {
+    "MIDFlag": "Standard",
+    "PolicyApplied": "<merchant rule name, e.g. Reject very high scores>",
     "MerchantRuleDecision": "Reject",
-    "MIDFlag": "Control",
-    "RiskScore": 93,
-    "ReasonCodes": "RISKY PAYMENT METHOD,RISKY ACCOUNT LOCATION,SUSPICIOUS DEVICE IP,RISKY BILLING LOCATION,SUSPICIOUS NUMBER OF IPS FOR A DEVICE,RISKY PRODUCT",
-    "PurchaseId": "<purchase id>"
+    "RiskScore": 120,
+    "ReasonCodes": "900-PAYMENT_INFORMATION:GENERAL,500-LOCATION_CONSISTENCY:GENERAL,1100-DEVICE_INFORMATION:GENERAL,700-ACCOUNT_INFORMATION:GENERAL"
+    "PurchaseId": "<purchase ID>"
   }
 }
 ```

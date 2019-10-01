@@ -1,0 +1,116 @@
+@*
+    // Copyright (c) Microsoft Corporation.
+    // Licensed under the MIT license.
+*@
+
+@using Microsoft.Dynamics.FraudProtection.Models.LabelEvent
+@using Contoso.FraudProtection.Web.ViewModels
+
+@model OrderViewModel
+
+@{
+    ViewData["Title"] = "Add Label";
+}
+
+@section TopBanner {
+    <div class="container">
+        <img class="esh-catalog-title" src="~/images/main_banner_text.png" />
+    </div>
+}
+
+<div class="container">
+    <form method="post">
+        <article class="esh-basket-titles row">
+            <br />
+            <section class="esh-basket-title col-xs-3">Product</section>
+            <section class="esh-basket-title col-xs-3 hidden-lg-down"></section>
+            <section class="esh-basket-title col-xs-2">Price</section>
+            <section class="esh-basket-title col-xs-2">Quantity</section>
+            <section class="esh-basket-title col-xs-2">Cost</section>
+        </article>
+        <div class="esh-catalog-items row">
+            @for (int i = 0; i < Model.OrderItems.Count; i++)
+            {
+                var item = Model.OrderItems[i];
+                <article class="esh-basket-items row">
+                    <div>
+                        <section class="esh-basket-item esh-basket-item--middle col-lg-3 hidden-lg-down">
+                            <img class="esh-basket-image" src="@item.PictureUrl" />
+                        </section>
+                        <section class="esh-basket-item esh-basket-item--middle col-xs-3">@item.ProductName</section>
+                        <section class="esh-basket-item esh-basket-item--middle col-xs-2">@item.UnitPrice.AsMoney()</section>
+                        <section class="esh-basket-item esh-basket-item--middle col-xs-2">@item.Units</section>
+                        <section class="esh-basket-item esh-basket-item--middle esh-basket-item--mark col-xs-2">@((item.Units * item.UnitPrice).AsMoney())</section>
+                    </div>
+                    <div class="row">
+
+                    </div>
+                </article>
+            }
+            <div class="container">
+                <article class="esh-basket-titles esh-basket-titles--clean row">
+                    <section class="esh-basket-title col-xs-10"></section>
+                    <section class="esh-basket-title col-xs-2">Tax</section>
+                </article>
+                <article class="esh-basket-items row">
+                    <section class="esh-basket-item col-xs-10"></section>
+                    <section class="esh-basket-item esh-basket-item--mark col-xs-2">@Model.Tax.AsMoney()</section>
+                </article>
+                <article class="esh-basket-titles esh-basket-titles--clean row">
+                    <section class="esh-basket-title col-xs-10"></section>
+                    <section class="esh-basket-title col-xs-2">Total</section>
+                </article>
+                <article class="esh-basket-items row">
+                    <section class="esh-basket-item col-xs-10"></section>
+                    <section class="esh-basket-item esh-basket-item--mark col-xs-2">@Model.Total.AsMoney()</section>
+                </article>
+            </div>
+            @Html.HiddenFor(m => m.OrderNumber)
+            <div class="row">
+                <div class="form-group">
+                    <label for="LabelObjectType" class="col-md-2 control-label">Label Object Type</label>
+                    <div class="col-md-3">
+                        @Html.DropDownList("LabelObjectType",
+                            Html.GetEnumSelectList<LabelObjectType>().Where(i => i.Text != "GenericEvent" && i.Text != "Signup"),
+                            new { @class = "form-control", required = "required" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="LabelSource" class="col-md-2 control-label">Label Source</label>
+                    <div class="col-md-3">
+                        @Html.DropDownList("LabelSource",
+                            Html.GetEnumSelectList<LabelSource>(),
+                            new { @class = "form-control", required = "required" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="LabelStatus" class="col-md-2 control-label">Label Status</label>
+                    <div class="col-md-3">
+                        @Html.DropDownList("LabelStatus",
+                            Html.GetEnumSelectList<LabelState>(),
+                            new { @class = "form-control", required = "required" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="LabelReasonCode" class="col-md-2 control-label">Label Reason Code</label>
+                    <div class="col-md-3">
+                        @Html.DropDownList("LabelReasonCode",
+                            Html.GetEnumSelectList<LabelReasonCodes>(),
+                            new { @class = "form-control", required = "required" })
+                    </div>
+                </div>
+            </div>
+            <section class="esh-basket-item col-xs-push-8 col-xs-4">
+                <input type="submit" asp-action="LabelOrder" asp-controller="Order"
+                       class="btn esh-basket-checkout"
+                       value="[ Add Label ]" name="action" />
+            </section>
+        </div>
+    </form>
+</div>

@@ -69,7 +69,6 @@ namespace Contoso.FraudProtection.Web.Services
                         UnitPrice = i.UnitPrice,
                         Quantity = i.Quantity,
                         CatalogItemId = i.CatalogItemId
-
                     };
                     var item = _itemRepository.GetById(i.CatalogItemId);
                     itemModel.PictureUrl = _uriComposer.ComposePicUri(item.PictureUri);

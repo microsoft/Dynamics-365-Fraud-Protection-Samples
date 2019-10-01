@@ -5,16 +5,15 @@ using Newtonsoft.Json;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels
 {
-    public class PurchaseResponse: BaseResponse
+    public class PurchaseResponse
     {
         [JsonProperty("resultDetails")]
         public PurchaseResultDetails ResultDetails { get; set; }
     }
 
-    public class PurchaseResultDetails
+    public class PurchaseResultDetails : BaseAssessmentResponse
     {
-        public string MerchantRuleDecision { get; set; }
-
         public string MIDFlag { get; set; }
+        public string PolicyApplied { get; set; }
     }
 }

@@ -13,6 +13,7 @@
 <h3>@ViewData["Title"]</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
 <form asp-controller="Manage" method="post" class="form-horizontal" onsubmit="setUpClientDetails()">
+    @Html.HiddenFor(m => m.DeviceFingerPrinting.FingerPrintingDC)
     <div class="row">
         <div asp-validation-summary="All" class="text-danger"></div>
         <section>
@@ -21,29 +22,29 @@
                 <div class="form-group">
                     <div class="col-md-10">
                         <label for="cardType">Card Type</label>
-                        @Html.DropDownListFor(model => model.CardType, HelperFunctions.CardTypeList, new { @class = "form-control" })
+                        @Html.DropDownListFor(model => model.CreditCard.CardType, HelperFunctions.CardTypeList, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-10">
                         <label for="cardNumber">Card Number</label>
-                        @Html.TextBoxFor(model => model.CardNumber, new { @class = "form-control", @placeholder = "XXXX-XXXX-XXXX-XXXX" })
+                        @Html.TextBoxFor(model => model.CreditCard.CardNumber, new { @class = "form-control", @placeholder = "XXXX-XXXX-XXXX-XXXX", autocomplete = "off" })
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-3">
                         <label for="cvv">CVV</label>
-                        @Html.TextBoxFor(model => model.CVV, new { @class = "form-control", @placeholder = "XXX" })
+                        @Html.TextBoxFor(model => model.CreditCard.CVV, new { @class = "form-control", @placeholder = "XXX" })
                     </div>
                     <div class="col-md-8">
                         <div>
                             <label for="expirationMonth">Expiration Date</label>
                         </div>
                         <div class="col-md-6" style="width: 45%; padding-left: 0;">
-                            @Html.DropDownListFor(model => model.ExpirationMonth, HelperFunctions.PIMonthList, new { @class = "form-control" })
+                            @Html.DropDownListFor(model => model.CreditCard.ExpirationMonth, HelperFunctions.PIMonthList, new { @class = "form-control" })
                         </div>
                         <div class="col-md-6" style="width: 45%; padding-left: 0;">
-                            @Html.DropDownListFor(model => model.ExpirationYear, HelperFunctions.PIYearList, new { @class = "form-control" })
+                            @Html.DropDownListFor(model => model.CreditCard.ExpirationYear, HelperFunctions.PIYearList, new { @class = "form-control" })
                         </div>
                     </div>
                 </div>
@@ -55,43 +56,43 @@
                 <div class="form-group">
                     <div class="col-md-10">
                         <label for="cardName">Card Holder Name</label>
-                        @Html.TextBoxFor(model => model.CardName, new { @class = "form-control" })
+                        @Html.TextBoxFor(model => model.CreditCard.CardName, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-10">
                         <label for="address1">Address Line 1</label>
-                        @Html.TextBoxFor(model => model.Address1, new { @class = "form-control" })
+                        @Html.TextBoxFor(model => model.BillingAddress.Address1, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-10">
                         <label for="address2">Address Line 2</label>
-                        @Html.TextBoxFor(model => model.Address2, new { @class = "form-control" })
+                        @Html.TextBoxFor(model => model.BillingAddress.Address2, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-10">
                         <label for="city">City</label>
-                        @Html.TextBoxFor(model => model.City, new { @class = "form-control" })
+                        @Html.TextBoxFor(model => model.BillingAddress.City, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-10">
                         <label for="state">State</label>
-                        @Html.TextBoxFor(model => model.State, new { @class = "form-control" })
+                        @Html.TextBoxFor(model => model.BillingAddress.State, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-10">
                         <label for="zipCode">Zip Code</label>
-                        @Html.TextBoxFor(model => model.ZipCode, new { @class = "form-control" })
+                        @Html.TextBoxFor(model => model.BillingAddress.ZipCode, new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-10">
                         <label for="countryRegion">Country/Region</label>
-                        @Html.DropDownListFor(model => model.CountryRegion, HelperFunctions.CountryRegionList, new { @class = "form-control" })
+                        @Html.DropDownListFor(model => model.BillingAddress.CountryRegion, HelperFunctions.CountryRegionList, new { @class = "form-control" })
                     </div>
                 </div>
             </div>
@@ -100,8 +101,8 @@
             <div class="esh-catalog-items row">
                 <section class="esh-basket-item col-xs-push-8 col-xs-4">
                     <input type="submit" asp-action="ManagePaymentInstrument"
-                            class="btn esh-basket-checkout"
-                            value="[ Update ]" name="action" />
+                           class="btn esh-basket-checkout"
+                           value="[ Update ]" name="action" />
                 </section>
             </div>
         </div>
@@ -111,3 +112,5 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<partial name="_DeviceFingerPrinting" model="Model.DeviceFingerPrinting" />
