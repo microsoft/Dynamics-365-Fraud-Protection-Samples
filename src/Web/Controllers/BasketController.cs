@@ -8,6 +8,7 @@ using Contoso.FraudProtection.Web.Extensions;
 using Contoso.FraudProtection.Web.Interfaces;
 using Contoso.FraudProtection.Web.Services;
 using Contoso.FraudProtection.Web.ViewModels;
+using Contoso.FraudProtection.Web.ViewModels.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -98,7 +99,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 return View("CheckoutDetails", new CheckoutDetailsViewModel
                 {
                     NumberItems = basketViewModel.Items.Count,
-                    DeviceFingerPrinting = new DeviceFingerPrintingModel
+                    DeviceFingerPrinting = new DeviceFingerPrintingViewModel
                     {
                         SessionId = sessionId
                     }
@@ -108,30 +109,42 @@ namespace Contoso.FraudProtection.Web.Controllers
             // Apply default user settings
             var baseCheckoutModel = new CheckoutDetailsViewModel
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                ShippingAddress1 = user.Address1,
-                ShippingAddress2 = user.Address2,
-                City = user.City,
-                State = user.State,
-                ZipCode = user.ZipCode,
-                CountryRegion = user.CountryRegion,
-                CardType = user.DefaultCardType,
-                CardName = user.DefaultCardName,
-                CardNumber = user.DefaultCardNumber,
-                ExpirationMonth = user.DefaultExpirationMonth,
-                ExpirationYear = user.DefaultExpirationYear,
-                CVV = user.DefaultCVV,
-                BillingAddress1 = user.BillingAddress1,
-                BillingAddress2 = user.BillingAddress2,
-                BillingCity = user.BillingCity,
-                BillingCountryRegion = user.BillingCountryRegion,
-                BillingState = user.BillingState,
-                BillingZipCode = user.BillingZipCode,
+                User = new UserViewModel
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Phone = user.PhoneNumber,
+                },
+                ShippingAddress = new AddressViewModel
+                {
+                    Address1 = user.Address1,
+                    Address2 = user.Address2,
+                    City = user.City,
+                    State = user.State,
+                    ZipCode = user.ZipCode,
+                    CountryRegion = user.CountryRegion,
+                },
+                CreditCard = new CreditCardViewModel
+                {
+                    CardType = user.DefaultCardType,
+                    CardName = user.DefaultCardName,
+                    CardNumber = user.DefaultCardNumber,
+                    ExpirationMonth = user.DefaultExpirationMonth,
+                    ExpirationYear = user.DefaultExpirationYear,
+                    CVV = user.DefaultCVV,
+                },
+                BillingAddress = new AddressViewModel
+                {
+                    Address1 = user.BillingAddress1,
+                    Address2 = user.BillingAddress2,
+                    City = user.BillingCity,
+                    CountryRegion = user.BillingCountryRegion,
+                    State = user.BillingState,
+                    ZipCode = user.BillingZipCode,
+                },
                 NumberItems = basketViewModel.Items.Count,
-                DeviceFingerPrinting = new DeviceFingerPrintingModel
+                DeviceFingerPrinting = new DeviceFingerPrintingViewModel
                 {
                     SessionId = sessionId
                 }
@@ -145,18 +158,18 @@ namespace Contoso.FraudProtection.Web.Controllers
             var basketViewModel = await GetBasketViewModelAsync();
 
             var address = new Address(
-                string.Join(' ', checkoutDetails.ShippingAddress1, checkoutDetails.ShippingAddress2),
-                checkoutDetails.City,
-                checkoutDetails.State,
-                checkoutDetails.CountryRegion,
-                checkoutDetails.ZipCode);
+                string.Join(' ', checkoutDetails.ShippingAddress.Address1, checkoutDetails.ShippingAddress.Address2),
+                checkoutDetails.ShippingAddress.City,
+                checkoutDetails.ShippingAddress.State,
+                checkoutDetails.ShippingAddress.CountryRegion,
+                checkoutDetails.ShippingAddress.ZipCode);
 
             var paymentInfo = new PaymentInfo(
-                string.Join(' ', checkoutDetails.FirstName, checkoutDetails.LastName),
-                checkoutDetails.CardNumber,
-                checkoutDetails.CardType,
-                checkoutDetails.CVV,
-                string.Join('/', checkoutDetails.ExpirationMonth, checkoutDetails.ExpirationYear));
+                string.Join(' ', checkoutDetails.User.FirstName, checkoutDetails.User.LastName),
+                checkoutDetails.CreditCard.CardNumber,
+                checkoutDetails.CreditCard.CardType,
+                checkoutDetails.CreditCard.CVV,
+                string.Join('/', checkoutDetails.CreditCard.ExpirationMonth, checkoutDetails.CreditCard.ExpirationYear));
 
             #region Fraud Protection Service
             //Call Fraud Protection to get the risk score for this purchase.
@@ -171,7 +184,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             //Check the risk score that was returned and possibly complete the purchase.
             var status = await ApproveOrRejectPurchase(
                 result.ResultDetails.MerchantRuleDecision,
-                checkoutDetails.UnformattedCardNumber,
+                checkoutDetails.CreditCard.UnformattedCardNumber,
                 purchase.PurchaseId,
                 correlationId,
                 fraudProtectionIO);
@@ -276,28 +289,28 @@ namespace Contoso.FraudProtection.Web.Controllers
         {
             var shippingAddress = new AddressDetails
             {
-                FirstName = checkoutDetails.FirstName,
-                LastName = checkoutDetails.LastName,
-                PhoneNumber = checkoutDetails.PhoneNumber,
-                Street1 = checkoutDetails.ShippingAddress1,
-                Street2 = checkoutDetails.ShippingAddress2,
-                City = checkoutDetails.City,
-                State = checkoutDetails.State,
-                ZipCode = checkoutDetails.ZipCode,
-                Country = checkoutDetails.CountryRegion
+                FirstName = checkoutDetails.User.FirstName,
+                LastName = checkoutDetails.User.LastName,
+                PhoneNumber = checkoutDetails.User.Phone,
+                Street1 = checkoutDetails.ShippingAddress.Address1,
+                Street2 = checkoutDetails.ShippingAddress.Address2,
+                City = checkoutDetails.ShippingAddress.City,
+                State = checkoutDetails.ShippingAddress.State,
+                ZipCode = checkoutDetails.ShippingAddress.ZipCode,
+                Country = checkoutDetails.ShippingAddress.CountryRegion
             };
 
             var billingAddress = new AddressDetails
             {
-                FirstName = checkoutDetails.FirstName,
-                LastName = checkoutDetails.LastName,
-                PhoneNumber = checkoutDetails.PhoneNumber,
-                Street1 = checkoutDetails.BillingAddress1,
-                Street2 = checkoutDetails.BillingAddress2,
-                City = checkoutDetails.BillingCity,
-                State = checkoutDetails.BillingState,
-                ZipCode = checkoutDetails.BillingZipCode,
-                Country = checkoutDetails.BillingCountryRegion
+                FirstName = checkoutDetails.User.FirstName,
+                LastName = checkoutDetails.User.LastName,
+                PhoneNumber = checkoutDetails.User.Phone,
+                Street1 = checkoutDetails.BillingAddress.Address1,
+                Street2 = checkoutDetails.BillingAddress.Address2,
+                City = checkoutDetails.BillingAddress.City,
+                State = checkoutDetails.BillingAddress.State,
+                ZipCode = checkoutDetails.BillingAddress.ZipCode,
+                Country = checkoutDetails.BillingAddress.CountryRegion
             };
 
             var device = new DeviceContext
@@ -311,13 +324,19 @@ namespace Contoso.FraudProtection.Web.Controllers
             Func<string, string> getCategoryFromName = (productName) =>
             {
                 if (productName.Contains("mug", StringComparison.InvariantCultureIgnoreCase))
+                {
                     return ProductCategory.HomeGarden.ToString();
+                }
 
                 if (productName.Contains("shirt", StringComparison.InvariantCultureIgnoreCase))
+                {
                     return ProductCategory.ClothingShoes.ToString();
+                }
 
                 if (productName.Contains("sheet", StringComparison.InvariantCultureIgnoreCase))
+                {
                     return ProductCategory.Jewelry.ToString();
+                }
 
                 return "Other";
             };
@@ -356,14 +375,14 @@ namespace Contoso.FraudProtection.Web.Controllers
                 UserId = userId,
                 CreationDate = DateTimeOffset.Now,
                 UpdateDate = DateTimeOffset.Now,
-                FirstName = checkoutDetails.FirstName,
-                LastName = checkoutDetails.LastName,
-                Country = checkoutDetails.CountryRegion,
-                ZipCode = checkoutDetails.ZipCode,
+                FirstName = checkoutDetails.User.FirstName,
+                LastName = checkoutDetails.User.LastName,
+                Country = checkoutDetails.ShippingAddress.CountryRegion,
+                ZipCode = checkoutDetails.ShippingAddress.ZipCode,
                 TimeZone = TimeZoneInfo.Local.Id,
                 Language = "EN-US",
-                PhoneNumber = checkoutDetails.PhoneNumber,
-                Email = checkoutDetails.Email,
+                PhoneNumber = checkoutDetails.User.Phone,
+                Email = checkoutDetails.User.Email,
                 ProfileType = UserProfileType.Consumer.ToString()
             };
 
@@ -372,12 +391,12 @@ namespace Contoso.FraudProtection.Web.Controllers
                 PurchaseAmount = basketViewModel.Total,
                 MerchantPaymentInstrumentId = $"{userId}-CreditCard",
                 Type = PaymentInstrumentType.CreditCard.ToString(),
-                CardType = checkoutDetails.CardType,
+                CardType = checkoutDetails.CreditCard.CardType,
                 State = PaymentInstrumentState.Active.ToString(),
-                HolderName = checkoutDetails.CardName,
-                BIN = checkoutDetails.UnformattedCardNumber.Substring(0, 6),
-                ExpirationDate = string.Join('/', checkoutDetails.ExpirationMonth, checkoutDetails.ExpirationYear),
-                LastFourDigits = checkoutDetails.UnformattedCardNumber.Substring(checkoutDetails.UnformattedCardNumber.Length - 4),
+                HolderName = checkoutDetails.CreditCard.CardName,
+                BIN = checkoutDetails.CreditCard.UnformattedCardNumber.Substring(0, 6),
+                ExpirationDate = string.Join('/', checkoutDetails.CreditCard.ExpirationMonth, checkoutDetails.CreditCard.ExpirationYear),
+                LastFourDigits = checkoutDetails.CreditCard.UnformattedCardNumber.Substring(checkoutDetails.CreditCard.UnformattedCardNumber.Length - 4),
                 CreationDate = DateTimeOffset.Now.AddMonths(-14),
                 BillingAddress = billingAddress,
             };
@@ -391,7 +410,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 Currency = "USD",
                 DeviceContext = device,
                 MerchantLocalDate = DateTimeOffset.Now,
-                CustomerLocalDate = checkoutDetails.ClientDate,
+                CustomerLocalDate = checkoutDetails.DeviceFingerPrinting.ClientDate,
                 ProductList = productList,
                 TotalAmount = basketViewModel.Total,
                 SalesTax = basketViewModel.Tax,

@@ -45,15 +45,18 @@
             }
 
             var today = new Date();
-            var clientDate = document.getElementById('ClientDate');
-            if (clientDate)
+            var clientDate = document.getElementById('DeviceFingerPrinting_ClientDate');
+            if (clientDate) {
                 clientDate.value = today.toJSON();
-            var clientTimeZone = document.getElementById('ClientTimeZone');
-            if (clientTimeZone)
+            }
+            var clientTimeZone = document.getElementById('DeviceFingerPrinting_ClientTimeZone');
+            if (clientTimeZone) {
                 clientTimeZone.value = today.isDstObserved() ? today.stdTimezoneOffset() : today.getTimezoneOffset();
+            }
             var fingerPrintingDc = document.getElementById('DeviceFingerPrinting_FingerPrintingDC');
-            if (fingerPrintingDc)
+            if (fingerPrintingDc) {
                 fingerPrintingDc.value = dfp.dc;
+            }
         }
     </script>
 </head>

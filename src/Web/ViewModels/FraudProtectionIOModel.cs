@@ -23,7 +23,7 @@ namespace Contoso.FraudProtection.Web.ViewModels
                 JsonConvert.SerializeObject(request, Formatting.Indented),
                 JsonConvert.SerializeObject(response, Formatting.Indented),
                 name
-                ));
+            ));
         }
     }
 }

@@ -67,9 +67,9 @@ namespace Contoso.FraudProtection.Web.Controllers
         }
 
         [HttpGet("{orderId}")]
-        public async Task<IActionResult> FraudLabel(int orderId)
+        public async Task<IActionResult> Label(int orderId)
         {
-            return await OrderDetailView("FraudLabel", orderId);
+            return await OrderDetailView("Label", orderId);
         }
 
         [HttpPost]
@@ -134,7 +134,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> FraudLabelOrder(
+        public async Task<IActionResult> LabelOrder(
             OrderViewModel viewModel,
             LabelSource labelSource,
             LabelObjectType labelObjectType,
@@ -190,7 +190,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
             #endregion
 
-            return View("FraudLabelDone");
+            return View("LabelDone");
         }
 
         private async Task<IActionResult> OrderDetailView(string viewName, int orderId)

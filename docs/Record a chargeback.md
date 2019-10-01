@@ -28,7 +28,7 @@ In the sample site, a user clicks **Chargeback** from their **My orders** page. 
 ## Example chargeback event
 The following example request sends a chargeback event to Dynamics 365 Fraud Protection. In this instance, you accepted the chargeback.
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/Chargeback HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/Chargeback HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8

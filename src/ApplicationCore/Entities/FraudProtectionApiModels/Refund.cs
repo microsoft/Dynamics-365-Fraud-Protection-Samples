@@ -7,49 +7,49 @@ using System.ComponentModel.DataAnnotations;
 namespace Microsoft.Dynamics.FraudProtection.Models.RefundEvent
 {
     /// <summary>
-    /// 	Provides information about a previous purchase transaction being refunded.
+    /// Provides information about a previous purchase transaction being refunded.
     /// </summary>
     public class Refund : BaseFraudProtectionEvent
     {
         /// <summary>
-        /// 	A unique string identifying this refund event
+        /// A unique string identifying this refund event
         /// </summary>
         [Required]
         public String RefundId { get; set; }
 
         /// <summary>
-        /// 	User provided reason. See RefundReason enum.
+        /// User provided reason. See RefundReason enum.
         /// </summary>
         public String Reason { get; set; }
 
         /// <summary>
-        /// 	See RefundStatus enum.
+        /// See RefundStatus enum.
         /// </summary>
         public String Status { get; set; }
 
         /// <summary>
-        /// 	Timestamp from Bank
+        /// Timestamp from Bank
         /// </summary>
         public DateTimeOffset? BankEventTimestamp { get; set; }
 
         /// <summary>
-        /// 	The refund amount
+        /// The refund amount
         /// </summary>
         public Decimal? Amount { get; set; }
 
         /// <summary>
-        /// 	Currency used for sales price amount.
+        /// Currency used for sales price amount.
         /// </summary>
         public String Currency { get; set; }
 
         /// <summary>
-        /// 	A unique string identifying the User
+        /// A unique string identifying the User
         /// </summary>
         [Required]
         public String UserId { get; set; }
 
         /// <summary>
-        /// 	The original Purchase Id
+        /// The original Purchase Id
         /// </summary>
         [Required]
         public String PurchaseId { get; set; }

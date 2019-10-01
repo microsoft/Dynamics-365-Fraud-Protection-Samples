@@ -8,22 +8,22 @@ using System.Collections.Generic;
 namespace Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent
 {
     /// <summary>
-    /// 	Updates or creates User account information, such as Add Payment Instrument, Add Address, or any other user attribute.
+    /// Updates or creates User account information, such as Add Payment Instrument, Add Address, or any other user attribute.
     /// </summary>
     public class User : UserDetails, IBaseFraudProtectionEvent
     {
         /// <summary>
-        /// 	Payment instrument associated with this update account event
+        /// Payment instrument associated with this update account event
         /// </summary>
         public List<PaymentInstrument> PaymentInstrumentList { get; set; }
 
         /// <summary>
-        /// 	Address associated with this update account event
+        /// Address associated with this update account event
         /// </summary>
         public List<UserAddress> AddressList { get; set; }
 
         /// <summary>
-        /// 	Device associated with this update account event
+        /// Device associated with this update account event
         /// </summary>
         public DeviceContext DeviceContext { get; set; }
 
@@ -40,12 +40,12 @@ namespace Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent
     }
 
     /// <summary>
-    /// 	Address associated with this update account event
+    /// Address associated with this update account event
     /// </summary>
     public class UserAddress : AddressDetails
     {
         /// <summary>
-        /// 	See UserAddressType enum.
+        /// See UserAddressType enum.
         /// </summary>
         public String Type { get; set; }
     }

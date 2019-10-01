@@ -1,7 +1,7 @@
 # Microsoft Dynamics 365 Fraud Protection - API examples
 ## Make a purchase - Rejected purchase flow
 
-After sending Dynamics 365 Fraud Protection a purchase event, you can use the Dynamics 365 Fraud Protection decision to either continue with or stop the purchase event workflow. As shown in the following examples, you ultimately inform Dynamics 365 Fraud Protection that a purchase was rejected.
+After sending Dynamics 365 Fraud Protection a purchase event, use your merchant rule decision returned by Dynamics 365 Fraud Protection to either continue with or stop the purchase event workflow. As shown in the following examples, you ultimately inform Dynamics 365 Fraud Protection that a purchase was rejected.
 
 ## Helpful links
 - [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
@@ -43,7 +43,7 @@ Examples:
 ## Declined bank auth event
 The following example request sends a bank auth event to Dynamics 365 Fraud Protection informing it that the bank authorization was declined by the bank. If you send a declined bank auth, you would likely skip the bank charge event, and send a rejected purchase status event.
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/BankEvent HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/BankEvent HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8
@@ -70,7 +70,7 @@ x-ms-correlation-id: <correlation ID 1>
 ## Declined bank charge event
 The following example request sends a bank charge event to Dynamics 365 Fraud Protection informing it that the bank charge was declined. If you send a declined bank charge, you would likely send a rejected purchase status event.
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/BankEvent HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/BankEvent HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8
@@ -95,9 +95,9 @@ x-ms-correlation-id: <correlation ID 1>
 ```
 
 ## Rejected purchase status event
-The following example request sends a purchase status event to Dynamics 365 Fraud Protection informing it that the purchase was rejected from your perspective. You may send this immediately after getting a reject decision from Dynamics 365 Fraud Protection in a purchase event response. Additionally, you may send it in response to a declined bank auth or charge, or any other reason that you decide should reject a purchase, and need to inform Dynamics 365 Fraud Protection.
+The following example request sends a purchase status event to Dynamics 365 Fraud Protection informing it that the purchase was rejected from your perspective. You may send this immediately after getting a reject recommendation from your Dynamics 365 Fraud Protection merchant rule decision in a purchase event response. Additionally, you may send it in response to a declined bank auth or charge, or any other reason that you decide should reject a purchase, and need to inform Dynamics 365 Fraud Protection.
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/PurchaseStatus HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/PurchaseStatus HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8

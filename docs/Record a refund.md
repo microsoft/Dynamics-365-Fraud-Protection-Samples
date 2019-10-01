@@ -22,7 +22,7 @@ Customers may request refunds from you. To improve Dynamics 365 Fraud Protection
 ## Example refund event
 This example request sends a completed refund event to Dynamics 365 Fraud Protection:
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/Refund HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/Refund HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8

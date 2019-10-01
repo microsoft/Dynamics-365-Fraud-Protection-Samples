@@ -1,7 +1,7 @@
 # Microsoft Dynamics 365 Fraud Protection - API examples
 ## Make a purchase – Guest user
 
-Request that Dynamics 365 Fraud Protection make a risk decision when guest users try to make purchases. A guest user is simply a customer who has not registered with your business. The only difference in Dynamics 365 Fraud Protection between guest checkout and non-guest checkout is the user ID you send in the purchase event.
+Request that Dynamics 365 Fraud Protection make a risk recommendation when guest users try to make purchases. A guest user is simply a customer who has not registered with your business. The only difference in Dynamics 365 Fraud Protection between guest checkout and non-guest checkout is the user ID you send in the purchase event.
 
 ## Helpful links
 - [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
@@ -29,7 +29,7 @@ Request that Dynamics 365 Fraud Protection make a risk decision when guest users
 
 ## Example purchase request
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/Purchase HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/Purchase HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8

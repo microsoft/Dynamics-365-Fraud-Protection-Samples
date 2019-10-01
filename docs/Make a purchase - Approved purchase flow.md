@@ -1,7 +1,7 @@
 # Microsoft Dynamics 365 Fraud Protection - API examples
 ## Make a purchase – Approved purchase flow
 
-After sending Dynamics 365 Fraud Protection a purchase event, it is up to you to use the Dynamics 365 Fraud Protection decision to either continue with or stop the purchase workflow. Inform Dynamics 365 Fraud Protection of the intermediate bank events and final purchase status for a purchase to improve Dynamics 365 Fraud Protection models.
+After sending Dynamics 365 Fraud Protection a purchase event, use your merchant rule decision returned by Dynamics 365 Fraud Protection to either continue with or stop the purchase workflow. Inform Dynamics 365 Fraud Protection of the intermediate bank events and final purchase status for a purchase to improve Dynamics 365 Fraud Protection models.
 
 ## Helpful links
 - [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
@@ -51,7 +51,7 @@ Examples:
 ## Bank auth event
 This example request sends a bank auth event to Dynamics 365 Fraud Protection informing it that the bank authorization was successful.
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/BankEvent HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/BankEvent HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8
@@ -78,7 +78,7 @@ x-ms-correlation-id: <correlation ID 1>
 ## Bank charge event
 This example request sends a bank charge event to Dynamics 365 Fraud Protection informing it that the bank charge was successful.
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/BankEvent HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/BankEvent HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8
@@ -105,7 +105,7 @@ x-ms-correlation-id: <correlation ID 1>
 ## Purchase status event
 This example request sends a purchase status event to Dynamics 365 Fraud Protection informing it that the purchase was successful from your perspective. The purchase status may differ from bank event statuses and is completely up to you to determine.
 ```http
-POST https://<Merchant API Endpoint>/v1.0/MerchantServices/events/PurchaseStatus HTTP/1.1
+POST <Merchant API Endpoint>/v1.0/MerchantServices/events/PurchaseStatus HTTP/1.1
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8

@@ -7,6 +7,7 @@ using Contoso.FraudProtection.Infrastructure.Identity;
 using Contoso.FraudProtection.Web.Extensions;
 using Contoso.FraudProtection.Web.ViewModels;
 using Contoso.FraudProtection.Web.ViewModels.Account;
+using Contoso.FraudProtection.Web.ViewModels.Shared;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -133,7 +134,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         {
             var model = new RegisterViewModel
             {
-                DeviceFingerPrinting = new DeviceFingerPrintingModel
+                DeviceFingerPrinting = new DeviceFingerPrintingViewModel
                 {
                     SessionId = _contextAccessor.GetSessionId()
                 }
@@ -157,33 +158,72 @@ namespace Contoso.FraudProtection.Web.Controllers
             if (_contextAccessor.HttpContext.Connection == null)
                 throw new Exception(nameof(_contextAccessor.HttpContext.Connection));
 
+            //Create the user object and validate it before calling Fraud Protection
+            var user = new ApplicationUser
+            {
+                UserName = model.User.Email,
+                Email = model.User.Email,
+                FirstName = model.User.FirstName,
+                LastName = model.User.LastName,
+                PhoneNumber = model.User.Phone,
+                Address1 = model.Address.Address1,
+                Address2 = model.Address.Address2,
+                City = model.Address.City,
+                State = model.Address.State,
+                ZipCode = model.Address.ZipCode,
+                CountryRegion = model.Address.CountryRegion
+            };
+
+            foreach (var v in _userManager.UserValidators)
+            {
+                var validationResult = await v.ValidateAsync(_userManager, user);
+                if (!validationResult.Succeeded)
+                {
+                    AddErrors(validationResult);
+                }
+            };
+
+            foreach (var v in _userManager.PasswordValidators)
+            {
+                var validationResult = await v.ValidateAsync(_userManager, user, model.Password);
+                if (!validationResult.Succeeded)
+                {
+                    AddErrors(validationResult);
+                }
+            };
+
+            if (ModelState.ErrorCount > 0)
+            {
+                return View(model);
+            }
+
             #region Fraud Protection Service
             // Ask Fraud Protection to assess this signup/registration before registering the user in our database, etc.
             var signupAddress = new AddressDetails
             {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                PhoneNumber = model.Phone,
-                Street1 = model.Address1,
-                Street2 = model.Address2,
-                City = model.City,
-                State = model.State,
-                ZipCode = model.ZipCode,
-                Country = model.CountryRegion
+                FirstName = model.User.FirstName,
+                LastName = model.User.LastName,
+                PhoneNumber = model.User.Phone,
+                Street1 = model.Address.Address1,
+                Street2 = model.Address.Address2,
+                City = model.Address.City,
+                State = model.Address.State,
+                ZipCode = model.Address.ZipCode,
+                Country = model.Address.CountryRegion
             };
 
             var signupUser = new SignupUser
             {
                 CreationDate = DateTimeOffset.Now,
                 UpdateDate = DateTimeOffset.Now,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Country = model.CountryRegion,
-                ZipCode = model.ZipCode,
-                TimeZone = new TimeSpan(0, 0, -model.ClientTimeZone, 0).ToString(),
+                FirstName = model.User.FirstName,
+                LastName = model.User.LastName,
+                Country = model.Address.CountryRegion,
+                ZipCode = model.Address.ZipCode,
+                TimeZone = new TimeSpan(0, 0, -model.DeviceFingerPrinting.ClientTimeZone, 0).ToString(),
                 Language = "EN-US",
-                PhoneNumber = model.Phone,
-                Email = model.Email,
+                PhoneNumber = model.User.Phone,
+                Email = model.User.Email,
                 ProfileType = UserProfileType.Consumer.ToString(),
                 Address = signupAddress
             };
@@ -218,7 +258,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 AssessmentType = AssessmentType.Protect.ToString(),
                 User = signupUser,
                 MerchantLocalDate = DateTimeOffset.Now,
-                CustomerLocalDate = model.ClientDate,
+                CustomerLocalDate = model.DeviceFingerPrinting.ClientDate,
                 MarketingContext = marketingContext,
                 StoreFrontContext = storefrontContext,
                 DeviceContext = deviceContext,
@@ -230,8 +270,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             var fraudProtectionIO = new FraudProtectionIOModel(signupEvent, signupAssessment, "Signup");
 
             //2 out of 3 signups will succeed on average. Adjust if you want more or less signups blocked for tesing purposes.
-            var random = new Random();
-            var rejectSignup = random.NextDouble() >= 2.0 / 3;
+            var rejectSignup = new Random().Next(0, 3) != 0;
             var signupStatusType = rejectSignup ? SignupStatusType.Rejected.ToString() : SignupStatusType.Approved.ToString();
 
             var signupStatus = new SignupStatusEvent
@@ -244,7 +283,7 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             if (!rejectSignup)
             {
-                signupStatus.User = new SignupStatusUser { UserId = model.Email };
+                signupStatus.User = new SignupStatusUser { UserId = model.User.Email };
             }
 
             var signupStatusResponse = await _fraudProtectionService.PostSignupStatus(signupStatus, correlationId);
@@ -252,29 +291,13 @@ namespace Contoso.FraudProtection.Web.Controllers
             fraudProtectionIO.Add(signupStatus, signupStatusResponse, "Signup Status");
 
             TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
-            #endregion
 
             if (rejectSignup)
             {
                 ModelState.AddModelError("", "Signup rejected by Fraud Protection. You can try again as it has a random likelyhood of happening in this sample site.");
                 return View(model);
             }
-
-            //Only create the user in the sample site if the Fraud Protection merchant decision is APPROVE
-            var user = new ApplicationUser
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                PhoneNumber = model.Phone,
-                Address1 = model.Address1,
-                Address2 = model.Address2,
-                City = model.City,
-                State = model.State,
-                ZipCode = model.ZipCode,
-                CountryRegion = model.CountryRegion
-            };
+            #endregion
 
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
@@ -282,9 +305,6 @@ namespace Contoso.FraudProtection.Web.Controllers
                 AddErrors(result);
                 return View(model);
             }
-
-            if (user == null)
-                throw new Exception(nameof(user));
 
             await _signInManager.SignInAsync(user, isPersistent: false);
 

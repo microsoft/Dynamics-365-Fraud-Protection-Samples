@@ -46,11 +46,5 @@ namespace Contoso.FraudProtection.Infrastructure.Identity
         public string BillingZipCode { get; set; }
 
         public string BillingCountryRegion { get; set; }
-
-        #region Derived
-        public string BIN => DefaultCardNumber.Replace("-", "").Substring(0, 6);
-        public string ExpirationDate => string.Join("/", DefaultExpirationMonth, DefaultExpirationYear);
-        public string LastFourDigits => DefaultCardNumber.Substring(DefaultCardNumber.Length - 4);
-        #endregion
     }
 }
