@@ -18,8 +18,6 @@ using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
 using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using System;
 using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.EntityFrameworkCore.SqlServer.Query.ExpressionTranslators.Internal;
 
 namespace Contoso.FraudProtection.Web.Controllers
 {
@@ -32,22 +30,19 @@ namespace Contoso.FraudProtection.Web.Controllers
         private readonly IBasketService _basketService;
         private readonly IFraudProtectionService _fraudProtectionService;
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IBasketService basketService,
             IFraudProtectionService fraudProtectionService,
-            IHttpContextAccessor contextAccessor,
-            IPasswordHasher<ApplicationUser> passwordHasher)
+            IHttpContextAccessor contextAccessor)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _basketService = basketService;
             _fraudProtectionService = fraudProtectionService;
             _contextAccessor = contextAccessor;
-            _passwordHasher = passwordHasher;
 
         }
 
@@ -86,41 +81,48 @@ namespace Contoso.FraudProtection.Web.Controllers
             }
             ViewData["ReturnUrl"] = returnUrl;
 
-            ApplicationUser applicationUser = new ApplicationUser()
+            ApplicationUser applicationUser = new ApplicationUser
             {
                 UserName = model.Email
             };
-            var passwordHash = _passwordHasher.HashPassword(applicationUser, model.Password);
 
-            var deviceContext = new DeviceContext
-            {
-                IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()
-            };
-
-            SignInRequest req = new SignInRequest()
+            var signIn = new SignIn
             {
                 SignInId = Guid.NewGuid().ToString(),
-                PasswordHash = passwordHash,
+                PasswordHash = _userManager.PasswordHasher.HashPassword(applicationUser, model.Password),
                 MerchantLocalDate = DateTimeOffset.Now,
                 CustomerLocalDate = model.DeviceFingerPrinting.ClientDate,
                 UserId = model.Email,
                 DeviceContextId = model.DeviceFingerPrinting.SessionId,
                 AssessmentType = AssessmentType.Protect.ToString(),
-                CurrentIpAddress = deviceContext.IPAddress
+                CurrentIpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()
             };
 
-            var signInAssessmentResponse = await _fraudProtectionService.PostSignIn(req, _fraudProtectionService.NewCorrelationId);
-            if (signInAssessmentResponse != null && signInAssessmentResponse.ResultDetails["MerchantRuleDecision"].Equals("Approve"))
-            { 
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
-                {
-                    await TransferBasketToEmailAsync(model.Email);
-                    return RedirectToLocal(returnUrl);
-                }
+            var signInResponse = await _fraudProtectionService.PostSignIn(signIn);
+
+            var fraudProtectionIO = new FraudProtectionIOModel(signIn, signInResponse, "SignIn");
+            TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
+
+
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return View(model);
             }
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-            return View(model);
+
+            //2 out of 3 signIn will be successful
+            var rejectSignIn = new Random().Next(0, 3) != 0;
+            if(rejectSignIn)
+            {
+                ModelState.AddModelError("", "Signin rejected by Fraud Protection. You can try again as it has a random likelyhood of happening in this sample site.");
+                return View(model);
+            }
+            
+            // redirect if signIn is not rejected
+            await TransferBasketToEmailAsync(model.Email);
+            return RedirectToLocal(returnUrl);
+
         }
 
         [HttpGet]
@@ -260,8 +262,6 @@ namespace Contoso.FraudProtection.Web.Controllers
                 Market = "US"
             };
 
-            var correlationId = _fraudProtectionService.NewCorrelationId;
-
             var signupEvent = new SignUp
             {
                 SignUpId = Guid.NewGuid().ToString(),
@@ -273,6 +273,8 @@ namespace Contoso.FraudProtection.Web.Controllers
                 StoreFrontContext = storefrontContext,
                 DeviceContext = deviceContext,
             };
+
+            var correlationId = _fraudProtectionService.NewCorrelationId;
 
             var signupAssessment = await _fraudProtectionService.PostSignup(signupEvent, correlationId);
 

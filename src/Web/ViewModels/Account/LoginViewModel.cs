@@ -20,12 +20,6 @@ namespace Contoso.FraudProtection.Web.ViewModels.Account
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
 
-        public int ClientTimeZone { get; set; }
-
-        public DateTime ClientDate { get; set; }
-
-        public string ClientCountryCode { get; set; }
-
         public DeviceFingerPrintingViewModel DeviceFingerPrinting { get; set; }
     }
 }

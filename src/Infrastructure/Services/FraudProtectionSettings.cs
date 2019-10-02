@@ -23,14 +23,14 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         public string UpdateAccount { get; set; }
         public string SignIn { get; set; }
     }
-    
+
     public class TokenProviderServiceSettings
     {
         public string Resource { get; set; }
         public string ClientId { get; set; }
         public string Authority { get; set; }
-		public string CertificateThumbprint { get; set; }
-		public string ClientSecret { get; set; }
-	}
+        public string CertificateThumbprint { get; set; }
+        public string ClientSecret { get; set; }
+    }
     #endregion
 }
