@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Contoso.FraudProtection.Web.ViewModels.Shared;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -25,6 +26,6 @@ namespace Contoso.FraudProtection.Web.ViewModels.Account
 
         public string ClientCountryCode { get; set; }
 
-        public DeviceFingerPrintingModel DeviceFingerPrinting { get; set; }
+        public DeviceFingerPrintingViewModel DeviceFingerPrinting { get; set; }
     }
 }

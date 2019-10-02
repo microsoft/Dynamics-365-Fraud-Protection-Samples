@@ -19,6 +19,7 @@ using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using System;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.ExpressionTranslators.Internal;
 
 namespace Contoso.FraudProtection.Web.Controllers
 {
@@ -58,7 +59,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
             var model = new LoginViewModel
             {
-                DeviceFingerPrinting = new DeviceFingerPrintingModel
+                DeviceFingerPrinting = new DeviceFingerPrintingViewModel
                 {
                     SessionId = _contextAccessor.GetSessionId()
                 }
@@ -90,13 +91,22 @@ namespace Contoso.FraudProtection.Web.Controllers
                 UserName = model.Email
             };
             var passwordHash = _passwordHasher.HashPassword(applicationUser, model.Password);
+
+            var deviceContext = new DeviceContext
+            {
+                IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()
+            };
+
             SignInRequest req = new SignInRequest()
             {
-                SignInId = model.Email,
+                SignInId = Guid.NewGuid().ToString(),
                 PasswordHash = passwordHash,
-                MerchantLocalDate = new DateTime(),
-                UserId = model.Email
-
+                MerchantLocalDate = DateTimeOffset.Now,
+                CustomerLocalDate = model.DeviceFingerPrinting.ClientDate,
+                UserId = model.Email,
+                DeviceContextId = model.DeviceFingerPrinting.SessionId,
+                AssessmentType = AssessmentType.Protect.ToString(),
+                CurrentIpAddress = deviceContext.IPAddress
             };
 
             var signInAssessmentResponse = await _fraudProtectionService.PostSignIn(req, _fraudProtectionService.NewCorrelationId);

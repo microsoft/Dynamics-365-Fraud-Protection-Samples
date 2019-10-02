@@ -11,16 +11,20 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         public string SignInId { get; set; }
 
         public string PasswordHash { get; set; }
+
         public string CurrentIpAddress { get; set; }
 
-        // enum?
         public string AssessmentType { get; set; }
 
-        public DateTime CustomerLocalDate { get; set; }
-        public DateTime MerchantLocalDate { get; set; }
+        public DateTimeOffset CustomerLocalDate { get; set; }
+
+        public DateTimeOffset MerchantLocalDate { get; set; }
+
         public string UserId { get; set; }
+
         public string DeviceContextId { get; set; }
-        //public string signInId { get; set; }
+
+        public SignInHistory SignInHistory { get; set; }
 
     }
 }
