@@ -81,7 +81,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             }
             ViewData["ReturnUrl"] = returnUrl;
 
-            ApplicationUser applicationUser = new ApplicationUser
+            var applicationUser = new ApplicationUser
             {
                 UserName = model.Email
             };
@@ -103,26 +103,26 @@ namespace Contoso.FraudProtection.Web.Controllers
             var fraudProtectionIO = new FraudProtectionIOModel(signIn, signInResponse, "SignIn");
             TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
 
-
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-            if (!result.Succeeded)
-            {
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                return View(model);
-            }
-
             //2 out of 3 signIn will be successful
             var rejectSignIn = new Random().Next(0, 3) != 0;
-            if(rejectSignIn)
+
+            if (!rejectSignIn)
             {
-                ModelState.AddModelError("", "Signin rejected by Fraud Protection. You can try again as it has a random likelyhood of happening in this sample site.");
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return View(model);
+                }
+                // redirect if signIn is not rejected and password sign-in is success
+                await TransferBasketToEmailAsync(model.Email);
+                return RedirectToLocal(returnUrl);
+            }
+            else
+            {
+                ModelState.AddModelError("", "Signin rejected by Fraud Protection. You can try again as it has a random likelihood of happening in this sample site.");
                 return View(model);
             }
-            
-            // redirect if signIn is not rejected
-            await TransferBasketToEmailAsync(model.Email);
-            return RedirectToLocal(returnUrl);
-
         }
 
         [HttpGet]

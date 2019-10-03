@@ -7,18 +7,18 @@ using System.Text;
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels
 {
     /// <summary>
-    /// Contains information and context about a sigin attempt.
+    /// Contains information and context about a sign-in attempt.
     /// </summary>
     public class SignIn: BaseFraudProtectionEvent
     {
         /// <summary>
-        /// 	The identifier of the Sign-in event (can match trackingId).
+        /// 	The identifier of the sign-in attempt (can match trackingId).
         /// </summary>
         [Required]
         public string SignInId { get; set; }
 
         /// <summary>
-        /// 	Hash of the user password from Merchant Sign-in attempt.
+        /// 	Hash of the user password from Merchant sign-in attempt.
         /// </summary>
         public string PasswordHash { get; set; }
 
@@ -28,17 +28,17 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         public string CurrentIpAddress { get; set; }
 
         /// <summary>
-        /// 	Indicates the assessment type for the event. Possible values are 'evaluate' or 'protect'. If not specified, default is 'protect'.
+        /// 	Indicates the assessment type for the event. Possible values are 'Evaluate' or 'Protect'. If not specified, default is 'Protect'.
         /// </summary>
         public string AssessmentType { get; set; }
 
         /// <summary>
-        /// 	The Sign-in creation date in the customer's local time zone. The format is ISO 8601.
+        /// 	The sign-in attempt date in the customer's local time zone. The format is ISO 8601.
         /// </summary>
         public DateTimeOffset CustomerLocalDate { get; set; }
 
         /// <summary>
-        /// 	The Sign-in ingestion date in the merchant's time zone. The format is ISO 8601.
+        /// 	The sign-in attempt date in the merchant's time zone. The format is ISO 8601.
         /// </summary>
         [Required]
         public DateTimeOffset MerchantLocalDate { get; set; }
