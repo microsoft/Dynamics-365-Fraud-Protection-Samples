@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Contoso.FraudProtection.Infrastructure.Identity;
 using Contoso.FraudProtection.Web.Extensions;
@@ -42,6 +43,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             _basketService = basketService;
             _fraudProtectionService = fraudProtectionService;
             _contextAccessor = contextAccessor;
+
         }
 
         // GET: /Account/SignIn 
@@ -50,7 +52,13 @@ namespace Contoso.FraudProtection.Web.Controllers
         public async Task<IActionResult> SignIn(string returnUrl = null)
         {
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-
+            var model = new LoginViewModel
+            {
+                DeviceFingerPrinting = new DeviceFingerPrintingViewModel
+                {
+                    SessionId = _contextAccessor.GetSessionId()
+                }
+            };
             ViewData["ReturnUrl"] = returnUrl;
             if (!String.IsNullOrEmpty(returnUrl) &&
                 returnUrl.IndexOf("checkout", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -58,7 +66,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 ViewData["ReturnUrl"] = "/Basket/Index";
             }
 
-            return View();
+            return View(model);
         }
 
         // POST: /Account/SignIn
@@ -73,14 +81,48 @@ namespace Contoso.FraudProtection.Web.Controllers
             }
             ViewData["ReturnUrl"] = returnUrl;
 
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-            if (result.Succeeded)
+            var applicationUser = new ApplicationUser
             {
+                UserName = model.Email
+            };
+
+            var signIn = new SignIn
+            {
+                SignInId = Guid.NewGuid().ToString(),
+                PasswordHash = _userManager.PasswordHasher.HashPassword(applicationUser, model.Password),
+                MerchantLocalDate = DateTimeOffset.Now,
+                CustomerLocalDate = model.DeviceFingerPrinting.ClientDate,
+                UserId = model.Email,
+                DeviceContextId = model.DeviceFingerPrinting.SessionId,
+                AssessmentType = AssessmentType.Protect.ToString(),
+                CurrentIpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()
+            };
+
+            var signInResponse = await _fraudProtectionService.PostSignIn(signIn);
+
+            var fraudProtectionIO = new FraudProtectionIOModel(signIn, signInResponse, "SignIn");
+            TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
+
+            //2 out of 3 signIn will be successful
+            var rejectSignIn = new Random().Next(0, 3) != 0;
+
+            if (!rejectSignIn)
+            {
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return View(model);
+                }
+                // redirect if signIn is not rejected and password sign-in is success
                 await TransferBasketToEmailAsync(model.Email);
                 return RedirectToLocal(returnUrl);
             }
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-            return View(model);
+            else
+            {
+                ModelState.AddModelError("", "Signin rejected by Fraud Protection. You can try again as it has a random likelihood of happening in this sample site.");
+                return View(model);
+            }
         }
 
         [HttpGet]
@@ -264,7 +306,7 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             if (rejectSignup)
             {
-                ModelState.AddModelError("", "Signup rejected by Fraud Protection. You can try again as it has a random likelyhood of happening in this sample site.");
+                ModelState.AddModelError("", "Signup rejected by Fraud Protection. You can try again as it has a random likelihood of happening in this sample site.");
                 return View(model);
             }
             #endregion

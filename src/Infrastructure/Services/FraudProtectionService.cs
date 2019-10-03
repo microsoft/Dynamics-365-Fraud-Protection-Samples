@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
+using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response;
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Microsoft.Dynamics.FraudProtection.Models;
 using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
@@ -142,6 +143,12 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         {
             var response = await PostAsync(_settings.Endpoints.Label, label, correlationId);
             return await Read<FraudProtectionResponse>(response);
+        }
+
+        public async Task<SignInResponse> PostSignIn(SignIn signIn, string correlationId = null)
+        {
+            var response = await PostAsync(_settings.Endpoints.SignIn, signIn, correlationId);
+            return await Read<SignInResponse>(response);
         }
     }
     #endregion

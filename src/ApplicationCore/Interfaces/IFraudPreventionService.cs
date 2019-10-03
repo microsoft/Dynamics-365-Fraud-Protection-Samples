@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
+using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response;
 using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
 using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
 using Microsoft.Dynamics.FraudProtection.Models.LabelEvent;
@@ -37,6 +38,9 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
         Task<FraudProtectionResponse> PostSignupStatus(SignupStatusEvent signupStatus, string correlationId = null);
 
         Task<FraudProtectionResponse> PostLabel(Label label, string correlationId = null);
+
+        Task<SignInResponse> PostSignIn(SignIn request, string correlationId = null);
     }
+
     #endregion
 }

@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Contoso.FraudProtection.Web.ViewModels.Shared;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Contoso.FraudProtection.Web.ViewModels.Account
@@ -17,5 +19,7 @@ namespace Contoso.FraudProtection.Web.ViewModels.Account
 
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
+
+        public DeviceFingerPrintingViewModel DeviceFingerPrinting { get; set; }
     }
 }
