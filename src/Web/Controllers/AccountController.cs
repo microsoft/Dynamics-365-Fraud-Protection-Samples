@@ -306,7 +306,7 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             if (rejectSignup)
             {
-                ModelState.AddModelError("", "Signup rejected by Fraud Protection. You can try again as it has a random likelyhood of happening in this sample site.");
+                ModelState.AddModelError("", "Signup rejected by Fraud Protection. You can try again as it has a random likelihood of happening in this sample site.");
                 return View(model);
             }
             #endregion
