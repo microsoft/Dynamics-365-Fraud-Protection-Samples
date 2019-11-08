@@ -1,0 +1,204 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Microsoft Dynamics 365 Fraud Protection module for Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category   Microsoft
+ * @package    Dynamics 365 Fraud Protection
+ * @copyright  Copyright (c) Microsoft Corporation. (https://www.microsoft.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+
+<config>
+  <tabs>
+    <microsoft translate="label" module="dfp">
+      <label>Microsoft</label>
+      <sort_order>10</sort_order>
+    </microsoft>
+  </tabs>
+  <sections>
+    <dfp translate="label" module="dfp">
+      <label>Dynamics 365 Fraud Protection</label>
+      <tab>microsoft</tab>
+      <frontend_type>text</frontend_type>
+      <sort_order>0</sort_order>
+      <show_in_default>1</show_in_default>
+      <show_in_website>1</show_in_website>
+      <show_in_store>1</show_in_store>
+      <groups>
+        <general translate="label">
+          <label>General Config</label>
+          <frontend_type>text</frontend_type>
+          <sort_order>0</sort_order>
+          <show_in_default>1</show_in_default>
+          <show_in_website>1</show_in_website>
+          <show_in_store>1</show_in_store>
+          <fields>
+            <assessmenttype translate="label">
+              <label>Purchase Assessment Type</label>
+              <comment>Select Evaluate if you are still evaluating Dynamics 365 Fraud Protection and not necessarily honoring its recommendations. Select Protect if you are honoring recommendations.</comment>
+              <source_model>dfp/Config_Source_AssessmentTypes</source_model>
+              <frontend_type>select</frontend_type>
+              <sort_order>0</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </assessmenttype>
+          </fields>
+        </general>
+        <tokenprovider translate="label">
+          <label>Token Provider Config</label>
+          <frontend_type>text</frontend_type>
+          <sort_order>1</sort_order>
+          <show_in_default>1</show_in_default>
+          <show_in_website>1</show_in_website>
+          <show_in_store>1</show_in_store>
+          <fields>
+            <clientid translate="label">
+              <label>Client Id</label>
+              <comment>Azure AD application client ID from the Real-Time APIs page.</comment>
+              <frontend_type>text</frontend_type>
+              <sort_order>1</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </clientid>
+          </fields>
+          <fields>
+            <clientsecret translate="label">
+              <label>Client Secret</label>
+              <comment>Azure AD application client secret from the Real-Time APIs page. Certificate authentication is not supported in this sample.</comment>
+              <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+              <frontend_type>obscure</frontend_type>
+              <sort_order>2</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </clientsecret>
+          </fields>
+          <fields>
+            <apiresourceuri translate="label">
+              <label>API Resource URI</label>
+              <comment>From the Account Information tile on the Dynamics 365 Fraud Protection dashboard.</comment>
+              <frontend_type>text</frontend_type>
+              <sort_order>3</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </apiresourceuri>
+          </fields>
+          <fields>
+            <directoryid translate="label">
+              <label>Directory ID</label>
+              <comment>From the Account Information tile on the Dynamics 365 Fraud Protection dashboard.</comment>
+              <frontend_type>text</frontend_type>
+              <sort_order>4</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </directoryid>
+          </fields>          
+          <fields>
+            <instanceId translate="label">
+              <label>Instance ID</label>
+              <comment>From the Account Information tile on the Dynamics 365 Fraud Protection dashboard.</comment>
+              <frontend_type>text</frontend_type>
+              <sort_order>5</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </instanceId>
+          </fields>
+        </tokenprovider>
+        <endpoints translate="label">
+          <label>Dynamics 365 Fraud Protection Endpoints</label>
+          <frontend_type>text</frontend_type>
+          <sort_order>2</sort_order>
+          <show_in_default>1</show_in_default>
+          <show_in_website>1</show_in_website>
+          <show_in_store>1</show_in_store>
+          <fields>
+            <baseurl translate="label">
+              <label>Base URL</label>
+              <comment>From the Account Information tile on the Dynamics 365 Fraud Protection dashboard.</comment>
+              <frontend_type>text</frontend_type>
+              <sort_order>1</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </baseurl>
+          </fields>
+          <fields>
+            <purchase translate="label">
+              <label>Purchase</label>
+              <comment>See all API endpoints here: https://go.microsoft.com/fwlink/?linkid=2084942</comment>
+              <frontend_type>text</frontend_type>
+              <sort_order>2</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </purchase>
+          </fields>
+          <fields>
+            <purchasestatus translate="label">
+              <label>Purchase Status</label>
+              <frontend_type>text</frontend_type>
+              <sort_order>3</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </purchasestatus>
+          </fields>
+          <fields>
+            <bankevent translate="label">
+              <label>Bank Event</label>
+              <frontend_type>text</frontend_type>
+              <sort_order>4</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </bankevent>
+          </fields>
+          <fields>
+            <chargeback translate="label">
+              <label>Chargeback</label>
+              <frontend_type>text</frontend_type>
+              <sort_order>5</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </chargeback>
+          </fields>
+          <fields>
+            <refund translate="label">
+              <label>Refund</label>
+              <frontend_type>text</frontend_type>
+              <sort_order>6</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </refund>
+          </fields>
+          <fields>
+            <updateaccount translate="label">
+              <label>Update Account</label>
+              <frontend_type>text</frontend_type>
+              <sort_order>7</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </updateaccount>
+          </fields>
+        </endpoints>
+      </groups>
+    </dfp>
+  </sections>
+</config>

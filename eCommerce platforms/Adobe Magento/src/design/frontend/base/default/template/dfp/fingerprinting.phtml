@@ -1,0 +1,38 @@
+<?php
+/**
+ * Microsoft Dynamics 365 Fraud Protection module for Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category   Microsoft
+ * @package    Dynamics 365 Fraud Protection
+ * @copyright  Copyright (c) Microsoft Corporation. (https://www.microsoft.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+function GUID()
+{
+    if (function_exists('com_create_guid')) {
+        return trim(com_create_guid(), '{}');
+    }
+    return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+}
+
+$sessionId = Mage::getSingleton('core/session')->getFptDfpSessionId();
+if (empty($sessionId)) {
+    $sessionId = GUID();
+    Mage::getSingleton('core/session')->setFptDfpSessionId($sessionId);
+}
+?>
+
+<script src="https://fpt.dfp.microsoft.com/mdt.js?session_id=<?php echo $sessionId; ?>&instanceId=<?php echo Mage::getStoreConfig('dfp/tokenprovider/instanceId'); ?>"></script>
+<script>
+    (function() {
+        dfp.doFpt(this.document);
+    })();
+</script>

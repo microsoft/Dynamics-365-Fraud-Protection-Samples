@@ -1,0 +1,90 @@
+<?php
+/**
+ * Microsoft Dynamics 365 Fraud Protection module for Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @category   Microsoft
+ * @package    Dynamics 365 Fraud Protection
+ * @copyright  Copyright (c) Microsoft Corporation. (https://www.microsoft.com)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
+/**
+ * One page checkout payment methods
+ *
+ * @var $this Mage_Checkout_Block_Onepage_Payment_Methods
+ */
+?>
+
+<?php
+$methods = $this->getMethods();
+$oneMethod = count($methods) <= 1;
+?>
+<?php if (empty($methods)) : ?>
+    <dt>
+        <?php echo $this->__('No Payment Methods') ?>
+    </dt>
+    <?php else :
+        foreach ($methods as $_method) :
+            $_code = $_method->getCode();
+            ?>
+        <dt>
+            <?php if (!$oneMethod) : ?>
+                <input id="p_method_<?php echo $_code ?>" value="<?php echo $_code ?>" type="radio" name="payment[method]" title="<?php echo $this->escapeHtml($_method->getTitle()) ?>" onclick="payment.switchMethod('<?php echo $_code ?>')" <?php if ($this->getSelectedMethodCode() == $_code) : ?> checked="checked" <?php endif; ?> class="radio" />
+            <?php else : ?>
+                <span class="no-display"><input id="p_method_<?php echo $_code ?>" value="<?php echo $_code ?>" type="radio" name="payment[method]" checked="checked" class="radio" /></span>
+                <?php $oneMethod = $_code; ?>
+            <?php endif; ?>
+            <label for="p_method_<?php echo $_code ?>"><?php echo $this->escapeHtml($this->getMethodTitle($_method)) ?> <?php echo $this->getMethodLabelAfterHtml($_method) ?></label>
+        </dt>
+        <?php if ($html = $this->getPaymentMethodFormHtml($_method)) : ?>
+            <dd>
+                <?php echo $html; ?>
+            </dd>
+        <?php endif; ?>
+<?php endforeach;
+endif;
+?>
+<!--*********************************************** DFP Changes START *************************************-->
+<input type="hidden" id="fpt_dfp_dc" name="fpt_dfp_dc" value="" />
+<input type="hidden" id="dfp_customerLocalDate" name="dfp_customerLocalDate" value="" />
+<input type="hidden" id="dfp_customerTimeZone" name="dfp_customerTimeZone" value="" />
+<!--*********************************************** DFP Changes END *************************************-->
+
+<?php echo $this->getChildChildHtml('additional'); ?>
+
+<script type="text/javascript">
+    Date.prototype.stdTimezoneOffset = function() {
+        var jan = new Date(this.getFullYear(), 0, 1);
+        var jul = new Date(this.getFullYear(), 6, 1);
+        return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+    }
+    Date.prototype.isDstObserved = function() {
+        return this.getTimezoneOffset() < this.stdTimezoneOffset();
+    }
+    //<![CDATA[
+    <?php echo $this->getChildChildHtml('scripts'); ?>
+    payment.init();
+    <?php if (is_string($oneMethod)) : ?>
+        payment.switchMethod('<?php echo $oneMethod ?>');
+    <?php endif; ?>
+        //]]>
+        // *********************************************** DFP Changes START *************************************//
+        (function() {
+            var today = new Date();
+            document.getElementById('dfp_customerLocalDate').value = today.toJSON();
+            document.getElementById("fpt_dfp_dc").value = window.dfp.dc;
+            document.getElementById('dfp_customerTimeZone').value = today.isDstObserved() ? today.stdTimezoneOffset() : today.getTimezoneOffset();
+
+            document.getElementById('dfp_customerLocalDate').disabled = false;
+            document.getElementById('fpt_dfp_dc').disabled = false;
+            document.getElementById('dfp_customerTimeZone').disabled = false;
+        })();
+    // *********************************************** DFP Changes END *************************************//
+</script>
