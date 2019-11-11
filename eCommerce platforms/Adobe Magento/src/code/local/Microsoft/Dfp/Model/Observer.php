@@ -116,6 +116,13 @@ class Microsoft_Dfp_Model_Observer
 		return json_decode($result, true)['access_token'];
 	}
 
+	private function buildUrl($base, $endpoint)
+	{
+		$base = rtrim($base, '/');
+		$endpoint = ltrim($endpoint, '/');
+		return $base . '/' . $endpoint;
+	}
+
 	public function invokeDFP($url, $access_token, $payload, $trackingid)
 	{
 		$correlationid = $this->GUID();
@@ -129,7 +136,7 @@ class Microsoft_Dfp_Model_Observer
 		$headers[] = 'x-ms-tracking-id: ' . $trackingid;
 		$headers[] = 'Authorization: bearer ' . $access_token;
 		$headers[] = 'Content-Type: application/json; charset=utf-8';
-		$url = $baseurl . $url;
+		$url = $this->buildUrl($baseurl, $url);
 
 		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_POST, true);

@@ -216,6 +216,13 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 		return json_decode($result, true)['access_token'];
 	}
 
+	private function buildUrl($base, $endpoint)
+	{
+		$base = rtrim($base, '/');
+		$endpoint = ltrim($endpoint, '/');
+		return $base . '/' . $endpoint;
+	}
+
 	public function invokeDFP($url, $access_token, $payload, $trackingid, $correlationid)
 	{
 		Mage::log("Correlation Id : " . $correlationid, null, 'MicrosoftDFP.log');
@@ -228,7 +235,7 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 		$headers[] = 'x-ms-tracking-id: ' . $trackingid;
 		$headers[] = 'Authorization: bearer ' . $access_token;
 		$headers[] = 'Content-Type: application/json; charset=utf-8';
-		$url = $baseurl . $url;
+		$url = $this->buildUrl($baseurl, $url);
 
 		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_POST, true);
