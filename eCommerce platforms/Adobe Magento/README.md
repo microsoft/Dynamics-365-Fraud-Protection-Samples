@@ -9,7 +9,7 @@ It demonstrates the primary uses of the Dynamics 365 Fraud Protection APIs:
 ## Local development setup
 Before running the solution, install these prerequisites:
 - A PHP editor, such as Visual Studio Code.
-- XAMPP 5.6.40 OR a web server which supports Magento ver 1.9.x
+- XAMPP 7.2.24 OR any compatible version supporting Magento ver 1.9.4.3.
   - Ensure the SOAP PHP extension is installed/enabled.
   - Ensure that /xampp/php/php.ini has properly set SSL bundle paths, if not already valid:
     - curl.cainfo="C:\xampp\perl\vendor\lib\Mozilla\CA\cacert.pem"
@@ -44,10 +44,10 @@ Before running the solution, install these prerequisites:
       1. **Database Name** – magento (Same name as created in step 4)
       1. **User Name** – root, or create a new user in PhpMyAdmin for Magento.
       1. **User Password** – BLANK (NO value), or use the new user's password.
-      1. **Base URL** - For local development, it's recommended to do HOSTS file mapping to create a local name to run Magento on.  See [https://magento.stackexchange.com/a/80377](https://magento.stackexchange.com/a/80377) for more.
+      1. **Base URL** - For local development, it's recommended to do HOSTS file mapping to create a local name to run Magento on. For instance, hosts map 'store' to 127.0.0.1 in your HOSTs file and then setup Magento at: http://store/magento. See [https://magento.stackexchange.com/a/80377](https://magento.stackexchange.com/a/80377) for more. If Magento complains about an invalid URL, see [https://stackoverflow.com/a/32132889](https://stackoverflow.com/a/32132889) for more. 
       1. Check **Skip Base URL Validation Before the Next Step** checkbox
 
-         ![Configure the DB.](docs/6.configure.png)      
+       ![Configure the DB.](docs/6.configure.png)      
 
     1. Create Admin Account. This admin account will be used to log into Magento Admin application.
 
@@ -68,6 +68,8 @@ Before running the solution, install these prerequisites:
    
       ![Clear Magento cache](docs/10.clearcache.png)
 
+   1. Logout of the admin account and log back in or you may receive an error when saving the configuration in the next step.
+
    1. Navigate to **System -> Configuration** and configure Dynamics 365 Fraud Protection:
       1. **Purchase Assessment Type** – select Protect or Evaluate
       1. **Client ID** - Client ID created for authentication.
@@ -85,13 +87,13 @@ Before running the solution, install these prerequisites:
 
         ```xml
         <ccsave>
-        <active>1</active>
-        <cctypes>AE,VI,MC,DI</cctypes>
-        <model>payment/method_ccsave</model>
-        <order_status>pending</order_status>
-        <title>Credit Card (saved)</title>
-        <allowspecific>0</allowspecific>
-        <group>offline</group>
+            <active>1</active>
+            <cctypes>AE,VI,MC,DI</cctypes>
+            <model>payment/method_ccsave</model>
+            <order_status>pending</order_status>
+            <title>Credit Card (saved)</title>
+            <allowspecific>0</allowspecific>
+            <group>offline</group>
         </ccsave>
         ```
 
@@ -262,7 +264,7 @@ Before running the solution, install these prerequisites:
 
     ![Map Magento order statuses to states](docs/13.orderstatus2.png)
 
-1. Add new Products. Navigate to **Catalog -> Manage Products** and add products as per requirement.
+1. Add new Products. Navigate to **Catalog -> Manage Products** and add products as required. In addition to the required fields, ensure you update the inventory 'Qty' and 'Stock Availability' so that the product will be visible.
 
    ![Add Magento products](docs/14.addproducts.png)
 
