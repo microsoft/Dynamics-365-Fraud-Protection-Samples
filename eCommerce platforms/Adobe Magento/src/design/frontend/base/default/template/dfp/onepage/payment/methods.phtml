@@ -52,7 +52,6 @@ $oneMethod = count($methods) <= 1;
 endif;
 ?>
 <!--*********************************************** DFP Changes START *************************************-->
-<input type="hidden" id="fpt_dfp_dc" name="fpt_dfp_dc" value="" />
 <input type="hidden" id="dfp_customerLocalDate" name="dfp_customerLocalDate" value="" />
 <input type="hidden" id="dfp_customerTimeZone" name="dfp_customerTimeZone" value="" />
 <!--*********************************************** DFP Changes END *************************************-->
@@ -79,11 +78,9 @@ endif;
         (function() {
             var today = new Date();
             document.getElementById('dfp_customerLocalDate').value = today.toJSON();
-            document.getElementById("fpt_dfp_dc").value = window.dfp.dc;
             document.getElementById('dfp_customerTimeZone').value = today.isDstObserved() ? today.stdTimezoneOffset() : today.getTimezoneOffset();
 
             document.getElementById('dfp_customerLocalDate').disabled = false;
-            document.getElementById('fpt_dfp_dc').disabled = false;
             document.getElementById('dfp_customerTimeZone').disabled = false;
         })();
     // *********************************************** DFP Changes END *************************************//

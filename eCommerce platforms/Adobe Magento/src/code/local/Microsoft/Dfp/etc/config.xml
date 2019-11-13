@@ -54,10 +54,6 @@
         <from><![CDATA[#^/checkout/onepage/#]]></from>
         <to>/dfp/checkout_onepage/</to>
       </Microsoft_dfp_checkout_onepagecontroller>
-      <Microsoft_dfp_customer_accountcontroller>
-        <from><![CDATA[#^/customer/account/#]]></from>
-        <to>/dfp/customer_account/</to>
-      </Microsoft_dfp_customer_accountcontroller>
     </rewrite>
     <blocks>
       <dfp>

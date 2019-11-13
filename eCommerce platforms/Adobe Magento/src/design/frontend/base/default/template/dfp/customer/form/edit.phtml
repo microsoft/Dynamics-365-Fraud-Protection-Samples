@@ -37,10 +37,6 @@ if (empty($sessionId)) {
 </div>
 <?php echo $this->getMessagesBlock()->toHtml() ?>
 <form action="<?php echo $this->getUrl('customer/account/editPost') ?>" method="post" id="form-validate" autocomplete="off">
-    <!--*********************************************** DFP Changes START *************************************-->
-    <input type="hidden" id="fpt_dfp_dc" name="fpt_dfp_dc" value="" />
-    <!--*********************************************** DFP Changes END *************************************-->
-
     <div class="fieldset">
         <?php echo $this->getBlockHtml('formkey') ?>
         <h2 class="legend"><?php echo $this->__('Account Information') ?></h2>
@@ -101,7 +97,7 @@ if (empty($sessionId)) {
     <div class="buttons-set">
         <p class="required"><?php echo $this->__('* Required Fields') ?></p>
         <p class="back-link"><a href="<?php echo $this->escapeUrl($this->getBackUrl()) ?>"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
-        <button type="submit" title="<?php echo $this->__('Save') ?>" class="button" onclick='UpdateDFPDC()'><span><span><?php echo $this->__('Save') ?></span></span></button>
+        <button type="submit" title="<?php echo $this->__('Save') ?>" class="button"><span><span><?php echo $this->__('Save') ?></span></span></button>
     </div>
 </form>
 <!-- *********************************************** DFP Changes START *************************************// -->
@@ -132,9 +128,6 @@ if (empty($sessionId)) {
     <?php endif; ?>
     //]]>
     // *********************************************** DFP Changes START *************************************//
-    function UpdateDFPDC() {
-        document.getElementById("fpt_dfp_dc").value = window.dfp.dc;
-    }
     (function() {
         dfp.doFpt(this.document);
     })();

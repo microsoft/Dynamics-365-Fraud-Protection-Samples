@@ -24,10 +24,6 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 		Mage::dispatchEvent('controller_action_postdispatch_adminhtml', array('controller_action' => $this));
 
 		// *********************************************** DFP Changes START *************************************// 
-		if (!empty($this->getRequest()->getPost('fpt_dfp_dc', false))) {
-			Mage::getSingleton('core/session')->setFptDfpDc($this->getRequest()->getPost('fpt_dfp_dc', false));
-		}
-
 		if (!empty($this->getRequest()->getPost('dfp_customerLocalDate', false))) {
 			Mage::getSingleton('core/session')->setCustomerLocalDate($this->getRequest()->getPost('dfp_customerLocalDate', false));
 		}
@@ -393,7 +389,6 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 		$deviceContext = array(
 			'deviceContextId'		=> Mage::getSingleton('core/session')->getFptDfpSessionId() ?: $this->GUID(),
 			'provider'				=> "DFPFINGERPRINTING",
-			'deviceContextDC'		=> Mage::getSingleton('core/session')->getFptDfpDc() ?: '',
 			'ipAddress'				=> getenv('HTTP_CLIENT_IP') ?: getenv('HTTP_X_FORWARDED_FOR') ?: getenv('HTTP_X_FORWARDED') ?: getenv('HTTP_FORWARDED_FOR') ?: getenv('HTTP_FORWARDED') ?: getenv('REMOTE_ADDR'),
 		);
 
