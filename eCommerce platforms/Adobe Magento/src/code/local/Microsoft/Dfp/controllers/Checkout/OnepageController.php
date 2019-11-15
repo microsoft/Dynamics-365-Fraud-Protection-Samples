@@ -387,9 +387,9 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 
 		// Device FingerPrinting Details
 		$deviceContext = array(
-			'deviceContextId'		=> Mage::getSingleton('core/session')->getFptDfpSessionId() ?: $this->GUID(),
-			'provider'				=> "DFPFINGERPRINTING",
-			'ipAddress'				=> getenv('HTTP_CLIENT_IP') ?: getenv('HTTP_X_FORWARDED_FOR') ?: getenv('HTTP_X_FORWARDED') ?: getenv('HTTP_FORWARDED_FOR') ?: getenv('HTTP_FORWARDED') ?: getenv('REMOTE_ADDR'),
+			"deviceContextId"	=> Mage::getSingleton('core/session')->getFptDfpSessionId() ?: $this->GUID(),
+			"ipAddress"			=> getenv('HTTP_CLIENT_IP') ?: getenv('HTTP_X_FORWARDED_FOR') ?: getenv('HTTP_X_FORWARDED') ?: getenv('HTTP_FORWARDED_FOR') ?: getenv('HTTP_FORWARDED') ?: getenv('REMOTE_ADDR'),
+			"provider"			=> "DFPFingerPrinting",
 		);
 
 		// Billing Address Details
