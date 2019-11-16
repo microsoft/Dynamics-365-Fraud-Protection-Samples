@@ -16,12 +16,7 @@
  */
 
 $dfp = Mage::helper('dfp');
-
-$sessionId = Mage::getSingleton('core/session')->getFptDfpSessionId();
-if (empty($sessionId)) {
-    $sessionId = $dfp->GUID();
-    Mage::getSingleton('core/session')->setFptDfpSessionId($sessionId);
-}
+$sessionId = $dfp->getFingerprintingSessionId();
 ?>
 
 <script src="https://fpt.dfp.microsoft.com/mdt.js?session_id=<?php echo $sessionId; ?>&instanceId=<?php echo Mage::getStoreConfig('dfp/tokenprovider/instanceId'); ?>"></script>

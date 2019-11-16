@@ -30,6 +30,16 @@ class Microsoft_Dfp_Helper_Data extends Mage_Core_Helper_Abstract
 		Mage::log($msg, null, 'MicrosoftDFP.log');
 	}
 
+	public function getFingerprintingSessionId()
+	{
+		$sessionId = Mage::getSingleton('core/session')->getFptDfpSessionId();
+		if (empty($sessionId)) {
+			$sessionId = $this->GUID();
+			Mage::getSingleton('core/session')->setFptDfpSessionId($sessionId);
+		}
+		return $sessionId;
+	}
+
 	public function sendUpdateAccount($payload, $correlationId = null)
 	{
 		return $this->invokeDFP('dfp/endpoints/updateaccount', $payload, $correlationId);

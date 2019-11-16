@@ -17,12 +17,7 @@
 
 // *********************************************** DFP Changes START *************************************//
 $dfp = Mage::helper('dfp');
-
-$sessionId = Mage::getSingleton('core/session')->getFptDfpSessionId();
-if (empty($sessionId)) {
-    $sessionId = $dfp->GUID();
-    Mage::getSingleton('core/session')->setFptDfpSessionId($sessionId);
-}
+$sessionId = $dfp->getFingerprintingSessionId();
 // *********************************************** DFP Changes END *************************************// 
 ?>
 
