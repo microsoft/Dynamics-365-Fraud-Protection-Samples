@@ -111,6 +111,12 @@ class Microsoft_Dfp_Helper_Data extends Mage_Core_Helper_Abstract
 
 	private function getAccessToken()
 	{
+		$cacheId = 'dfp_accessToken';
+		if (false !== ($accessToken = Mage::app()->getCache()->load($cacheId)))
+		{
+			return $accessToken;
+		}
+
 		$clientSecret = Mage::getStoreConfig('dfp/tokenprovider/clientsecret');
 		$clientId = Mage::getStoreConfig('dfp/tokenprovider/clientid');
 		$apiResourceUri = Mage::getStoreConfig('dfp/tokenprovider/apiresourceuri');
@@ -133,7 +139,15 @@ class Microsoft_Dfp_Helper_Data extends Mage_Core_Helper_Abstract
 		$result = curl_exec($curl);
 		curl_close($curl);
 
-		return json_decode($result, true)['access_token'];
+		$response = json_decode($result, true);
+
+		$accessToken = $response['access_token'];
+		$expiresInSeconds = intval($response['expires_in']) - 60; //Expire one minute early to give some buffer
+		$cacheTags = array();
+
+		Mage::app()->getCache()->save($accessToken, $cacheId, $cacheTags, $expiresInSeconds);
+
+		return $accessToken;
 	}
 
 	private function buildUrl($base, $endpoint)
