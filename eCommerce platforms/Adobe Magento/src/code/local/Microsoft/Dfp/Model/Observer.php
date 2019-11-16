@@ -17,21 +17,23 @@
 
 class Microsoft_Dfp_Model_Observer
 {
+	private $dfp = Mage::helper('dfp');
+
 	public function customerEventAfterAddressSave(Varien_Event_Observer $observer)
 	{
 		try {
 			if (Mage::app()->getRequest()->getRequestedRouteName() == 'customer') {
 
-				Mage::log('************** customerEventAfterAddressSave ************* ', null, 'MicrosoftDFP.log');
+				$this->dfp->log('************** customerEventAfterAddressSave ************* ');
 
 				if (empty(Mage::getSingleton('core/session')->getFptDfpSessionId())) {
 					return;
 				}
 				$customer = Mage::getModel('customer/customer')->load($observer->getCustomerAddress()->getCustomerId());
 
-				Mage::log('************** Invoking DFP UpdateAccount Address Change API - START ************* ', null, 'MicrosoftDFP.log');
+				$this->dfp->log('************** Invoking UpdateAccount Address Change API - START ************* ');
 				$this->invokeUpdateAccountDFP($customer);
-				Mage::log('************** Invoking DFP UpdateAccount Address Change API - END ************* ', null, 'MicrosoftDFP.log');
+				$this->dfp->log('************** Invoking UpdateAccount Address Change API - END ************* ');
 			}
 		} catch (exception $e) {
 			Mage::logException($e);
@@ -47,161 +49,68 @@ class Microsoft_Dfp_Model_Observer
 		}
 	}
 
-	public function UpdateStatusToDFP($observer)
+	private function UpdateStatusToDFP($observer)
 	{
-		Mage::log("  -----------  UpdateStatusToDFP Observer Event  START --------------  ", null, 'MicrosoftDFP.log');
+		$this->dfp->log("  -----------  UpdateStatusToDFP Observer Event START --------------  ");
 		$order = $observer->getEvent()->getOrder();
 		if ($order) {
 			if (!empty($order->getData()['status'])) {
 				$status = $order->getData()['status'];
 				if (!empty($status)) {
-					Mage::log(" UpdateStatusToDFP Observer Event Status : " . $status, null, 'MicrosoftDFP.log');
+					$this->dfp->log(" UpdateStatusToDFP Observer Event Status : " . $status);
 					switch (strtolower($status)) {
 						case 'order_approved':
 						case 'canceled':
-							Mage::log("  -----------   Invoking DFP PurchaseStatus API -  START --------------  ", null, 'MicrosoftDFP.log');
+							$this->dfp->log("  -----------   Invoking PurchaseStatus API - START --------------  ");
 							$this->invokePurchaseStatusDFP($order);
-							Mage::log("  -----------   Invoking DFP PurchaseStatus API -  END --------------  ", null, 'MicrosoftDFP.log');
+							$this->dfp->log("  -----------   Invoking PurchaseStatus API - END --------------  ");
 							break;
 						case 'refunded':
-							Mage::log("  -----------   Invoking DFP Refund API -  START --------------  ", null, 'MicrosoftDFP.log');
+							$this->dfp->log("  -----------   Invoking Refund API - START --------------  ");
 							$this->invokeRefundDFP($order);
-							Mage::log("  -----------   Invoking DFP Refund API -  END --------------  ", null, 'MicrosoftDFP.log');
+							$this->dfp->log("  -----------   Invoking Refund API - END --------------  ");
 							break;
 						case 'chargeback':
-							Mage::log("  -----------   Invoking Charge back API -  START --------------  ", null, 'MicrosoftDFP.log');
-							$this->invokeChargeBackDFP($order);
-							Mage::log("  -----------   Invoking Charge back API -  END --------------  ", null, 'MicrosoftDFP.log');
+							$this->dfp->log("  -----------   Invoking Chargeback API - START --------------  ");
+							$this->invokeChargebackDFP($order);
+							$this->dfp->log("  -----------   Invoking Chargeback API - END --------------  ");
 							break;
 					}
 				}
 			}
 		}
 
-		Mage::log("  -----------  UpdateStatusToDFP Observer Event  END --------------  ", null, 'MicrosoftDFP.log');
+		$this->dfp->log("  -----------  UpdateStatusToDFP Observer Event END --------------  ");
 	}
 
-	public function GUID()
+	private function invokeRefundDFP($refund)
 	{
-		if (function_exists('com_create_guid')) {
-			return trim(com_create_guid(), '{}');
-		}
-		return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+		$payload = $this->generateRefundPayload($refund);
+		return $this->dfp->sendRefund($payload);
 	}
 
-	public function getAccessToken()
+	private function invokeChargebackDFP($order)
 	{
-		$clientSecret = Mage::getStoreConfig('dfp/tokenprovider/clientsecret');
-		$clientId = Mage::getStoreConfig('dfp/tokenprovider/clientid');
-		$apiResourceUri = Mage::getStoreConfig('dfp/tokenprovider/apiresourceuri');
-		$directoryId = Mage::getStoreConfig('dfp/tokenprovider/directoryid');
-
-		$auth_data = array(
-			'client_id' => $clientId,
-			'client_secret' => $clientSecret,
-			'resource' => $apiResourceUri,
-			'grant_type' => 'client_credentials'
-		);
-
-		$tokenUrl = 'https://login.microsoftonline.com/' . $directoryId ."/oauth2/token";
-
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_POST, 1);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, $auth_data);
-		curl_setopt($curl, CURLOPT_URL, $tokenUrl);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-		$result = curl_exec($curl);
-		curl_close($curl);
-
-		return json_decode($result, true)['access_token'];
+		$payload = $this->generateChargebackPayload($order);
+		return $this->dfp->sendChargeback($payload);
 	}
 
-	private function buildUrl($base, $endpoint)
+	private function invokePurchaseStatusDFP($order)
 	{
-		$base = rtrim($base, '/');
-		$endpoint = ltrim($endpoint, '/');
-		return $base . '/' . $endpoint;
+		$payload = $this->generatePurchaseStatusPayload($order);
+		return $this->dfp->sendPurchaseStatus($payload);
 	}
 
-	public function invokeDFP($url, $access_token, $payload, $trackingid)
+	private function invokeUpdateAccountDFP($customer)
 	{
-		$correlationid = $this->GUID();
-		Mage::log("Correlation Id : " . $correlationid, null, 'MicrosoftDFP.log');
-		Mage::log("Tracking Id : " . $trackingid, null, 'MicrosoftDFP.log');
-
-		$baseurl = Mage::getStoreConfig('dfp/endpoints/baseurl');
-
-		$headers = array();
-		$headers[] = 'x-ms-correlation-id: ' . $correlationid;
-		$headers[] = 'x-ms-tracking-id: ' . $trackingid;
-		$headers[] = 'Authorization: bearer ' . $access_token;
-		$headers[] = 'Content-Type: application/json; charset=utf-8';
-		$url = $this->buildUrl($baseurl, $url);
-
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_POST, true);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($payload));
-		curl_setopt($curl, CURLOPT_URL, $url);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-		$result = curl_exec($curl);
-		$httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		curl_close($curl);
-
-		Mage::log("Response Code : " . $httpcode, null, 'MicrosoftDFP.log');
-		Mage::log("Response : " . json_encode($result, true), null, 'MicrosoftDFP.log');
-		return $result;
+		$payload = $this->generateUpdateAccountPayload($customer);
+		return $this->dfp->sendUpdateAccount($payload);
 	}
 
-	public function invokeRefundDFP($refundDetails)
-	{
-		$trackingid = $this->GUID();
-		$payload = $this->generateRefundPayload($refundDetails, $trackingid);
-		$access_token = $this->getAccessToken();
-
-		Mage::log("Payload : " . json_encode($payload, true), null, 'MicrosoftDFP.log');
-		Mage::log("Access Token : " .  $access_token, null, 'MicrosoftDFP.log');
-
-		if (!empty($access_token)) {
-			$bankEvent = Mage::getStoreConfig('dfp/endpoints/refund');
-			return $this->invokeDFP($bankEvent, $access_token, $payload, $trackingid);
-		}
-	}
-
-	public function invokePurchaseStatusDFP($order)
-	{
-		$trackingid = $this->GUID();
-		$payload = $this->generatePurchaseStatusPayload($order, $trackingid);
-		$access_token = $this->getAccessToken();
-
-		Mage::log("Payload : " . json_encode($payload, true), null, 'MicrosoftDFP.log');
-		Mage::log("Access Token : " .  $access_token, null, 'MicrosoftDFP.log');
-
-		if (!empty($access_token)) {
-			$purchaseStatus = Mage::getStoreConfig('dfp/endpoints/purchasestatus');
-			return $this->invokeDFP($purchaseStatus, $access_token, $payload, $trackingid);
-		}
-	}
-
-	public function invokeUpdateAccountDFP($customer)
-	{
-		$trackingid = $this->GUID();
-		$payload = $this->generateUpdateAccountPayload($customer, $trackingid);
-		$access_token = $this->getAccessToken();
-
-		Mage::log("UpdateAccount Payload : " . json_encode($payload, true), null, 'MicrosoftDFP.log');
-		Mage::log("Access Token : " .  $access_token, null, 'MicrosoftDFP.log');
-
-		if (!empty($access_token)) {
-			$updateaccountEvent = Mage::getStoreConfig('dfp/endpoints/updateaccount');
-			return $this->invokeDFP($updateaccountEvent, $access_token, $payload, $trackingid);
-		}
-	}
-
-	public function generatePurchaseStatusPayload($order, $trackingid)
+	private function generatePurchaseStatusPayload($order)
 	{
 		$_metadata = array(
-			"trackingId"		=> $trackingid,
+			"trackingId"		=> $this->dfp->GUID(),
 			"merchantTimeStamp"	=> date('c')
 		);
 
@@ -223,15 +132,15 @@ class Microsoft_Dfp_Model_Observer
 		return $purchaseStatusPayload;
 	}
 
-	public function generateRefundPayload($refund, $trackingid)
+	private function generateRefundPayload($refund)
 	{
 		$_metadata = array(
-			"trackingId"		=> $trackingid,
+			"trackingId"		=> $this->dfp->GUID(),
 			"merchantTimeStamp"	=> date('c')
 		);
 
 		$refundPayload = array(
-			'refundId'       	    => $this->GUID(),
+			'refundId'       	    => $this->dfp->GUID(),
 			'status'        		=> "Approved",
 			'bankEventTimestamp'	=> date('c'),
 			'amount'     			=> $refund->getGrandTotal(),
@@ -243,10 +152,10 @@ class Microsoft_Dfp_Model_Observer
 		return $refundPayload;
 	}
 
-	public function generateUpdateAccountPayload($customer, $trackingid)
+	private function generateUpdateAccountPayload($customer)
 	{
 		$_metadata = array(
-			"trackingId"		=> $trackingid,
+			"trackingId"		=> $this->dfp->GUID(),
 			"merchantTimeStamp"	=> date('c')
 		);
 
@@ -315,30 +224,15 @@ class Microsoft_Dfp_Model_Observer
 		return $updateAccountPayload;
 	}
 
-	public function invokeChargeBackDFP($order)
-	{
-		$trackingid = $this->GUID();
-		$payload = $this->generateChargeBackPayload($order, $trackingid);
-		$access_token = $this->getAccessToken();
-
-		Mage::log("ChargeBack Payload : " . json_encode($payload, true), null, 'MicrosoftDFP.log');
-		Mage::log("Access Token : " .  $access_token, null, 'MicrosoftDFP.log');
-
-		if (!empty($access_token)) {
-			$chargebackEvent = Mage::getStoreConfig('dfp/endpoints/chargeback');
-			return $this->invokeDFP($chargebackEvent, $access_token, $payload, $trackingid);
-		}
-	}
-
-	public function generateChargeBackPayload($order, $trackingid)
+	private function generateChargebackPayload($order)
 	{
 		$_metadata = array(
-			"trackingId"		=> $trackingid,
+			"trackingId"		=> $this->dfp->GUID(),
 			"merchantTimeStamp"	=> date('c')
 		);
 
 		$chargeBackPayload = array(
-			'chargebackId'       	=> $this->GUID(),
+			'chargebackId'       	=> $this->dfp->GUID(),
 			'status'       			=> 'Inquiry',
 			'bankEventTimestamp'    => date('c'),
 			'amount'       			=> $order->getGrandTotal(),

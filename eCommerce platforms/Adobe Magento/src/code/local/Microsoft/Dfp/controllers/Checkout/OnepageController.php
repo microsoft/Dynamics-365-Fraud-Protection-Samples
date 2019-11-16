@@ -18,6 +18,8 @@
 require_once "Mage/Checkout/controllers/OnepageController.php";
 class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageController
 {
+	private $dfp = Mage::helper('dfp');
+
 	public function postDispatch()
 	{
 		parent::postDispatch();
@@ -74,17 +76,17 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 
 			// *********************************************** DFP Changes START *************************************//
 			try {
-				$correlationid = $this->GUID();
+				$correlationId = $this->dfp->GUID();
 				$order = Mage::getModel('sales/order')->load($this->getOnepage()->getQuote()->getId(), 'quote_id');
-				Mage::log('************** Invoking DFP Purchase API - START ************* ', null, 'MicrosoftDFP.log');
+				$this->dfp->log('************** Invoking Purchase API - START ************* ');
 				$optionArray = Mage::getModel('dfp/config_source_assessmenttypes')->toOptionArray();
-				$assessmenttype = $optionArray[Mage::getStoreConfig('dfp/general/assessmenttype')]['label'];
-				$merchantRuleDecision = $this->invokePurchaseDFP($order, $correlationid, $assessmenttype);
+				$assessmentType = $optionArray[Mage::getStoreConfig('dfp/general/assessmenttype')]['label'];
+				$merchantRuleDecision = $this->invokePurchaseDFP($order, $correlationId, $assessmentType);
 				if (
 					strtolower($merchantRuleDecision) == "reject" &&
-					strtolower($assessmenttype) == 'protect'
+					strtolower($assessmentType) == 'protect'
 				) {
-					Mage::log('************** Invoking DFP Purchase API - END ************* ', null, 'MicrosoftDFP.log');
+					$this->dfp->log('************** Invoking Purchase API - END ************* ');
 
 					$this->cancelOrder('Order is rejected by DFP.');
 
@@ -93,21 +95,21 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 					return;
 				} else {
 					try {
-						Mage::log('************** Invoking DFP Bank Event API - START ************* ', null, 'MicrosoftDFP.log');
-						$this->invokeBankEventDFP("Auth", $correlationid);
-						$this->invokeBankEventDFP("Charge", $correlationid);
-						Mage::log('************** Invoking DFP Bank Event API - END ************* ', null, 'MicrosoftDFP.log');
+						$this->dfp->log('************** Invoking Bank Event API - START ************* ');
+						$this->invokeBankEventDFP("Auth", $correlationId);
+						$this->invokeBankEventDFP("Charge", $correlationId);
+						$this->dfp->log('************** Invoking Bank Event API - END ************* ');
 					} catch (exception $e) {
-						Mage::log($e->getMessage(), null, 'MicrosoftDFP.log');
+						$this->dfp->log($e->getMessage());
 					}
 
 					$redirectUrl = $this->getOnepage()->getCheckout()->getRedirectUrl();
 					$result['success'] = true;
 					$result['error']   = false;
 				}
-				Mage::log('************** Invoking DFP Purchase API - END ************* ', null, 'MicrosoftDFP.log');
+				$this->dfp->log('************** Invoking Purchase API - END ************* ');
 			} catch (exception $e) {
-				Mage::log($e->getMessage(), null, 'MicrosoftDFP.log');
+				$this->dfp->log($e->getMessage());
 				$redirectUrl = $this->getOnepage()->getCheckout()->getRedirectUrl();
 				$result['success'] = true;
 				$result['error']   = false;
@@ -177,94 +179,20 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 		}
 	}
 
-	public function GUID()
+	private function invokePurchaseDFP($order, $correlationId, $assessmentType)
 	{
-		if (function_exists('com_create_guid')) {
-			return trim(com_create_guid(), '{}');
-		}
-		return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+		$payload = $this->generatePurchasePayload($order, $assessmentType);
+		$result = $this->dfp->sendPurchase($payload, $correlationId);
+		return json_decode($result, true)['resultDetails']['MerchantRuleDecision'];
 	}
 
-	public function getAccessToken()
+	private function invokeBankEventDFP($type, $correlationId)
 	{
-		$clientSecret = Mage::getStoreConfig('dfp/tokenprovider/clientsecret');
-		$clientId = Mage::getStoreConfig('dfp/tokenprovider/clientid');
-		$apiResourceUri = Mage::getStoreConfig('dfp/tokenprovider/apiresourceuri');
-		$directoryId = Mage::getStoreConfig('dfp/tokenprovider/directoryid');
-
-		$auth_data = array(
-			'client_id' => $clientId,
-			'client_secret' => $clientSecret,
-			'resource' => $apiResourceUri,
-			'grant_type' => 'client_credentials'
-		);
-
-		$tokenUrl = 'https://login.microsoftonline.com/' . $directoryId . "/oauth2/token";
-
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_POST, 1);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, $auth_data);
-		curl_setopt($curl, CURLOPT_URL, $tokenUrl);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-		$result = curl_exec($curl);
-		curl_close($curl);
-
-		return json_decode($result, true)['access_token'];
+		$payload = $this->generateBankEventPayload($type);
+		return $this->dfp->sendBankEvent($payload, $correlationId);
 	}
 
-	private function buildUrl($base, $endpoint)
-	{
-		$base = rtrim($base, '/');
-		$endpoint = ltrim($endpoint, '/');
-		return $base . '/' . $endpoint;
-	}
-
-	public function invokeDFP($url, $access_token, $payload, $trackingid, $correlationid)
-	{
-		Mage::log("Correlation Id : " . $correlationid, null, 'MicrosoftDFP.log');
-		Mage::log("Tracking Id : " . $trackingid, null, 'MicrosoftDFP.log');
-
-		$baseurl = Mage::getStoreConfig('dfp/endpoints/baseurl');
-
-		$headers = array();
-		$headers[] = 'x-ms-correlation-id: ' . $correlationid;
-		$headers[] = 'x-ms-tracking-id: ' . $trackingid;
-		$headers[] = 'Authorization: bearer ' . $access_token;
-		$headers[] = 'Content-Type: application/json; charset=utf-8';
-		$url = $this->buildUrl($baseurl, $url);
-
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_POST, true);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($payload));
-		curl_setopt($curl, CURLOPT_URL, $url);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-		$result = curl_exec($curl);
-		$httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		curl_close($curl);
-
-		Mage::log("Response Code : " . $httpcode, null, 'MicrosoftDFP.log');
-		Mage::log("Response : " . json_encode($result, true), null, 'MicrosoftDFP.log');
-		return $result;
-	}
-
-	public function invokePurchaseDFP($order, $correlationid, $assessmenttype)
-	{
-		$trackingid = $this->GUID();
-		$payload = $this->generatePurchasePayload($order, $trackingid, $assessmenttype);
-		$access_token = $this->getAccessToken();
-
-		Mage::log("Payload : " . json_encode($payload, true), null, 'MicrosoftDFP.log');
-		Mage::log("Access Token : " .  $access_token, null, 'MicrosoftDFP.log');
-
-		if (!empty($access_token)) {
-			$purchase = Mage::getStoreConfig('dfp/endpoints/purchase');
-			$result = $this->invokeDFP($purchase, $access_token, $payload, $trackingid, $correlationid);
-			return json_decode($result, true)['resultDetails']['MerchantRuleDecision'];
-		}
-	}
-
-	public function GetCardType($data)
+	private function GetCardType($data)
 	{
 		$type = '';
 		switch ($data) {
@@ -284,7 +212,7 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 		return $type;
 	}
 
-	public function GetPaymentInstrumentDetails($order)
+	private function GetPaymentInstrumentDetails($order)
 	{
 		$PaymentData = $order->getPayment()->getData();
 
@@ -335,14 +263,14 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 		return $paymentInstrumentList;
 	}
 
-	public function generatePurchasePayload($order, $trackingid, $assessmenttype)
+	private function generatePurchasePayload($order, $assessmentType)
 	{
 		$billingAddress = $order->getBillingAddress();
 
 		$quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
 		$userId = $order->customer_email;
 		if ($quote->getCheckoutMethod(true) == 'guest') {
-			$userId = $this->GUID();
+			$userId = $this->dfp->GUID();
 		}
 
 		// User Details
@@ -387,7 +315,7 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 
 		// Device FingerPrinting Details
 		$deviceContext = array(
-			"deviceContextId"	=> Mage::getSingleton('core/session')->getFptDfpSessionId() ?: $this->GUID(),
+			"deviceContextId"	=> Mage::getSingleton('core/session')->getFptDfpSessionId() ?: $this->dfp->GUID(),
 			"ipAddress"			=> getenv('HTTP_CLIENT_IP') ?: getenv('HTTP_X_FORWARDED_FOR') ?: getenv('HTTP_X_FORWARDED') ?: getenv('HTTP_FORWARDED_FOR') ?: getenv('HTTP_FORWARDED') ?: getenv('REMOTE_ADDR'),
 			"provider"			=> "DFPFingerPrinting",
 		);
@@ -411,13 +339,13 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 		}
 
 		$_metadata = array(
-			"trackingId"		=> $trackingid,
+			"trackingId"		=> $this->dfp->GUID(),
 			"merchantTimeStamp"	=> date('c')
 		);
 
 		$payload = array(
 			'purchaseId'       		=> Mage::getSingleton('checkout/session')->getLastRealOrderId(),
-			'assessmentType'        => $assessmenttype,
+			'assessmentType'        => $assessmentType,
 			'customerLocalDate'     => Mage::getSingleton('core/session')->getcustomerLocalDate(),
 			'merchantLocalDate'     => date('c'),
 			'totalAmount'           => $order->getGrandTotal(),
@@ -435,30 +363,15 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 		return $payload;
 	}
 
-	public function invokeBankEventDFP($type, $correlationid)
-	{
-		$trackingid = $this->GUID();
-		$payload = $this->generateBankEventPayload($trackingid, $type);
-		$access_token = $this->getAccessToken();
-
-		Mage::log("Payload : " . json_encode($payload, true), null, 'MicrosoftDFP.log');
-		Mage::log("Access Token : " .  $access_token, null, 'MicrosoftDFP.log');
-
-		if (!empty($access_token)) {
-			$bankEvent = Mage::getStoreConfig('dfp/endpoints/bankevent');
-			return $this->invokeDFP($bankEvent, $access_token, $payload, $trackingid, $correlationid);
-		}
-	}
-
-	public function generateBankEventPayload($trackingid, $type)
+	private function generateBankEventPayload($type)
 	{
 		$_metadata = array(
-			"trackingId"		=> $trackingid,
+			"trackingId"		=> $this->dfp->GUID(),
 			"merchantTimeStamp"	=> date('c')
 		);
 
 		$bankEventPayload = array(
-			'bankEventId'       	=> $this->GUID(), //this is something the bank sent, here we just hardcode a possible one
+			'bankEventId'       	=> $this->dfp->GUID(), //this is something the bank sent, here we just hardcode a possible one
 			'type'        			=> $type,
 			'bankEventTimestamp'	=> date('c'),
 			'status'     			=> "Approved", //this is something the bank sent, here we just hardcode a possible one
