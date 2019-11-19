@@ -27,7 +27,10 @@ class Microsoft_Dfp_Helper_Data extends Mage_Core_Helper_Abstract
 
 	public function log($msg)
 	{
-		Mage::log($msg, null, 'MicrosoftDFP.log');
+		if (Mage::getStoreConfigFlag('dfp/general/enablelog'))
+		{
+			Mage::log($msg, null, 'MicrosoftDFP.log');
+		}
 	}
 
 	public function getFingerprintingSessionId()
@@ -114,6 +117,7 @@ class Microsoft_Dfp_Helper_Data extends Mage_Core_Helper_Abstract
 		$cacheId = 'dfp_accessToken';
 		if (false !== ($accessToken = Mage::app()->getCache()->load($cacheId)))
 		{
+			$this->log("Access Token from cache.");
 			return $accessToken;
 		}
 

@@ -52,6 +52,16 @@
               <show_in_website>1</show_in_website>
               <show_in_store>1</show_in_store>
             </assessmenttype>
+            <enablelog translate="label">
+              <label>Enable logging</label>
+              <comment>CAUTION: Includes sensitive information such as access tokens and request payloads containing PII, in addition to less sensitive information like correlation IDs. Only enable during development/integration/debugging.</comment>
+              <source_model>adminhtml/system_config_source_yesno</source_model>
+              <frontend_type>select</frontend_type>
+              <sort_order>1</sort_order>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>1</show_in_store>
+            </enablelog>
           </fields>
         </general>
         <tokenprovider translate="label">
