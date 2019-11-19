@@ -17,7 +17,7 @@
 
 class Microsoft_Dfp_Helper_Data extends Mage_Core_Helper_Abstract
 {
-    public function GUID()
+	public function GUID()
 	{
 		if (function_exists('com_create_guid')) {
 			return trim(com_create_guid(), '{}');
@@ -27,8 +27,7 @@ class Microsoft_Dfp_Helper_Data extends Mage_Core_Helper_Abstract
 
 	public function log($msg)
 	{
-		if (Mage::getStoreConfigFlag('dfp/general/enablelog'))
-		{
+		if (Mage::getStoreConfigFlag('dfp/general/enablelog')) {
 			Mage::log($msg, null, 'MicrosoftDFP.log');
 		}
 	}
@@ -115,8 +114,7 @@ class Microsoft_Dfp_Helper_Data extends Mage_Core_Helper_Abstract
 	private function getAccessToken()
 	{
 		$cacheId = 'dfp_accessToken';
-		if (false !== ($accessToken = Mage::app()->getCache()->load($cacheId)))
-		{
+		if (false !== ($accessToken = Mage::app()->getCache()->load($cacheId))) {
 			$this->log("Access Token from cache.");
 			return $accessToken;
 		}

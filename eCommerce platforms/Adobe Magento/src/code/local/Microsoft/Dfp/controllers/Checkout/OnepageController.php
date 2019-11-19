@@ -20,17 +20,17 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 {
 	private $dfp;
 
-    /**
-     * Constructor
-     *
-     * @param Zend_Controller_Request_Abstract $request
-     * @param Zend_Controller_Response_Abstract $response
-     * @param array $invokeArgs
-     */
-    public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
-    {
+	/**
+	 * Constructor
+	 *
+	 * @param Zend_Controller_Request_Abstract $request
+	 * @param Zend_Controller_Response_Abstract $response
+	 * @param array $invokeArgs
+	 */
+	public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
+	{
 		parent::__construct($request, $response, $invokeArgs);
-        $this->dfp = Mage::helper('dfp');
+		$this->dfp = Mage::helper('dfp');
 	}
 
 	public function postDispatch()
