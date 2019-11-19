@@ -17,8 +17,12 @@
 
 class Microsoft_Dfp_Model_Observer
 {
-	private $dfp = Mage::helper('dfp');
+	private $dfp;
 
+	function __construct() {
+        $this->dfp = Mage::helper('dfp');
+	}
+	
 	public function customerEventAfterAddressSave(Varien_Event_Observer $observer)
 	{
 		try {

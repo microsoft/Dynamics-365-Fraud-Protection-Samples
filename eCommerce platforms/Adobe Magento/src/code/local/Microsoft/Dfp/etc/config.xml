@@ -74,6 +74,7 @@
       <customer_address_save_after>
         <observers>
           <dfp>
+            <type>singleton</type>
             <class>dfp/observer</class>
             <method>customerEventAfterAddressSave</method>
           </dfp>
@@ -82,6 +83,7 @@
       <sales_order_save_after>
         <observers>
           <dfp>
+            <type>singleton</type>
             <class>dfp/observer</class>
             <method>salesEventOrderAfterSave</method>
           </dfp>
