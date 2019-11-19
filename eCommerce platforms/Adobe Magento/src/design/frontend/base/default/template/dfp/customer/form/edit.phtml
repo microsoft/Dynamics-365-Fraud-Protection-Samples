@@ -14,11 +14,6 @@
  * @copyright  Copyright (c) Microsoft Corporation. (https://www.microsoft.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-
-// *********************************************** DFP Changes START *************************************//
-$dfp = Mage::helper('dfp');
-$sessionId = $dfp->getFingerprintingSessionId();
-// *********************************************** DFP Changes END *************************************// 
 ?>
 
 <div class="page-title">
@@ -27,7 +22,7 @@ $sessionId = $dfp->getFingerprintingSessionId();
 <?php echo $this->getMessagesBlock()->toHtml() ?>
 <form action="<?php echo $this->getUrl('customer/account/editPost') ?>" method="post" id="form-validate" autocomplete="off">
     <div class="fieldset">
-        <?php echo $this->getBlockHtml('formkey') ?>
+        <?php echo $this->getBlockHtml('formkey')?>
         <h2 class="legend"><?php echo $this->__('Account Information') ?></h2>
         <ul class="form-list">
             <li class="fields">
@@ -36,48 +31,48 @@ $sessionId = $dfp->getFingerprintingSessionId();
             <li>
                 <label for="email" class="required"><em>*</em><?php echo $this->__('Email Address') ?></label>
                 <div class="input-box">
-                    <input type="text" name="email" id="email" value="<?php echo $this->escapeHtml($this->getCustomer()->getEmail()) ?>" title="<?php echo $this->__('Email Address') ?>" class="input-text required-entry validate-email" />
+                    <input type="text" name="email" id="email" value="<?php echo $this->escapeHtml($this->getCustomer()->getEmail()) ?>" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Email Address')) ?>" class="input-text required-entry validate-email" />
                 </div>
             </li>
-            <?php $_dob = $this->getLayout()->createBlock('customer/widget_dob') ?>
-            <?php if ($_dob->isEnabled()) : ?>
-                <li><?php echo $_dob->setDate($this->getCustomer()->getDob())->toHtml() ?></li>
-            <?php endif ?>
-            <?php $_taxvat = $this->getLayout()->createBlock('customer/widget_taxvat') ?>
-            <?php if ($_taxvat->isEnabled()) : ?>
-                <li><?php echo $_taxvat->setTaxvat($this->getCustomer()->getTaxvat())->toHtml() ?></li>
-            <?php endif ?>
-            <?php $_gender = $this->getLayout()->createBlock('customer/widget_gender') ?>
-            <?php if ($_gender->isEnabled()) : ?>
-                <li><?php echo $_gender->setGender($this->getCustomer()->getGender())->toHtml() ?></li>
-            <?php endif ?>
+        <?php $_dob = $this->getLayout()->createBlock('customer/widget_dob') ?>
+        <?php if ($_dob->isEnabled()): ?>
+            <li><?php echo $_dob->setDate($this->getCustomer()->getDob())->toHtml() ?></li>
+        <?php endif ?>
+        <?php $_taxvat = $this->getLayout()->createBlock('customer/widget_taxvat') ?>
+        <?php if ($_taxvat->isEnabled()): ?>
+            <li><?php echo $_taxvat->setTaxvat($this->getCustomer()->getTaxvat())->toHtml() ?></li>
+        <?php endif ?>
+        <?php $_gender = $this->getLayout()->createBlock('customer/widget_gender') ?>
+        <?php if ($_gender->isEnabled()): ?>
+            <li><?php echo $_gender->setGender($this->getCustomer()->getGender())->toHtml() ?></li>
+        <?php endif ?>
+            <li>
+                <label for="current_password" class="required"><em>*</em><?php echo Mage::helper('core')->quoteEscape($this->__('Current Password')) ?></label>
+                <div class="input-box">
+                    <!-- This is a dummy hidden field to trick firefox from auto filling the password -->
+                    <input type="text" class="input-text no-display" name="dummy" id="dummy" />
+                    <input type="password" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Current Password')) ?>" class="input-text required-entry" name="current_password" id="current_password" />
+                </div>
+            </li>
             <li class="control">
-                <input type="checkbox" name="change_password" id="change_password" value="1" onclick="setPasswordForm(this.checked)" title="<?php echo $this->__('Change Password') ?>" <?php if ($this->getCustomer()->getChangePassword() == 1) : ?> checked="checked" <?php endif; ?> class="checkbox" /><label for="change_password"><?php echo $this->__('Change Password') ?></label>
+                <input type="checkbox" name="change_password" id="change_password" value="1" onclick="setPasswordForm(this.checked)" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Change Password')) ?>"<?php if($this->getCustomer()->getChangePassword()==1): ?> checked="checked"<?php endif; ?> class="checkbox" /><label for="change_password"><?php echo $this->__('Change Password') ?></label>
             </li>
         </ul>
     </div>
     <div class="fieldset" style="display:none;">
         <h2 class="legend"><?php echo $this->__('Change Password') ?></h2>
         <ul class="form-list">
-            <li>
-                <label for="current_password" class="required"><em>*</em><?php echo $this->__('Current Password') ?></label>
-                <div class="input-box">
-                    <!-- This is a dummy hidden field to trick firefox from auto filling the password -->
-                    <input type="text" class="input-text no-display" name="dummy" id="dummy" />
-                    <input type="password" title="<?php echo $this->__('Current Password') ?>" class="input-text" name="current_password" id="current_password" />
-                </div>
-            </li>
             <li class="fields">
                 <div class="field">
                     <label for="password" class="required"><em>*</em><?php echo $this->__('New Password') ?></label>
                     <div class="input-box">
-                        <input type="password" title="<?php echo $this->__('New Password') ?>" class="input-text validate-password" name="password" id="password" />
+                        <input type="password" title="<?php echo Mage::helper('core')->quoteEscape($this->__('New Password')) ?>" class="input-text required-entry validate-password" name="password" id="password" />
                     </div>
                 </div>
                 <div class="field">
                     <label for="confirmation" class="required"><em>*</em><?php echo $this->__('Confirm New Password') ?></label>
                     <div class="input-box">
-                        <input type="password" title="<?php echo $this->__('Confirm New Password') ?>" class="input-text validate-cpassword" name="confirmation" id="confirmation" />
+                        <input type="password" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Confirm New Password')) ?>" class="input-text required-entry validate-cpassword" name="confirmation" id="confirmation" />
                     </div>
                 </div>
             </li>
@@ -86,39 +81,33 @@ $sessionId = $dfp->getFingerprintingSessionId();
     <div class="buttons-set">
         <p class="required"><?php echo $this->__('* Required Fields') ?></p>
         <p class="back-link"><a href="<?php echo $this->escapeUrl($this->getBackUrl()) ?>"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
-        <button type="submit" title="<?php echo $this->__('Save') ?>" class="button"><span><span><?php echo $this->__('Save') ?></span></span></button>
+        <button type="submit" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Save')) ?>" class="button"><span><span><?php echo $this->__('Save') ?></span></span></button>
     </div>
 </form>
-<!-- *********************************************** DFP Changes START *************************************// -->
+
+<?php
+// *********************************************** DFP Changes START *************************************//
+$dfp = Mage::helper('dfp');
+$sessionId = $dfp->getFingerprintingSessionId();
+?>
+
 <script src="https://fpt.dfp.microsoft.com/mdt.js?session_id=<?php echo $sessionId; ?>&instanceId=<?php echo Mage::getStoreConfig('dfp/tokenprovider/instanceId'); ?>"></script>
-<!-- *********************************************** DFP Changes END *************************************// -->
-
 <script>
-    //<![CDATA[
-    var dataForm = new VarienForm('form-validate', true);
-
-    function setPasswordForm(arg) {
-        if (arg) {
-            $('current_password').up(3).show();
-            $('current_password').addClassName('required-entry');
-            $('password').addClassName('required-entry');
-            $('confirmation').addClassName('required-entry');
-
-        } else {
-            $('current_password').up(3).hide();
-            $('current_password').removeClassName('required-entry');
-            $('password').removeClassName('required-entry');
-            $('confirmation').removeClassName('required-entry');
-        }
-    }
-
-    <?php if ($this->getCustomer()->getChangePassword()) : ?>
-        setPasswordForm(true);
-    <?php endif; ?>
-    //]]>
-    // *********************************************** DFP Changes START *************************************//
     (function() {
         dfp.doFpt(this.document);
     })();
-    // *********************************************** DFP Changes END *************************************//
+</script>
+<!-- *********************************************** DFP Changes END *************************************// -->
+
+<script type="text/javascript">
+//<![CDATA[
+    var dataForm = new VarienForm('form-validate', true);
+    function setPasswordForm(arg){
+        $('password').up('.fieldset')[arg ? 'show': 'hide']();
+    }
+
+    <?php if($this->getCustomer()->getChangePassword()): ?>
+        setPasswordForm(true);
+    <?php endif; ?>
+//]]>
 </script>
