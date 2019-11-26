@@ -7,6 +7,14 @@ It demonstrates the primary uses of the Dynamics 365 Fraud Protection APIs:
 - Managing users and their associated information in the Dynamics 365 Fraud Protection system (for example, basic info, payment methods, addresses, and so on).
 - Reporting chargebacks, refunds, and additional fraud signals.
 
+## .NET Core sample
+The solution in the root of the repo shows how to call the APIs using .NET Core outside the context of any particular eCommerce platform.  It's meant to be a reference implementation for companies with their own software.
+
+## Specific eCommerce platform samples
+This repo also has examples showing how to integrate Dynamics 365 Fraud Protection in common eCommerce platforms:
+
+- [Adobe Magento](./eCommerce&#32;platforms/Adobe&#32;Magento)
+
 ## Contents
 There are two main sections to the sample application:
 - [API documentation](./docs) explaining how to authenticate with and call the APIs. Plus, API usage guidance is given for various scenarios like guest checkout.
