@@ -5,6 +5,7 @@
     <RootNamespace>Contoso.FraudProtection.Web</RootNamespace>
     <UserSecretsId>95ed0ac6-6749-4920-aaf4-6f92323204d4</UserSecretsId>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
