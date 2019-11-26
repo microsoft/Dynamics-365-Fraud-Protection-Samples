@@ -27,7 +27,7 @@
               <config>
                 <children>
                   <dfp translate="title" module="dfp">
-                    <title>DFP Config Section</title>
+                    <title>DFP Configuration</title>
                     <sort_order>0</sort_order>
                   </dfp>
                 </children>

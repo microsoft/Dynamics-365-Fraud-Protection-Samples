@@ -39,12 +39,15 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 		Mage::dispatchEvent('controller_action_postdispatch_adminhtml', array('controller_action' => $this));
 
 		// *********************************************** DFP Changes START *************************************// 
-		if (!empty($this->getRequest()->getPost('dfp_customerLocalDate', false))) {
-			Mage::getSingleton('core/session')->setCustomerLocalDate($this->getRequest()->getPost('dfp_customerLocalDate', false));
+		$session = Mage::getSingleton('core/session');
+		$customerLocalDate = $this->getRequest()->getPost('dfp_customerLocalDate', false);
+		$customerTimeZone = $this->getRequest()->getPost('dfp_customerTimeZone', false);
+		if (!empty($customerLocalDate)) {
+			$session->setCustomerLocalDate($customerLocalDate);
 		}
 
-		if (!empty($this->getRequest()->getPost('dfp_customerTimeZone', false))) {
-			Mage::getSingleton('core/session')->setCustomerTimeZone($this->getRequest()->getPost('dfp_customerTimeZone', false));
+		if (!empty($customerTimeZone)) {
+			$session->setCustomerTimeZone($customerTimeZone);
 		}
 		// *********************************************** DFP Changes END *************************************//
 	}
@@ -91,42 +94,40 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 			try {
 				$correlationId = $this->dfp->GUID();
 				$order = Mage::getModel('sales/order')->load($this->getOnepage()->getQuote()->getId(), 'quote_id');
-				$this->dfp->log('************** Invoking Purchase API - START ************* ');
 				$optionArray = Mage::getModel('dfp/config_source_assessmenttypes')->toOptionArray();
 				$assessmentType = $optionArray[Mage::getStoreConfig('dfp/general/assessmenttype')]['label'];
+				$this->dfp->log('************** Invoking Purchase API - START ************* ');
 				$merchantRuleDecision = $this->invokePurchaseDFP($order, $correlationId, $assessmentType);
+				$this->dfp->log('************** Invoking Purchase API - END ************* ');
+
 				if (
-					strtolower($merchantRuleDecision) == "reject" &&
-					strtolower($assessmentType) == 'protect'
+					strtolower($merchantRuleDecision) == strtolower(Microsoft_Dfp_Helper_Data::MERCHANT_DECISION_REJECT) &&
+					strtolower($assessmentType) == strtolower(Microsoft_Dfp_Helper_Data::ASSESSMENT_TYPE_PROTECT)
 				) {
-					$this->dfp->log('************** Invoking Purchase API - END ************* ');
-
 					$this->cancelOrder('Order is rejected by DFP.');
-
 					$result['redirect'] = Mage::getUrl('checkout/onepage/failure');
 					$this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
-					return;
-				} else {
-					try {
-						$this->dfp->log('************** Invoking Bank Event API - START ************* ');
-						$this->invokeBankEventDFP("Auth", $correlationId);
-						$this->invokeBankEventDFP("Charge", $correlationId);
-						$this->dfp->log('************** Invoking Bank Event API - END ************* ');
-					} catch (exception $e) {
-						$this->dfp->log($e->getMessage());
-					}
 
-					$redirectUrl = $this->getOnepage()->getCheckout()->getRedirectUrl();
-					$result['success'] = true;
-					$result['error']   = false;
+					return;
 				}
-				$this->dfp->log('************** Invoking Purchase API - END ************* ');
+
+				try {
+					$this->dfp->log('************** Invoking Bank Event API - START ************* ');
+					$this->invokeBankEventDFP("Auth", $correlationId);
+					$this->invokeBankEventDFP("Charge", $correlationId);
+					$this->dfp->log('************** Invoking Bank Event API - END ************* ');
+				} catch (exception $e) {
+					$this->dfp->log($e->getMessage());
+				}
 			} catch (exception $e) {
 				$this->dfp->log($e->getMessage());
-				$redirectUrl = $this->getOnepage()->getCheckout()->getRedirectUrl();
-				$result['success'] = true;
-				$result['error']   = false;
 			}
+
+			//DFP failing should not break checkout.
+			$redirectUrl = $this->getOnepage()->getCheckout()->getRedirectUrl();
+			$result['success'] = true;
+			$result['error']   = false;
+
 			// *********************************************** DFP Changes END *************************************// 
 		} catch (Mage_Payment_Model_Info_Exception $e) {
 			$message = $e->getMessage();
@@ -205,132 +206,122 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 		return $this->dfp->sendBankEvent($payload, $correlationId);
 	}
 
-	private function GetCardType($data)
+	private function GetCardType($cardCode)
 	{
-		$type = '';
-		switch ($data) {
-			case 'VI':
-				$type = 'Visa';
-				break;
-			case 'AE':
-				$type = 'Amex';
-				break;
-			case 'MC':
-				$type = 'Mastercard';
-				break;
-			case 'DI':
-				$type = 'Discover';
-				break;
-		}
-		return $type;
+		$ccMap = array(
+			'VI' => Microsoft_Dfp_Helper_Data::PI_CARD_TYPE_VISA,
+			'MC' => Microsoft_Dfp_Helper_Data::PI_CARD_TYPE_MASTERCARD,
+			'DI' => Microsoft_Dfp_Helper_Data::PI_CARD_TYPE_DISCOVER,
+			'AE' => Microsoft_Dfp_Helper_Data::PI_CARD_TYPE_AMEX,
+			'DN' => Microsoft_Dfp_Helper_Data::PI_CARD_TYPE_DINERS,
+			'JCB' => Microsoft_Dfp_Helper_Data::PI_CARD_TYPE_JCB,
+		);
+
+		return $ccMap[$cardCode];
 	}
 
 	private function GetPaymentInstrumentDetails($order)
 	{
-		$PaymentData = $order->getPayment()->getData();
+		$paymentData = $order->getPayment()->getData();
 
 		$billingAddress = $order->getBillingAddress();
 		$billingData = $billingAddress->getData();
 		$billingStreet = $billingAddress->getStreet();
 
 		$paymentInstrumentList = array();
-		$userCountryCode = 'USA';
-		$userCountryDialCode = '1';
 
 		$billingAddress = array(
 			"firstName"	     => $billingData['firstname'],
 			"lastName"	     => $billingData['lastname'],
-			"phoneNumber"    => "+" . $userCountryDialCode . "-" . $billingAddress->telephone,
+			"phoneNumber"    => $billingAddress->telephone,
 			"street1"	     => $billingStreet[0],
 			"street2"	     => count($billingStreet) > 1 ? $billingStreet[1] : null,
 			"city"		     => $billingAddress->city,
 			"state"		     => $billingAddress->region,
 			"zipCode"	     => $billingAddress->postcode,
-			"country"	     => $userCountryCode
+			"country"	     => $billingAddress->countryId
 		);
 
-		switch ($PaymentData['method']) {
+		switch ($paymentData['method']) {
 			case 'ccsave':
-				$expirationDate = new DateTime($PaymentData['cc_exp_year'] . '-' . $PaymentData['cc_exp_month']);
-				$expirationDateISO =  $expirationDate->format(DateTime::ATOM);
-				$paymentInstrument = array(
-					'type'			  => 'CreditCard',
-					'cardType'		  => $this->GetCardType($PaymentData['cc_type']),
-					'holderName'	  => $PaymentData['cc_owner'],
+				$expirationDate = new DateTime($paymentData['cc_exp_year'] . '-' . $paymentData['cc_exp_month']);
+				$expirationDateISO = $expirationDate->format(DateTime::ATOM);
+				$paymentInstrumentList[] = array(
+					'type'			  => Microsoft_Dfp_Helper_Data::PI_TYPE_CREDIT,
+					'cardType'		  => $this->GetCardType($paymentData['cc_type']),
+					'holderName'	  => $paymentData['cc_owner'],
 					'expirationDate'  => $expirationDateISO,
-					'lastFourDigits'  => $PaymentData['cc_last4'],
+					'lastFourDigits'  => $paymentData['cc_last4'],
 					'purchaseAmount'  => $order->getGrandTotal(),
 					'billingAddress'  => $billingAddress
 				);
-				$paymentInstrumentList[] = $paymentInstrument;
 				break;
 			case 'checkmo':
-				$paymentInstrument = array(
-					'type'			 => 'Invoice',
+				$paymentInstrumentList[] = array(
+					'type'			 => Microsoft_Dfp_Helper_Data::PI_TYPE_INVOICE,
 					'purchaseAmount' => $order->getGrandTotal(),
 					'billingAddress' => $billingAddress
 				);
-				$paymentInstrumentList[] = $paymentInstrument;
 				break;
 		}
+
 		return $paymentInstrumentList;
 	}
 
 	private function generatePurchasePayload($order, $assessmentType)
 	{
-		$billingAddress = $order->getBillingAddress();
-
 		$quote = Mage::getModel('sales/quote')->load($order->getQuoteId());
 		$userId = $order->customer_email;
 		if ($quote->getCheckoutMethod(true) == 'guest') {
 			$userId = $this->dfp->GUID();
 		}
 
-		// User Details
-		$userCountryCode = 'USA'; //this is something needs to set based on zip code, here we just hardcode a possible one
-		$userCountryDialCode = '1'; //this is something needs to set based on zip code, here we just hardcode a possible one
-		$timeZone = (Mage::getSingleton('core/session')->getCustomerTimeZone()) / 60;
-		$timeZone = ($timeZone > 0 ? '-' : '+') . $timeZone;
-		$user = array(
-			'userId'					=> $userId,
-			'firstName'					=> $order->customer_firstname,
-			'lastName' 					=> $order->customer_lastname,
-			'country'					=> $userCountryCode,
-			'zipCode'					=> $billingAddress->postcode,
-			"timeZone"					=> $timeZone,
-			'language'					=> strtoupper(substr(Mage::app()->getLocale()->getLocaleCode(), 0, 2)),
-			'phoneNumber'				=> "+" . $userCountryDialCode . "-" . $billingAddress->telephone,
-			'email'						=> $order->customer_email,
-			'isEmailValidated'			=> false,
-			'isPhoneNumberValidated'	=> false
-		);
-
-		// Shipping Address Details
+		// Shipping address details
 		$shippingAddress = $order->getShippingAddress();
 		$shipStreet = $shippingAddress->getStreet();
-		if ($shippingAddress)
-			$shippingData = $shippingAddress->getData();
-
-		$shippingCountryCode = 'USA';
-		$shippingCountryDialCode = '1';
+		$shippingData = $shippingAddress->getData();
 
 		$orderShippingAddress = array(
 			'firstName'		=> $shippingData['firstname'],
 			'lastName'		=> $shippingData['lastname'],
-			'phoneNumber'	=> "+" . $shippingCountryDialCode . "-" . $shippingData['telephone'],
+			'phoneNumber'	=> $shippingData['telephone'],
 			'street1'		=> $shipStreet[0],
 			'street2'		=> count($shipStreet) > 1 ? $shipStreet[1] : null,
 			'city'			=> $shippingAddress->city,
 			'state'			=> $shippingAddress->region,
 			'zipCode'		=> $shippingAddress->postcode,
-			'country'		=> $shippingCountryCode
+			'country'		=> $shippingAddress->countryId
+		);
+
+		// User Details
+		$timeZone = (Mage::getSingleton('core/session')->getCustomerTimeZone()) / 60;
+		if ($timeZone > 0)
+		{
+			$timeZone = '-' . $timeZone;
+		}
+		else if ($timeZone < 0)
+		{
+			$timeZone = '+' . $timeZone;
+		}
+		$user = array(
+			'userId'					=> $userId,
+			'firstName'					=> $order->customer_firstname,
+			'lastName' 					=> $order->customer_lastname,
+			'country'					=> $shippingAddress->countryId,
+			'zipCode'					=> $shippingAddress->postcode,
+			'timeZone'					=> $timeZone,
+			'language'					=> strtoupper(substr(Mage::app()->getLocale()->getLocaleCode(), 0, 2)),
+			'phoneNumber'				=> $shippingData['telephone'],
+			'email'						=> $order->customer_email,
+			'isEmailValidated'			=> false,
+			'isPhoneNumberValidated'	=> false
 		);
 
 		// Device FingerPrinting Details
 		$deviceContext = array(
-			"deviceContextId"	=> Mage::getSingleton('core/session')->getFptDfpSessionId() ?: $this->dfp->GUID(),
-			"ipAddress"			=> getenv('HTTP_CLIENT_IP') ?: getenv('HTTP_X_FORWARDED_FOR') ?: getenv('HTTP_X_FORWARDED') ?: getenv('HTTP_FORWARDED_FOR') ?: getenv('HTTP_FORWARDED') ?: getenv('REMOTE_ADDR'),
-			"provider"			=> "DFPFingerPrinting",
+			'deviceContextId'	=> Mage::getSingleton('core/session')->getFptDfpSessionId() ?? $this->dfp->GUID(),
+			'ipAddress'			=> getenv('HTTP_CLIENT_IP') ?? getenv('HTTP_X_FORWARDED_FOR') ?? getenv('HTTP_X_FORWARDED') ?? getenv('HTTP_FORWARDED_FOR') ?? getenv('HTTP_FORWARDED') ?? getenv('REMOTE_ADDR'),
+			'provider'			=> Microsoft_Dfp_Helper_Data::DEVICE_CONTEXT_PROVIDER_DFP
 		);
 
 		// Billing Address Details
@@ -339,16 +330,15 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 		// Cart Details
 		$productList = array();
 		foreach ($order->getAllItems() as $item) {
-			$product = array(
+			$productList[] = array(
 				"productId"		=> 	$item->getProduct()->getId(),
 				"purchasePrice"	=>	$item->getPrice(),
 				"quantity"		=>	intval($item->getQtyOrdered()),
 				"productName"	=>	$item->getName(),
 				"sku"			=>	$item->getSku(),
 				"currency" 		=>	$order->getOrderCurrencyCode(),
-				"isRecurring"	=> 	'false'
+				"isRecurring"	=> 	false
 			);
-			$productList[] = $product;
 		}
 
 		$_metadata = array(
@@ -356,7 +346,7 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 			"merchantTimeStamp"	=> date('c')
 		);
 
-		$payload = array(
+		return array(
 			'purchaseId'       		=> Mage::getSingleton('checkout/session')->getLastRealOrderId(),
 			'assessmentType'        => $assessmentType,
 			'customerLocalDate'     => Mage::getSingleton('core/session')->getcustomerLocalDate(),
@@ -364,7 +354,7 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 			'totalAmount'           => $order->getGrandTotal(),
 			'salesTax'            	=> $order->getTaxAmount(),
 			'currency'            	=> $order->getOrderCurrencyCode(),
-			'shippingMethod'        => 'Standard',
+			'shippingMethod'        => Microsoft_Dfp_Helper_Data::PRODUCT_SHIPPING_STANDARD,
 			'user'                	=> $user,
 			'deviceContext'         => $deviceContext,
 			'shippingAddress' 		=> $orderShippingAddress,
@@ -372,8 +362,6 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 			'productList'           => $productList,
 			'_metadata'             => $_metadata
 		);
-
-		return $payload;
 	}
 
 	private function generateBankEventPayload($type)
@@ -383,17 +371,18 @@ class Microsoft_Dfp_Checkout_OnepageController extends Mage_Checkout_OnepageCont
 			"merchantTimeStamp"	=> date('c')
 		);
 
-		$bankEventPayload = array(
-			'bankEventId'       	=> $this->dfp->GUID(), //this is something the bank sent, here we just hardcode a possible one
+		//Some details below normally come from your bank / payment processor's response to the auth/charge.
+		//For sample purposes, we use mock values.
+		return array(
+			'bankEventId'       	=> $this->dfp->GUID(),
 			'type'        			=> $type,
 			'bankEventTimestamp'	=> date('c'),
-			'status'     			=> "Approved", //this is something the bank sent, here we just hardcode a possible one
-			'bankResponseCode'     	=> 'A000', //this is something the bank sent, here we just hardcode a possible one
-			'paymentProcessor'     	=> "Payment Processor Co", //this is something the bank sent, here we just hardcode a possible one				
+			'status'     			=> Microsoft_Dfp_Helper_Data::BANK_STATUS_APPROVED,
+			'bankResponseCode'     	=> 'A000',
+			'paymentProcessor'     	=> 'Payment Processor Co',
 			'purchaseId'			=> Mage::getSingleton('checkout/session')->getLastRealOrderId(),
 			'_metadata'             => $_metadata
 		);
-		return $bankEventPayload;
 	}
 	// *********************************************** DFP Changes END *************************************// 
 }

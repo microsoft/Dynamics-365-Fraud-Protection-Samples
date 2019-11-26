@@ -44,7 +44,7 @@
           <fields>
             <assessmenttype translate="label">
               <label>Purchase Assessment Type</label>
-              <comment>Select Evaluate if you are still evaluating Dynamics 365 Fraud Protection and not necessarily honoring its recommendations. Select Protect if you are honoring recommendations.</comment>
+              <comment>Select Evaluate if you are still evaluating Dynamics 365 Fraud Protection and not necessarily honoring its recommendations. Orders will not be auto-cancelled even if a merchant reject decision is returned. Select Protect if you are honoring recommendations. In this case, the module will auto-cancel orders that get a merchant reject decision.</comment>
               <source_model>dfp/Config_Source_AssessmentTypes</source_model>
               <frontend_type>select</frontend_type>
               <sort_order>0</sort_order>
@@ -74,7 +74,7 @@
           <fields>
             <clientid translate="label">
               <label>Client Id</label>
-              <comment>Azure AD application client ID from the Real-Time APIs page.</comment>
+              <comment>Azure AD application client ID from the Real-time APIs page.</comment>
               <frontend_type>text</frontend_type>
               <sort_order>1</sort_order>
               <show_in_default>1</show_in_default>
@@ -85,7 +85,7 @@
           <fields>
             <clientsecret translate="label">
               <label>Client Secret</label>
-              <comment>Azure AD application client secret from the Real-Time APIs page. Certificate authentication is not supported in this sample.</comment>
+              <comment>Azure AD application client secret from the Real-time APIs page. Certificate authentication is not supported in this sample.</comment>
               <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
               <frontend_type>obscure</frontend_type>
               <sort_order>2</sort_order>

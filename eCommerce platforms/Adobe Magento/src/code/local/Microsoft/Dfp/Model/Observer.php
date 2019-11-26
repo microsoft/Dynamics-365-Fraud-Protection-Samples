@@ -121,20 +121,18 @@ class Microsoft_Dfp_Model_Observer
 
 		$status = $order->getData()['status'];
 		if ($status == 'order_approved') {
-			$status = 'Approved';
+			$status = Microsoft_Dfp_Helper_Data::PURCHASE_STATUS_STATUS_APPROVED;
 		} else {
-			$status = 'Canceled';
+			$status = Microsoft_Dfp_Helper_Data::PURCHASE_STATUS_STATUS_CANCELED;
 		}
 
-		$purchaseStatusPayload = array(
+		return array(
 			'purchaseId'	=> $order->getData()['increment_id'],
 			'statusType'	=> $status,
 			'statusDate'	=> date('c'),
 			'reason'	    => '',
 			'_metadata'		=> $_metadata
-
 		);
-		return $purchaseStatusPayload;
 	}
 
 	private function generateRefundPayload($refund)
@@ -144,9 +142,9 @@ class Microsoft_Dfp_Model_Observer
 			"merchantTimeStamp"	=> date('c')
 		);
 
-		$refundPayload = array(
+		return array(
 			'refundId'       	    => $this->dfp->GUID(),
-			'status'        		=> "Approved",
+			'status'        		=> Microsoft_Dfp_Helper_Data::REFUND_STATUS_APPROVED,
 			'bankEventTimestamp'	=> date('c'),
 			'amount'     			=> $refund->getGrandTotal(),
 			'currency'     	        => $refund->getOrderCurrencyCode(),
@@ -154,7 +152,6 @@ class Microsoft_Dfp_Model_Observer
 			'purchaseId'			=> $refund->getIncrementId(),
 			'_metadata'     		=> $_metadata
 		);
-		return $refundPayload;
 	}
 
 	private function generateUpdateAccountPayload($customer)
@@ -167,16 +164,16 @@ class Microsoft_Dfp_Model_Observer
 		// Device FingerPrinting Details
 		$deviceContext = array(
 			"deviceContextId"	=> Mage::getSingleton('core/session')->getFptDfpSessionId(),
-			"ipAddress"			=> getenv('HTTP_CLIENT_IP') ?: getenv('HTTP_X_FORWARDED_FOR') ?: getenv('HTTP_X_FORWARDED') ?: getenv('HTTP_FORWARDED_FOR') ?: getenv('HTTP_FORWARDED') ?: getenv('REMOTE_ADDR'),
-			"provider"			=> "DFPFingerPrinting",
+			"ipAddress"			=> getenv('HTTP_CLIENT_IP') ?? getenv('HTTP_X_FORWARDED_FOR') ?? getenv('HTTP_X_FORWARDED') ?? getenv('HTTP_FORWARDED_FOR') ?? getenv('HTTP_FORWARDED') ?? getenv('REMOTE_ADDR'),
+			"provider"			=> Microsoft_Dfp_Helper_Data::DEVICE_CONTEXT_PROVIDER_DFP
 		);
 
 		//Address details
-		$AddressList = array();
+		$addressList = array();
 		$billingAddress = $customer->getDefaultBillingAddress();
 		$billingAddressStreet = $billingAddress->getStreet();
-		$AddressList[] = array(
-			"type"		=> 	"BILLING",
+		$addressList[] = array(
+			"type"		=> 	Microsoft_Dfp_Helper_Data::ADDRESS_TYPE_BILLING,
 			"firstName"	=>	$billingAddress["firstname"],
 			"lastName"	=>	$billingAddress["lastname"],
 			"street1"	=>	$billingAddressStreet[0],
@@ -189,8 +186,8 @@ class Microsoft_Dfp_Model_Observer
 
 		$shippingAddress = $customer->getDefaultShippingAddress();
 		$shippingAddressStreet = $shippingAddress->getStreet();
-		$AddressList[] = array(
-			"type"		=> 	"SHIPPING",
+		$addressList[] = array(
+			"type"		=> 	Microsoft_Dfp_Helper_Data::ADDRESS_TYPE_SHIPPING,
 			"firstName"	=>	$shippingAddress["firstname"],
 			"lastName"	=>	$shippingAddress["lastname"],
 			"street1"	=>	$shippingAddressStreet[0],
@@ -202,8 +199,8 @@ class Microsoft_Dfp_Model_Observer
 		);
 
 		foreach ($customer->getAdditionalAddresses() as $item) {
-			$AddressList[] = array(
-				"type"		=> 	"SHIPPING",
+			$addressList[] = array(
+				"type"		=> 	Microsoft_Dfp_Helper_Data::ADDRESS_TYPE_SHIPPING,
 				"firstName"	=>	$item["firstname"],
 				"lastName"	=>	$item["lastname"],
 				"street1"	=>	$item["street"],
@@ -214,19 +211,18 @@ class Microsoft_Dfp_Model_Observer
 			);
 		}
 
-		$updateAccountPayload = array(
+		return array(
 			'userId'       	         => $customer->getEmail(),
 			'firstName'       	     => $customer->getFirstname(),
 			'lastName'       	     => $customer->getLastname(),
 			'email'       	         => $customer->getEmail(),
-			'profileType'       	 => "Consumer",
+			'profileType'       	 => Microsoft_Dfp_Helper_Data::USER_PROFILE_TYPE_CONSUMER,
 			'isEmailValidated'       => false,
 			'isPhoneNumberValidated' => false,
-			'addressList'            => $AddressList,
+			'addressList'            => $addressList,
 			'deviceContext'          => $deviceContext,
 			'_metadata'     		 => $_metadata
 		);
-		return $updateAccountPayload;
 	}
 
 	private function generateChargebackPayload($order)
@@ -236,9 +232,9 @@ class Microsoft_Dfp_Model_Observer
 			"merchantTimeStamp"	=> date('c')
 		);
 
-		$chargeBackPayload = array(
+		return array(
 			'chargebackId'       	=> $this->dfp->GUID(),
-			'status'       			=> 'Inquiry',
+			'status'       			=> Microsoft_Dfp_Helper_Data::CHARGEBACK_STATUS_INQUIRY,
 			'bankEventTimestamp'    => date('c'),
 			'amount'       			=> $order->getGrandTotal(),
 			'currency'       		=> $order->getOrderCurrencyCode(),
@@ -246,6 +242,5 @@ class Microsoft_Dfp_Model_Observer
 			'purchaseId' 			=> $order->getData()['increment_id'],
 			'_metadata'     		=> $_metadata
 		);
-		return $chargeBackPayload;
 	}
 }

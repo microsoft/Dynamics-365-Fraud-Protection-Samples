@@ -29,8 +29,7 @@
         </reference>
     </customer_account_edit>   
     <checkout_onepage_paymentmethod>        
-        <block type="checkout/onepage_payment_methods" name="root" output="toHtml" template="dfp/onepage/payment/methods.phtml">
-        </block>
+        <block type="checkout/onepage_payment_methods" name="root" output="toHtml" template="dfp/onepage/payment/methods.phtml"/>
     </checkout_onepage_paymentmethod>
 </layout>   
 	
