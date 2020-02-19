@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection
 {

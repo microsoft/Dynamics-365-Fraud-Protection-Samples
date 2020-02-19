@@ -1,4 +1,7 @@
-﻿using Microsoft.Dynamics.FraudProtection.Models;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+using Microsoft.Dynamics.FraudProtection.Models;
 using System;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection
