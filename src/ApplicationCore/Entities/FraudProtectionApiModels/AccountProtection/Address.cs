@@ -1,11 +1,15 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection
 {
     public class Address
     {
-        public string AddressType { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public AddressType AddressType { get; set; }
 
         public string FirstName { get; set; }
 
@@ -28,5 +32,13 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         public string ZipCode { get; set; }
 
         public string Country { get; set; }
+    }
+
+    public enum AddressType
+    {
+        Primary,
+        Billing,
+        Shipping,
+        Alternative
     }
 }

@@ -1,13 +1,17 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection
 {
     public class User
     {
         public string UserId { get; set; }
 
-        public string UserType { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public UserType UserType { get; set; }
 
         public string Username { get; set; }
 
@@ -26,5 +30,14 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         public string Language { get; set; }
 
         public string MembershipId { get; set; }
+    }
+
+    public enum UserType
+    {
+        Consumer,
+        Developer,
+        Seller,
+        Publisher,
+        Tenant
     }
 }

@@ -1,13 +1,16 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection
 {
     public class ResultDetail
     {
-        public string Decision { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public DecisionName Decision { get; set; }
 
         public string ChallengeType { get; set; }
 
@@ -20,5 +23,13 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         public Dictionary<string, object> Other { get; set; }
 
         public List<Score> Scores { get; set; }
+    }
+
+    public enum DecisionName
+    {
+        Approve,
+        Reject,
+        Challenge,
+        Review
     }
 }

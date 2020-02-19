@@ -7,10 +7,8 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 {
     public class EventMetadata
     {
-        public string Name { get; set; }
-
         public string TrackingId { get; set; }
 
-        public DateTime MerchantTimeStamp { get; set; }
+        public DateTimeOffset MerchantTimeStamp { get; set; }
     }
 }

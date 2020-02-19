@@ -33,6 +33,6 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
     {
         public string SignUpId { get; set; }
 
-        public DateTime CustomerLocalDate { get; set; }
+        public DateTimeOffset CustomerLocalDate { get; set; }
     }
 }

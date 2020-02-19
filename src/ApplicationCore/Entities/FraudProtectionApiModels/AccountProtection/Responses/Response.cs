@@ -3,7 +3,7 @@
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection
 {
-    public class Response
+    public abstract class Response
     {
         public string Name { get; set; }
 

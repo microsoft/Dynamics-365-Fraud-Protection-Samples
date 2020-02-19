@@ -2,6 +2,8 @@
 // Licensed under the MIT license.
 
 using Microsoft.Dynamics.FraudProtection.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection
@@ -26,19 +28,20 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
     {
         public string LoginId { get; set; }
 
-        public DateTime CustomerLocalDate { get; set; }
+        public DateTimeOffset CustomerLocalDate { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public AssessmentType AssessmentType { get; set; }
     }
 
     public class RecentUpdate
     {
-        public DateTime LastPhoneNumberUpdateDate { get; set; }
+        public DateTimeOffset LastPhoneNumberUpdateDate { get; set; }
 
-        public DateTime LastEmailUpdateDate { get; set; }
+        public DateTimeOffset LastEmailUpdateDate { get; set; }
 
-        public DateTime LastAddressUpdateDate { get; set; }
+        public DateTimeOffset LastAddressUpdateDate { get; set; }
 
-        public DateTime LastPaymentInstrumentUpdateDate { get; set; }
+        public DateTimeOffset LastPaymentInstrumentUpdateDate { get; set; }
     }
 }

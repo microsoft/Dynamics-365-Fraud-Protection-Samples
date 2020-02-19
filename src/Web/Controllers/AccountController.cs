@@ -17,6 +17,7 @@ using Microsoft.Dynamics.FraudProtection.Models;
 using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
 using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using AccountProtection = Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection;
@@ -108,24 +109,25 @@ namespace Contoso.FraudProtection.Web.Controllers
             };
             string hashedPassword = _userManager.PasswordHasher.HashPassword(applicationUser, model.Password);
 
+            bool rejectSignIn = false;
+
             if (useAP)
             {
                 var user = new AccountProtection.User()
                 {
-                    UserType = "Consumer",
+                    UserType = AccountProtection.UserType.Consumer,
                     Username = model.Email,
                     PasswordHash = hashedPassword
                 };
 
                 var device = new AccountProtection.DeviceContext()
                 {
-                    sessionID = model.DeviceFingerPrinting.SessionId,
+                    SessionId = model.DeviceFingerPrinting.SessionId,
                     IpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()
                 };
 
                 var metadata = new AccountProtection.EventMetadataAccountLogin()
                 {
-                    Name = "AP.AccountLogin.Metadata",
                     LoginId = Guid.NewGuid().ToString(),
                     CustomerLocalDate = DateTime.Now,
                     MerchantTimeStamp = DateTime.Now
@@ -144,6 +146,12 @@ namespace Contoso.FraudProtection.Web.Controllers
 
                 var fraudProtectionIO = new FraudProtectionIOModel(signIn, signInResponse, "SignIn");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
+
+                AccountProtection.ResponseSuccess response = signInResponse as AccountProtection.ResponseSuccess;
+                if (response != null)
+                {
+                    rejectSignIn = response.ResultDetails.FirstOrDefault()?.Decision != AccountProtection.DecisionName.Approve;
+                }
             }
             else
             {
@@ -163,10 +171,10 @@ namespace Contoso.FraudProtection.Web.Controllers
 
                 var fraudProtectionIO = new FraudProtectionIOModel(signIn, signInResponse, "SignIn");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
-            }
 
-            //2 out of 3 signIn will be successful
-            var rejectSignIn = new Random().Next(0, 3) != 0;
+                //2 out of 3 signIn will be successful
+                rejectSignIn = new Random().Next(0, 3) != 0;
+            }
 
             if (!rejectSignIn)
             {
@@ -317,8 +325,13 @@ namespace Contoso.FraudProtection.Web.Controllers
                 var fraudProtectionIO = new FraudProtectionIOModel(signupEvent, signupAssessment, "Signup");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
 
-                //2 out of 3 signups will succeed on average. Adjust if you want more or less signups blocked for tesing purposes.
-                var rejectSignup = new Random().Next(0, 3) != 0;
+                bool rejectSignup = false;
+                AccountProtection.ResponseSuccess signupResponse = signupAssessment as AccountProtection.ResponseSuccess;
+                if (signupResponse != null)
+                {
+                    rejectSignup = signupResponse.ResultDetails.FirstOrDefault()?.Decision != AccountProtection.DecisionName.Approve;
+                }
+
                 if (rejectSignup)
                 {
                     ModelState.AddModelError("", "Signup rejected by Fraud Protection. You can try again as it has a random likelihood of happening in this sample site.");
@@ -395,13 +408,13 @@ namespace Contoso.FraudProtection.Web.Controllers
                 ZipCode = model.Address.ZipCode,
                 TimeZone = new TimeSpan(0, 0, -model.DeviceFingerPrinting.ClientTimeZone, 0).ToString(),
                 Language = "EN-US",
-                UserType = "Consumer",
+                UserType = AccountProtection.UserType.Consumer,
                 PasswordHash = _userManager.PasswordHasher.HashPassword(applicationUser, model.Password)
             };
 
             var customerEmail = new AccountProtection.CustomerEmail()
             {
-                EmailType = "Primary",
+                EmailType = AccountProtection.EmailType.Primary,
                 EmailValue = model.User.Email,
                 IsEmailValidated = false,
                 IsEmailUsername = true
@@ -409,7 +422,7 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             var customerPhone = new AccountProtection.CustomerPhone()
             {
-                PhoneType = "Primary",
+                PhoneType = AccountProtection.PhoneType.Primary,
                 PhoneNumber = model.User.Phone,
                 IsPhoneNumberValidated = false,
                 IsPhoneUsername = false
@@ -417,7 +430,7 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             var address = new AccountProtection.Address()
             {
-                AddressType = "Primary",
+                AddressType = AccountProtection.AddressType.Primary,
                 FirstName = model.User.FirstName,
                 LastName = model.User.LastName,
                 PhoneNumber = model.User.Phone,
@@ -431,13 +444,12 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             var device = new AccountProtection.DeviceContext()
             {
-                sessionID = model.DeviceFingerPrinting.SessionId,
+                SessionId = model.DeviceFingerPrinting.SessionId,
                 IpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()
             };
 
             var metadata = new AccountProtection.EventMetadataAccountCreate()
             {
-                Name = "AP.AccountCreation.Metadata",
                 SignUpId = Guid.NewGuid().ToString(),
                 CustomerLocalDate = DateTime.Now,
                 MerchantTimeStamp = DateTime.Now
