@@ -15,7 +15,7 @@
     <div class="row">
         <div class="col-md-12">
             <section>
-                <form asp-controller="Account" asp-action="SignIn" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" onsubmit="setUpClientDetails()">
+                <form asp-controller="Account" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" onsubmit="setUpClientDetails()">
                     @Html.HiddenFor(m => m.DeviceFingerPrinting.SessionId)
                     @Html.HiddenFor(m => m.DeviceFingerPrinting.ClientDate)
                     <h3>Login</h3>
@@ -37,7 +37,8 @@
                                 @Html.DisplayNameFor(m => m.RememberMe)
                             </label>
                         </div>
-                        <input type="submit" class="btn esh-basket-checkout" value="[ LOGIN ]" />
+                        <input type="submit" asp-action="SignIn" class="btn esh-basket-checkout" value="[ LOGIN with Purchase APIs ]" />
+                        <input type="submit" asp-action="SignInAP" class="btn esh-basket-checkout" value="[ LOGIN with Account Protection APIs]" />
                     </div>
                     <p>
                         <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" class="text">Register as a new user?</a>

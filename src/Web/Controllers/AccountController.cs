@@ -17,7 +17,10 @@ using Microsoft.Dynamics.FraudProtection.Models;
 using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
 using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+
+using AccountProtection = Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection;
 
 namespace Contoso.FraudProtection.Web.Controllers
 {
@@ -69,6 +72,20 @@ namespace Contoso.FraudProtection.Web.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SignInAP(LoginViewModel model, string returnUrl = null)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("SignIn", model);
+            }
+            ViewData["ReturnUrl"] = returnUrl;
+
+            return await SignInUser(model, returnUrl, true);
+        }
+
         // POST: /Account/SignIn
         [HttpPost]
         [AllowAnonymous]
@@ -81,30 +98,83 @@ namespace Contoso.FraudProtection.Web.Controllers
             }
             ViewData["ReturnUrl"] = returnUrl;
 
+            return await SignInUser(model, returnUrl, false);
+        }
+
+        private async Task<IActionResult> SignInUser(LoginViewModel model, string returnUrl, bool useAP)
+        {
             var applicationUser = new ApplicationUser
             {
                 UserName = model.Email
             };
+            string hashedPassword = _userManager.PasswordHasher.HashPassword(applicationUser, model.Password);
 
-            var signIn = new SignIn
+            bool rejectSignIn = false;
+
+            if (useAP)
             {
-                SignInId = Guid.NewGuid().ToString(),
-                PasswordHash = _userManager.PasswordHasher.HashPassword(applicationUser, model.Password),
-                MerchantLocalDate = DateTimeOffset.Now,
-                CustomerLocalDate = model.DeviceFingerPrinting.ClientDate,
-                UserId = model.Email,
-                DeviceContextId = model.DeviceFingerPrinting.SessionId,
-                AssessmentType = AssessmentType.Protect.ToString(),
-                CurrentIpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()
-            };
+                var user = new AccountProtection.User()
+                {
+                    UserType = AccountProtection.UserType.Consumer,
+                    Username = model.Email,
+                    PasswordHash = hashedPassword
+                };
 
-            var signInResponse = await _fraudProtectionService.PostSignIn(signIn);
+                var device = new AccountProtection.DeviceContext()
+                {
+                    SessionId = model.DeviceFingerPrinting.SessionId,
+                    IpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()
+                };
 
-            var fraudProtectionIO = new FraudProtectionIOModel(signIn, signInResponse, "SignIn");
-            TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
+                var metadata = new AccountProtection.EventMetadataAccountLogin()
+                {
+                    LoginId = Guid.NewGuid().ToString(),
+                    CustomerLocalDate = DateTime.Now,
+                    MerchantTimeStamp = DateTime.Now
+                };
 
-            //2 out of 3 signIn will be successful
-            var rejectSignIn = new Random().Next(0, 3) != 0;
+                var signIn = new AccountProtection.SignIn()
+                {
+                    Name = "AP.AccountLogin",
+                    Version = "0.5",
+                    Device = device,
+                    User = user,
+                    Metadata = metadata
+                };
+
+                var signInResponse = await _fraudProtectionService.PostSignInAP(signIn, _fraudProtectionService.NewCorrelationId);
+
+                var fraudProtectionIO = new FraudProtectionIOModel(signIn, signInResponse, "SignIn");
+                TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
+
+                AccountProtection.ResponseSuccess response = signInResponse as AccountProtection.ResponseSuccess;
+                if (response != null)
+                {
+                    rejectSignIn = response.ResultDetails.FirstOrDefault()?.Decision != AccountProtection.DecisionName.Approve;
+                }
+            }
+            else
+            {
+                var signIn = new SignIn
+                {
+                    SignInId = Guid.NewGuid().ToString(),
+                    PasswordHash = hashedPassword,
+                    MerchantLocalDate = DateTimeOffset.Now,
+                    CustomerLocalDate = model.DeviceFingerPrinting.ClientDate,
+                    UserId = model.Email,
+                    DeviceContextId = model.DeviceFingerPrinting.SessionId,
+                    AssessmentType = AssessmentType.Protect.ToString(),
+                    CurrentIpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()
+                };
+
+                var signInResponse = await _fraudProtectionService.PostSignIn(signIn);
+
+                var fraudProtectionIO = new FraudProtectionIOModel(signIn, signInResponse, "SignIn");
+                TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
+
+                //2 out of 3 signIn will be successful
+                rejectSignIn = new Random().Next(0, 3) != 0;
+            }
 
             if (!rejectSignIn)
             {
@@ -112,7 +182,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 if (!result.Succeeded)
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return View(model);
+                    return View("SignIn", model);
                 }
                 // redirect if signIn is not rejected and password sign-in is success
                 await TransferBasketToEmailAsync(model.Email);
@@ -121,7 +191,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             else
             {
                 ModelState.AddModelError("", "Signin rejected by Fraud Protection. You can try again as it has a random likelihood of happening in this sample site.");
-                return View(model);
+                return View("SignIn", model);
             }
         }
 
@@ -157,10 +227,35 @@ namespace Contoso.FraudProtection.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterAP(RegisterViewModel model, string returnUrl = null)
+        {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View("Register", model);
+            }
+
+            if (_contextAccessor.HttpContext.Connection == null)
+            {
+                throw new Exception(nameof(_contextAccessor.HttpContext.Connection));
+            }
+
+            return await RegisterUser(model, returnUrl, true);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
             if (model == null)
+            {
                 throw new ArgumentNullException(nameof(model));
+            }
 
             if (!ModelState.IsValid)
             {
@@ -168,8 +263,15 @@ namespace Contoso.FraudProtection.Web.Controllers
             }
 
             if (_contextAccessor.HttpContext.Connection == null)
+            {
                 throw new Exception(nameof(_contextAccessor.HttpContext.Connection));
+            }
 
+            return await RegisterUser(model, returnUrl, false);
+        }
+
+        private async Task<IActionResult> RegisterUser(RegisterViewModel model, string returnUrl, bool useAP)
+        {
             //Create the user object and validate it before calling Fraud Protection
             var user = new ApplicationUser
             {
@@ -206,11 +308,169 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             if (ModelState.ErrorCount > 0)
             {
-                return View(model);
+                return View("Register", model);
             }
 
             #region Fraud Protection Service
+            var correlationId = _fraudProtectionService.NewCorrelationId;
+
             // Ask Fraud Protection to assess this signup/registration before registering the user in our database, etc.
+            if (useAP)
+            {
+                AccountProtection.SignUp signupEvent = CreateSignupAPEvent(model);
+
+                var signupAssessment = await _fraudProtectionService.PostSignupAP(signupEvent, correlationId);
+
+                //Track Fraud Protection request/response for display only
+                var fraudProtectionIO = new FraudProtectionIOModel(signupEvent, signupAssessment, "Signup");
+                TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
+
+                bool rejectSignup = false;
+                AccountProtection.ResponseSuccess signupResponse = signupAssessment as AccountProtection.ResponseSuccess;
+                if (signupResponse != null)
+                {
+                    rejectSignup = signupResponse.ResultDetails.FirstOrDefault()?.Decision != AccountProtection.DecisionName.Approve;
+                }
+
+                if (rejectSignup)
+                {
+                    ModelState.AddModelError("", "Signup rejected by Fraud Protection. You can try again as it has a random likelihood of happening in this sample site.");
+                    return View("Register", model);
+                }
+            }
+            else
+            {
+                SignUp signupEvent = CreateSignupEvent(model);
+
+                var signupAssessment = await _fraudProtectionService.PostSignup(signupEvent, correlationId);
+
+                //Track Fraud Protection request/response for display only
+                var fraudProtectionIO = new FraudProtectionIOModel(signupEvent, signupAssessment, "Signup");
+
+                //2 out of 3 signups will succeed on average. Adjust if you want more or less signups blocked for tesing purposes.
+                var rejectSignup = new Random().Next(0, 3) != 0;
+                var signupStatusType = rejectSignup ? SignupStatusType.Rejected.ToString() : SignupStatusType.Approved.ToString();
+
+                var signupStatus = new SignupStatusEvent
+                {
+                    SignUpId = signupEvent.SignUpId,
+                    StatusType = signupStatusType,
+                    StatusDate = DateTimeOffset.Now,
+                    Reason = "User is " + signupStatusType
+                };
+
+                if (!rejectSignup)
+                {
+                    signupStatus.User = new SignupStatusUser { UserId = model.User.Email };
+                }
+
+                var signupStatusResponse = await _fraudProtectionService.PostSignupStatus(signupStatus, correlationId);
+
+                fraudProtectionIO.Add(signupStatus, signupStatusResponse, "Signup Status");
+
+                TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
+
+                if (rejectSignup)
+                {
+                    ModelState.AddModelError("", "Signup rejected by Fraud Protection. You can try again as it has a random likelihood of happening in this sample site.");
+                    return View("Register", model);
+                }
+            }
+            #endregion
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+            {
+                AddErrors(result);
+                return View("Register", model);
+            }
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            await TransferBasketToEmailAsync(user.Email);
+
+            return RedirectToLocal(returnUrl);
+        }
+
+        private AccountProtection.SignUp CreateSignupAPEvent(RegisterViewModel model)
+        {
+            var applicationUser = new ApplicationUser
+            {
+                UserName = model.User.Email
+            };
+
+            var signupUser = new AccountProtection.User()
+            {
+                Username = model.User.Email,
+                FirstName = model.User.FirstName,
+                LastName = model.User.LastName,
+                Country = model.Address.CountryRegion,
+                ZipCode = model.Address.ZipCode,
+                TimeZone = new TimeSpan(0, 0, -model.DeviceFingerPrinting.ClientTimeZone, 0).ToString(),
+                Language = "EN-US",
+                UserType = AccountProtection.UserType.Consumer,
+                PasswordHash = _userManager.PasswordHasher.HashPassword(applicationUser, model.Password)
+            };
+
+            var customerEmail = new AccountProtection.CustomerEmail()
+            {
+                EmailType = AccountProtection.EmailType.Primary,
+                EmailValue = model.User.Email,
+                IsEmailValidated = false,
+                IsEmailUsername = true
+            };
+
+            var customerPhone = new AccountProtection.CustomerPhone()
+            {
+                PhoneType = AccountProtection.PhoneType.Primary,
+                PhoneNumber = model.User.Phone,
+                IsPhoneNumberValidated = false,
+                IsPhoneUsername = false
+            };
+
+            var address = new AccountProtection.Address()
+            {
+                AddressType = AccountProtection.AddressType.Primary,
+                FirstName = model.User.FirstName,
+                LastName = model.User.LastName,
+                PhoneNumber = model.User.Phone,
+                Street1 = model.Address.Address1,
+                Street2 = model.Address.Address2,
+                City = model.Address.City,
+                State = model.Address.State,
+                ZipCode = model.Address.ZipCode,
+                Country = model.Address.CountryRegion
+            };
+
+            var device = new AccountProtection.DeviceContext()
+            {
+                SessionId = model.DeviceFingerPrinting.SessionId,
+                IpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()
+            };
+
+            var metadata = new AccountProtection.EventMetadataAccountCreate()
+            {
+                SignUpId = Guid.NewGuid().ToString(),
+                CustomerLocalDate = DateTime.Now,
+                MerchantTimeStamp = DateTime.Now
+            };
+
+            AccountProtection.SignUp signupEvent = new AccountProtection.SignUp()
+            {
+                Name = "AP.AccountCreation",
+                Version = "0.5",
+                User = signupUser,
+                Email = customerEmail,
+                Phone = customerPhone,
+                Address = address,
+                Device = device,
+                Metadata = metadata
+            };
+            return signupEvent;
+        }
+
+        private SignUp CreateSignupEvent(RegisterViewModel model)
+        {
             var signupAddress = new AddressDetails
             {
                 FirstName = model.User.FirstName,
@@ -273,56 +533,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 StoreFrontContext = storefrontContext,
                 DeviceContext = deviceContext,
             };
-
-            var correlationId = _fraudProtectionService.NewCorrelationId;
-
-            var signupAssessment = await _fraudProtectionService.PostSignup(signupEvent, correlationId);
-
-            //Track Fraud Protection request/response for display only
-            var fraudProtectionIO = new FraudProtectionIOModel(signupEvent, signupAssessment, "Signup");
-
-            //2 out of 3 signups will succeed on average. Adjust if you want more or less signups blocked for tesing purposes.
-            var rejectSignup = new Random().Next(0, 3) != 0;
-            var signupStatusType = rejectSignup ? SignupStatusType.Rejected.ToString() : SignupStatusType.Approved.ToString();
-
-            var signupStatus = new SignupStatusEvent
-            {
-                SignUpId = signupEvent.SignUpId,
-                StatusType = signupStatusType,
-                StatusDate = DateTimeOffset.Now,
-                Reason = "User is " + signupStatusType
-            };
-
-            if (!rejectSignup)
-            {
-                signupStatus.User = new SignupStatusUser { UserId = model.User.Email };
-            }
-
-            var signupStatusResponse = await _fraudProtectionService.PostSignupStatus(signupStatus, correlationId);
-
-            fraudProtectionIO.Add(signupStatus, signupStatusResponse, "Signup Status");
-
-            TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
-
-            if (rejectSignup)
-            {
-                ModelState.AddModelError("", "Signup rejected by Fraud Protection. You can try again as it has a random likelihood of happening in this sample site.");
-                return View(model);
-            }
-            #endregion
-
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-            {
-                AddErrors(result);
-                return View(model);
-            }
-
-            await _signInManager.SignInAsync(user, isPersistent: false);
-
-            await TransferBasketToEmailAsync(user.Email);
-
-            return RedirectToLocal(returnUrl);
+            return signupEvent;
         }
 
         [HttpGet]
