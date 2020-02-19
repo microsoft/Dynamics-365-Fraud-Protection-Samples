@@ -16,7 +16,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 
         public bool IsEmailValidated { get; set; }
 
-        public DateTime EmailValidatedDate { get; set; }
+        public DateTimeOffset? EmailValidatedDate { get; set; }
 
         public bool IsEmailUsername { get; set; } = false;
     }

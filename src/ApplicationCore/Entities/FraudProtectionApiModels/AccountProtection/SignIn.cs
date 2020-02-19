@@ -36,12 +36,12 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 
     public class RecentUpdate
     {
-        public DateTimeOffset LastPhoneNumberUpdateDate { get; set; }
+        public DateTimeOffset? LastPhoneNumberUpdateDate { get; set; }
 
-        public DateTimeOffset LastEmailUpdateDate { get; set; }
+        public DateTimeOffset? LastEmailUpdateDate { get; set; }
 
-        public DateTimeOffset LastAddressUpdateDate { get; set; }
+        public DateTimeOffset? LastAddressUpdateDate { get; set; }
 
-        public DateTimeOffset LastPaymentInstrumentUpdateDate { get; set; }
+        public DateTimeOffset? LastPaymentInstrumentUpdateDate { get; set; }
     }
 }

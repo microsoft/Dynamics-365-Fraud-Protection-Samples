@@ -16,7 +16,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 
         public bool IsPhoneNumberValidated { get; set; }
 
-        public DateTimeOffset PhoneNumberValidatedDate { get; set; }
+        public DateTimeOffset? PhoneNumberValidatedDate { get; set; }
 
         public bool IsPhoneUsername { get; set; } = false;
     }
