@@ -23,6 +23,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
+using AccountProtection = Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection;
+
 namespace Contoso.FraudProtection.Infrastructure.Services
 {
     #region Fraud Protection Service
@@ -65,6 +67,28 @@ namespace Contoso.FraudProtection.Infrastructure.Services
                 MerchantTimeStamp = DateTimeOffset.Now
             };
 
+            var authToken = await _tokenProviderService.AcquireTokenAsync();
+            var url = $"{_settings.ApiBaseUrl}{endpoint}";
+            var serializedObject = JsonConvert.SerializeObject(content, _serializerSettings);
+            var serializedContent = new StringContent(serializedObject, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostWithHeadersAsync(
+               url,
+               serializedContent,
+               new Dictionary<string, string>
+               {
+                    { Constants.CORRELATION_ID, correlationId ?? Guid.NewGuid().ToString() },
+                    { Constants.AUTHORIZATION, $"{Constants.BEARER} {authToken}" }
+               });
+
+            return response;
+        }
+
+        private async Task<HttpResponseMessage> PostAsyncAP<T>(
+            string endpoint,
+            T content,
+            string correlationId)
+        {
             var authToken = await _tokenProviderService.AcquireTokenAsync();
             var url = $"{_settings.ApiBaseUrl}{endpoint}";
             var serializedObject = JsonConvert.SerializeObject(content, _serializerSettings);
@@ -133,6 +157,14 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             return await Read<SignupResponse>(response);
         }
 
+        public async Task<AccountProtection.Response> PostSignupAP(AccountProtection.SignUp signup, string correlationId = null)
+        {
+            string endpoint = string.Format(_settings.Endpoints.SignupAP, _settings.AccountProtectionCustomerId, signup.Metadata.SignUpId);
+
+            var response = await PostAsyncAP(endpoint, signup, correlationId);
+            return await Read<AccountProtection.ResponseSuccess>(response);
+        }
+
         public async Task<FraudProtectionResponse> PostSignupStatus(SignupStatusEvent signupStatus, string correlationId = null)
         {
             var response = await PostAsync(_settings.Endpoints.SignupStatus, signupStatus, correlationId);
@@ -149,6 +181,14 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         {
             var response = await PostAsync(_settings.Endpoints.SignIn, signIn, correlationId);
             return await Read<SignInResponse>(response);
+        }
+
+        public async Task<AccountProtection.Response> PostSignInAP(AccountProtection.SignIn signIn, string correlationId = null)
+        {
+            string endpoint = string.Format(_settings.Endpoints.SignInAP, _settings.AccountProtectionCustomerId, signIn.Metadata.LoginId);
+
+            var response = await PostAsyncAP(endpoint, signIn, correlationId);
+            return await Read<AccountProtection.ResponseSuccess>(response);
         }
     }
     #endregion

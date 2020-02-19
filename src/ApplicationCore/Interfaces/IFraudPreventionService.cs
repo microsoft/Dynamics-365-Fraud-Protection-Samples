@@ -14,6 +14,8 @@ using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent;
 using System.Threading.Tasks;
 
+using AccountProtection = Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection;
+
 namespace Contoso.FraudProtection.ApplicationCore.Interfaces
 {
     #region Fraud Protection Service
@@ -24,6 +26,8 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
         Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId = null);
 
         Task<SignupResponse> PostSignup(SignUp signup, string correlationId = null);
+
+        Task<AccountProtection.Response> PostSignupAP(AccountProtection.SignUp signup, string correlationId = null);
 
         Task<FraudProtectionResponse> PostRefund(Refund refund, string correlationId = null);
 
@@ -40,6 +44,8 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
         Task<FraudProtectionResponse> PostLabel(Label label, string correlationId = null);
 
         Task<SignInResponse> PostSignIn(SignIn request, string correlationId = null);
+
+        Task<AccountProtection.Response> PostSignInAP(AccountProtection.SignIn request, string correlationId = null);
     }
 
     #endregion

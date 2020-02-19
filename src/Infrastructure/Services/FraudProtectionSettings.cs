@@ -6,6 +6,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
     #region Fraud Protection Service
     public class FraudProtectionSettings
     {
+        public string AccountProtectionCustomerId { get; set; }
         public string ApiBaseUrl { get; set; }
         public FraudProtectionEndpoints Endpoints { get; set; }
     }
@@ -19,9 +20,11 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         public string Label { get; set; }
         public string Refund { get; set; }
         public string Signup { get; set; }
+        public string SignupAP { get; set; }
         public string SignupStatus { get; set; }
         public string UpdateAccount { get; set; }
         public string SignIn { get; set; }
+        public string SignInAP { get; set; }
     }
 
     public class TokenProviderServiceSettings
