@@ -16,7 +16,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 
         public string[] Reasons { get; set; }
 
-        public string RuleSetId { get; set; }
+        public string Rule { get; set; }
 
         public string[] SupportingMessages { get; set; }
 
