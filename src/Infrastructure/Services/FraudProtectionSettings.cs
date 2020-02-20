@@ -6,7 +6,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
     #region Fraud Protection Service
     public class FraudProtectionSettings
     {
-        public string AccountProtectionTenantId { get; set; }
+        public string InstanceId { get; set; }
         public string ApiBaseUrl { get; set; }
         public FraudProtectionEndpoints Endpoints { get; set; }
     }
