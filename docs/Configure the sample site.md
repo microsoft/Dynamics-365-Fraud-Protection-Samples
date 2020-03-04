@@ -6,23 +6,24 @@ Follow these steps to configure the sample site before running it.
 1. You must already have an active Dynamics 365 Fraud Protection account. If you do not, please stop and contact Dynamics 365 Fraud Protection or your system integration partner.
 1. If you haven't already, clone this repository locally.
 1. In your local repository, open [appsettings.json](../src/Web/appsettings.json).
-1. Go to the [Dynamics 365 Fraud Protection integration portal](https://dfp.microsoft-int.com).
+1. For integrating with Account Protection, remove '-int' from the ApiBaseUrl and Resource settings to call the production APIs.
+1. Go to the [Dynamics 365 Fraud Protection integration portal](https://dfp.microsoft-int.com) for integrating with Purchase Protection or the [Dynamics 365 Fraud Proection production portal](https://dfp.microsoft.com) for integrating with Account Protection.
    1. If your Azure global administrator has not already visited the portal - and you are not an Azure global administrator - please ask them to do so first. They will need to agree to the terms of use in order to set up the integration environment.
 1. Sign in and you will be on the dashboard.
 1. Gather the following pieces of information from the dashboard:
-   1. Copy the "Instance ID" GUID and set the "DeviceFingerprintingCustomerId" setting in your appsettings.json file to it.
+   1. Copy the "Instance ID" GUID and set the "InstanceId" and "DeviceFingerprintingCustomerId" setting in your appsettings.json file to it.
    1. Copy the "Directory ID" GUID and set the "Authority" setting in your appsettings.json file to "https://login.microsoftonline.com/[Directory_ID]".
    1. Copy the "API Resource URI" value and set the "Resource" setting in your appsettings.json file to it. It may already match the default appsettings value.
    1. Copy the "API Endpoint" value and set the "ApiBaseUrl" setting in your appsettings.json file to it.
 1. If you aren't using Microsoft Device Fingerprinting, you can skip this step. If you are using Microsoft Device Fingerprinting or will in the future, follow the [Set up Azure DNS](https://docs.microsoft.com/en-us/dynamics365/fraud-protection/device-fingerprinting#set-up-azure-dns) steps from our product documentation.
    1. Then, put your merchant domain name in your appsettings.json file as the value for the "DeviceFingerprintingDomain" setting. 
-1. On the portal, go to the [Configuration --> Real Time APIs](https://dfp.microsoft-int.com/configuration/realTimeApis) page. Use it to set up API access via an Azure Active Directory (AAD) application:
+1. On the portal, go to the [Configuration --> Real Time APIs (integration)](https://dfp.microsoft-int.com/configuration/realTimeApis) page for integrating with Purchase Protection or the [Configuration --> Real Time APIs (production)](https://dfp.microsoft.com/configuration/realTimeApis) page for integrating with Account Protection. Use it to set up API access via an Azure Active Directory (AAD) application:
    1. Note that you must be in one of these Azure roles to use this page successfully:
       1. [Application Administrator](https://docs.microsoft.com/en-us/azure/active-directory/users-groups-roles/directory-assign-admin-roles#application-administrator)
       1. [Cloud Application Administrator](https://docs.microsoft.com/en-us/azure/active-directory/users-groups-roles/directory-assign-admin-roles#cloud-application-administrator)
       1. [Global Administrator](https://docs.microsoft.com/en-us/azure/active-directory/users-groups-roles/directory-assign-admin-roles#company-administrator)
    1. Type a name for your application, such as "Dynamics 365 Fraud Protection service account - Integration".
-   1. Select "Integration" for the environment.
+   1. Select "Integration" for the environment if integrating with Purchase Protection or "Production" if integrating with Account Protection.
    1. Keep "Certificate" selected for the authentication method.
    1. Upload the **public portion** of a valid certificate you have and click "Create application". The certificate can be self-signed or signed by a valid CA. Either will work.
    1. Copy the "Application (client) ID" and set it as the value for the "ClientId" setting in your appsettings.json file.
@@ -47,6 +48,7 @@ Follow these steps to configure the sample site before running it.
     }
   },
   "FraudProtectionSettings": {
+    "InstanceId": "00112233-4455-6677-8899-aabbccddeeff",
     "DeviceFingerprintingDomain": "https://fpt.yourwebsite.com",
     "DeviceFingerprintingCustomerId": "00112233-4455-6677-8899-aabbccddeeff",
     "ApiBaseUrl": "https://api.dfp.dynamics-int.com",
@@ -59,7 +61,11 @@ Follow these steps to configure the sample site before running it.
       "Refund": "/v1.0/MerchantServices/events/Refund",
       "Signup": "/v1.0/MerchantServices/events/Signup",
       "SignupStatus": "/v1.0/MerchantServices/events/SignUpStatus",
-      "UpdateAccount": "/v1.0/MerchantServices/events/UpdateAccount"
+      "UpdateAccount": "/v1.0/MerchantServices/events/UpdateAccount",
+      "SignInAP": "/v0.5/merchantservices/AccountProtection/events/{0}/AccountLogin/{1}",
+      "SignupAP": "/v0.5/merchantservices/AccountProtection/events/{0}/AccountCreation/{1}",
+      "SignupStatusAP": "/v0.5/merchantservices/AccountProtection/events/{0}/AccountCreationStatus/{1}",
+      "SignInStatusAP": "/v0.5/merchantservices/AccountProtection/events/{0}/AccountLoginStatus/{1}"
     },
     "TokenProviderConfig": {
       "Resource": "https://api.dfp.dynamics-int.com",
