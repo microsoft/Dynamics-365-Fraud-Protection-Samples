@@ -9,10 +9,6 @@ After sending Dynamics 365 Fraud Protection a sign in event, use your merchant r
 - [Sample site - Sign in](../src/Web/Controllers/AccountController.cs) (see SignIn POST method)
 - [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostSignInAP method)
 
-## Sign in flow
-The sign in event flow consists of:
-1. Sign in event
-
 **NOTES**
 - - Set the 'assessmentType' field based on if you plan to use the Dynamics 365 Fraud Protection risk score:
   - Pass 'Evaluate' if you do NOT plan to use the risk score and are still evaluating Dynamics 365 Fraud Protection against your existing fraud solution.
@@ -26,7 +22,6 @@ The sign in event flow consists of:
 - Assessment type
 - Session ID
 - Username
-- Password hash
 
 ## Optional data
 - User data (first name, last name, zip code, etc.)
@@ -44,45 +39,42 @@ Content-Length: <content length>
 x-ms-correlation-id: <correlation ID 1>
 
 {
-  "name": "AP.AccountLogin",
-  "version": "0.5",
-  "metadata": {
-    "loginId": "34f47dc4-9781-4033-99fd-185649c4b001",
-    "customerLocalDate": "2020-02-10T21:53:27.8760689-08:00",
-    "trackingId": "e8a2f3cf-d3ef-4631-a276-893665c6cf54",
-    "merchantTimeStamp": "2020-02-10T21:53:27.8822492-08:00",
-    "assessmentType": "evaluate | protect"
+  "Device": {
+    "SessionId": "<session ID from device fingerprinting>",
+    "IpAddress": "0.0.0.1",
+    "Provider": "DFPFingerPrinting"
   },
-  "device": {
-    "sessionId": "b2d36c49-e2ea-422d-acff-04798b85d520",
-    "ipAddress": null,
-    "provider": null,
-    "externalDeviceId": null,
-    "externalDeviceType": null
+  "User": {
+    "UserId": null,
+    "UserType": "Consumer",
+    "Username": "email@test.com",
+    "PasswordHash": "<Hash of the user's password.  The sample app uses the UserManager.PasswordHasher.HashPassword method to generate this value.>",
+    "FirstName": "first",
+    "LastName": "last",
+    "Country": "US",
+    "ZipCode": "98052",
+    "TimeZone": "-08:00:00",
+    "Language": "EN-US",
+    "MembershipId": null
   },
-  "user": {
-    "userId": "1234567890",
-    "userType": "consumer",
-    "username": "user_name",
-    "passwordHash": "3q4w5e6r",
-    "firstName": "Don",
-    "lastName": "Joe",
-    "country": "us",
-    "zipCode": "98052",
-    "timeZone": "PST",
-    "language": "en-us",
-    "membershipId": null,
-    "isMembershipIdUsername": false
-  },
-  "ssoAuthenticationProvider": {
+  "SSOAuthenticationProvider": {
     "authenticationProvider": "MSA | Facebook | PSN | MerchantAuth | Google",
     "displayName": "customer display name"
   },
-  "recentUpdate": {
+  "Metadata": {
+    "LoginId": "<merchant mastered sign in event ID>",
+    "CustomerLocalDate": "<customer local date in ISO 8601 format>",
+    "AssessmentType": "<'Evaluate' or 'Protect' based on if you are using the Fraud Protection recommendation or not>",
+    "TrackingId": null,
+    "MerchantTimeStamp": "<merchant local date in ISO 8601 format>"
+  },
+  "RecentUpdate": {
     "lastPhoneNumberUpdateDate": "2020-02-10T21:53:27.8833043-08:00",
     "lastEmailUpdateDate": "2020-02-10T21:53:27.8833043-08:00",
     "lastAddressUpdateDate": "2020-02-10T21:53:27.8833043-08:00",
     "lastPaymentInstrumentUpdateDate": "2020-02-10T21:53:27.8833043-08:00"
-  }
+  },
+  "Name": "AP.AccountLogin",
+  "Version": "0.5"
 }
 ```
