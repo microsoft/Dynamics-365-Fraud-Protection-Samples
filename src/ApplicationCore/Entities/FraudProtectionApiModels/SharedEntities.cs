@@ -55,32 +55,32 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public String UserId { get; set; }
 
         /// <summary>
-        /// Customer�account�creation date.
+        /// Customer account creation date.
         /// </summary>
         public DateTimeOffset? CreationDate { get; set; }
 
         /// <summary>
-        /// Latest�date�customer�data has changed.
+        /// Latest date customer data has changed.
         /// </summary>
         public DateTimeOffset? UpdateDate { get; set; }
 
         /// <summary>
-        /// Customer-provided first name on�customer�account.
+        /// Customer-provided first name on customer account.
         /// </summary>
         public String FirstName { get; set; }
 
         /// <summary>
-        /// Customer-provided last name�on�customer�account.
+        /// Customer-provided last name on customer account.
         /// </summary>
         public String LastName { get; set; }
 
         /// <summary>
-        /// Country of�customer.�2 alpha country code, e.g., 'US'
+        /// Country of customer. 2 alpha country code, e.g., 'US'
         /// </summary>
         public String Country { get; set; }
 
         /// <summary>
-        /// Postal code of�customer.
+        /// Postal code of customer.
         /// </summary>
         public String ZipCode { get; set; }
 
@@ -90,7 +90,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public String TimeZone { get; set; }
 
         /// <summary>
-        /// Language of�customer.�Locale, Language-Territory�(for example,�EN-US).
+        /// Language of customer. Locale, Language-Territory (for example, EN-US).
         /// </summary>
         public String Language { get; set; }
 
@@ -100,7 +100,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public String PhoneNumber { get; set; }
 
         /// <summary>
-        /// Email of�customer.�Case insensitive.
+        /// Email of customer. Case insensitive.
         /// </summary>
         public String Email { get; set; }
 
@@ -130,22 +130,22 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public String DisplayName { get; set; }
 
         /// <summary>
-        /// If�customer-provided email has been verified to be owned by the�customer.
+        /// If customer-provided email has been verified to be owned by the customer.
         /// </summary>
         public Boolean? IsEmailValidated { get; set; }
 
         /// <summary>
-        /// Date customer-provided email verified to be owned by the�customer.
+        /// Date customer-provided email verified to be owned by the customer.
         /// </summary>
         public DateTimeOffset? EmailValidatedDate { get; set; }
 
         /// <summary>
-        /// If�customer-provided�phone number�has been verified to be owned by the�customer.
+        /// If customer-provided phone number has been verified to be owned by the customer.
         /// </summary>
         public Boolean? IsPhoneNumberValidated { get; set; }
 
         /// <summary>
-        /// Date customer-provided�phone number�has been verified to be owned by the�customer.
+        /// Date customer-provided phone number has been verified to be owned by the customer.
         /// </summary>
         public DateTimeOffset? PhoneNumberValidatedDate { get; set; }
     }
@@ -206,7 +206,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         public String ZipCode { get; set; }
 
         /// <summary>
-        /// ISO country code�provided with address.�2 alpha country code, e.g., 'US'
+        /// ISO country code provided with address. 2 alpha country code, e.g., 'US'
         /// </summary>
         public String Country { get; set; }
     }
