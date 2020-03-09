@@ -13,8 +13,6 @@ namespace Contoso.FraudProtection.Web.ViewModels.Shared
 
         public string ClientCountryCode { get; set; }
 
-        public string FingerPrintingDC { get; set; }
-
         public string SessionId { get; set; }
     }
 }

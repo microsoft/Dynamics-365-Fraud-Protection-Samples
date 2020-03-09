@@ -19,7 +19,6 @@
     @if (Model != null && Model.NumberItems > 0)
     {
         <form method="post" class="form-horizontal" onsubmit="setUpClientDetails()">
-            @Html.HiddenFor(m => m.DeviceFingerPrinting.FingerPrintingDC)
             @Html.HiddenFor(m => m.DeviceFingerPrinting.ClientCountryCode)
             @Html.HiddenFor(m => m.DeviceFingerPrinting.ClientDate)
             @Html.HiddenFor(m => m.DeviceFingerPrinting.ClientTimeZone)

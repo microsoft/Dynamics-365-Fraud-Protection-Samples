@@ -14,7 +14,6 @@
 
 <div class="container account-login-container">
     <form asp-controller="Account" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" onsubmit="setUpClientDetails()">
-        @Html.HiddenFor(m => m.DeviceFingerPrinting.FingerPrintingDC)
         @Html.HiddenFor(m => m.DeviceFingerPrinting.SessionId)
         @Html.HiddenFor(m => m.DeviceFingerPrinting.ClientCountryCode)
         @Html.HiddenFor(m => m.DeviceFingerPrinting.ClientDate)
