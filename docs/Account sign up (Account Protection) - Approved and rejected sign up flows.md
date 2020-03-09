@@ -5,7 +5,6 @@ After sending Dynamics 365 Fraud Protection a sign up event, use your merchant r
 
 ## Helpful links
 - [Calling Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
-- [SignUp - Data model and endpoint](https://apidocs.microsoft.com/services/dynamics365fraudprotection#/v1.0/V1.0MerchantservicesEventsSignUpPost)
 - [Sample site - Register a user](../src/Web/Controllers/AccountController.cs) (see Register POST method)
 - [Sample site - Dynamics 365 Fraud Protection service](../src/Infrastructure/Services/FraudProtectionService.cs) (see PostSignUpAP method)
 
