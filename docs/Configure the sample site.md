@@ -63,11 +63,12 @@ Follow these steps to configure the sample site before running it.
       "Purchase": "/v1.0/MerchantServices/events/Purchase",
       "PurchaseStatus": "/v1.0/MerchantServices/events/PurchaseStatus",
       "Refund": "/v1.0/MerchantServices/events/Refund",
+      "SignIn": "/v1.0/Merchantservices/events/SignIn",
       "Signup": "/v1.0/MerchantServices/events/Signup",
       "SignupStatus": "/v1.0/MerchantServices/events/SignUpStatus",
       "UpdateAccount": "/v1.0/MerchantServices/events/UpdateAccount",
-      "SignInAP": "/v0.5/merchantservices/AccountProtection/events/{0}/AccountLogin/{1}",
-      "SignupAP": "/v0.5/merchantservices/AccountProtection/events/{0}/AccountCreation/{1}"
+      "SignInAP": "/v0.5/MerchantServices/AccountProtection/events/{0}/AccountLogin/{1}",
+      "SignupAP": "/v0.5/MerchantServices/AccountProtection/events/{0}/AccountCreation/{1}"
     },
     "TokenProviderConfig": {
       "Resource": "https://api.dfp.dynamics-int.com",
