@@ -123,7 +123,8 @@ namespace Contoso.FraudProtection.Web.Controllers
                 var device = new AccountProtection.DeviceContext()
                 {
                     SessionId = model.DeviceFingerPrinting.SessionId,
-                    IpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString()
+                    IpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString(),
+                    Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
                 };
 
                 var metadata = new AccountProtection.EventMetadataAccountLogin()
@@ -445,7 +446,8 @@ namespace Contoso.FraudProtection.Web.Controllers
             var device = new AccountProtection.DeviceContext()
             {
                 SessionId = model.DeviceFingerPrinting.SessionId,
-                IpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString()
+                IpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString(),
+                Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
             };
 
             var metadata = new AccountProtection.EventMetadataAccountCreate()

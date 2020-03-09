@@ -1,5 +1,5 @@
 # Microsoft Dynamics 365 Fraud Protection - API examples
-## Account sign up - Approved and rejected sign up flows
+## Account sign up (Purchase Protection APIs) - Approved and rejected sign up flows
 
 After sending Dynamics 365 Fraud Protection a sign up event, it is up to you to use the Dynamics 365 Fraud Protection risk score to either continue with or stop your sign up workflow. Inform Dynamics 365 Fraud Protection of the final sign up status to improve Dynamics 365 Fraud Protection models.
 
