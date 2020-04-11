@@ -1,7 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Microsoft.Dynamics.FraudProtection.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
+using System.Collections.Generic;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection
 {
@@ -14,15 +18,13 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 
         public SSOAuthenticationProvider SSOAuthenticationProvider { get; set; }
 
-        public CustomerEmail Email { get; set; }
+        public IList<CustomerEmail> Emails { get; set; }
 
-        public CustomerPhone Phone { get; set; }
+        public IList<CustomerPhone> Phones { get; set; }
 
-        public Address Address { get; set; }
+        public IList<Address> Addresses { get; set; }
 
-        public PaymentInstrumentCard PaymentInstrumentCard { get; set; }
-
-        public PaymentInstrumentPaypal PaymentInstrumentPaypal { get; set; }
+        public IList<PaymentInstrument> PaymentInstruments { get; set; }
 
         public DeviceContext Device { get; set; }
 
@@ -34,5 +36,8 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         public string SignUpId { get; set; }
 
         public DateTimeOffset CustomerLocalDate { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public AssessmentType AssessmentType { get; set; }
     }
 }

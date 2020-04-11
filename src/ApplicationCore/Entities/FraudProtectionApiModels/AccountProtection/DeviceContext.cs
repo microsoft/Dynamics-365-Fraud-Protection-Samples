@@ -5,7 +5,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 {
     public class DeviceContext
     {
-        public string SessionId { get; set; }
+        public string DeviceContextId { get; set; }
 
         public string IpAddress { get; set; }
 
