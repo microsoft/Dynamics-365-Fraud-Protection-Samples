@@ -118,6 +118,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 {
                     UserType = AccountProtection.UserType.Consumer,
                     Username = model.Email,
+                    UserId = model.Email
                 };
 
                 var device = new AccountProtection.DeviceContext()
@@ -129,6 +130,7 @@ namespace Contoso.FraudProtection.Web.Controllers
 
                 var metadata = new AccountProtection.EventMetadataAccountLogin()
                 {
+                    TrackingId = Guid.NewGuid().ToString(),
                     LoginId = Guid.NewGuid().ToString(),
                     CustomerLocalDate = DateTime.Now,
                     MerchantTimeStamp = DateTime.Now
@@ -446,6 +448,7 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             var metadata = new AccountProtection.EventMetadataAccountCreate()
             {
+                TrackingId = Guid.NewGuid().ToString(),
                 SignUpId = Guid.NewGuid().ToString(),
                 CustomerLocalDate = DateTime.Now,
                 MerchantTimeStamp = DateTime.Now,
