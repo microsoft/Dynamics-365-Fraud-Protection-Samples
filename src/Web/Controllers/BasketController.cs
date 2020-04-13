@@ -404,7 +404,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             Product mostExpensiveProduct = productList.FirstOrDefault();
             foreach( var product in productList)
             {
-                if (product.SalesPrice > mostExpensiveProduct.SalesPrice)
+                if ((product.SalesPrice / product.Quantity) > (mostExpensiveProduct.SalesPrice / mostExpensiveProduct.Quantity))
                 {
                     mostExpensiveProduct = product;
                 }
@@ -413,7 +413,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             var customData = new Dictionary<string, object>()
             {
                 { "MostExpensiveProduct", mostExpensiveProduct.ProductName },
-                { "TotalCOGS", productList.Sum(p => p.COGS) },
+                { "TotalCOGS", productList.Sum(p => p.COGS * p.Quantity) },
                 { "ContainsRiskyProducts", productList.Any(p => p.Category == ProductCategory.Jewelry.ToString() || p.Category == ProductCategory.HomeGarden.ToString()) }
             };
 
