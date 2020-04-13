@@ -452,7 +452,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 SignUpId = Guid.NewGuid().ToString(),
                 CustomerLocalDate = DateTime.Now,
                 MerchantTimeStamp = DateTime.Now,
-                AssessmentType = AssessmentType.Protect
+                AssessmentType = AssessmentType.Evaluate
             };
 
             AccountProtection.SignUp signupEvent = new AccountProtection.SignUp()
