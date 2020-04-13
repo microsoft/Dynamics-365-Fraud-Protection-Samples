@@ -460,9 +460,9 @@ namespace Contoso.FraudProtection.Web.Controllers
                 Name = "AP.AccountCreation",
                 Version = "0.5",
                 User = signupUser,
-                Emails = new List<AccountProtection.CustomerEmail>() { customerEmail },
-                Phones = new List<AccountProtection.CustomerPhone>() { customerPhone },
-                Addresses = new List<AccountProtection.Address>() { address },
+                Email = new List<AccountProtection.CustomerEmail>() { customerEmail },
+                Phone = new List<AccountProtection.CustomerPhone>() { customerPhone },
+                Address = new List<AccountProtection.Address>() { address },
                 Device = device,
                 Metadata = metadata
             };

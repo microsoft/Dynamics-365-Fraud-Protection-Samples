@@ -18,11 +18,11 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 
         public SSOAuthenticationProvider SSOAuthenticationProvider { get; set; }
 
-        public IList<CustomerEmail> Emails { get; set; }
+        public IList<CustomerEmail> Email { get; set; }
 
-        public IList<CustomerPhone> Phones { get; set; }
+        public IList<CustomerPhone> Phone { get; set; }
 
-        public IList<Address> Addresses { get; set; }
+        public IList<Address> Address { get; set; }
 
         public IList<PaymentInstrument> PaymentInstruments { get; set; }
 

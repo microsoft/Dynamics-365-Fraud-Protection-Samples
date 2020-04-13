@@ -401,6 +401,22 @@ namespace Contoso.FraudProtection.Web.Controllers
                 BillingAddress = billingAddress,
             };
 
+            Product mostExpensiveProduct = productList.FirstOrDefault();
+            foreach( var product in productList)
+            {
+                if (product.SalesPrice > mostExpensiveProduct.SalesPrice)
+                {
+                    mostExpensiveProduct = product;
+                }
+            }
+
+            var customData = new Dictionary<string, object>()
+            {
+                { "MostExpensiveProduct", mostExpensiveProduct.ProductName },
+                { "TotalCOGS", productList.Sum(p => p.COGS) },
+                { "ContainsRiskyProducts", productList.Any(p => p.Category == ProductCategory.Jewelry.ToString() || p.Category == ProductCategory.HomeGarden.ToString()) }
+            };
+
             return new Purchase
             {
                 PurchaseId = Guid.NewGuid().ToString(),
@@ -416,6 +432,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 SalesTax = basketViewModel.Tax,
                 User = user,
                 PaymentInstrumentList = new List<PurchasePaymentInstrument> { paymentInstrument },
+                CustomData = customData
             };
         }
 
