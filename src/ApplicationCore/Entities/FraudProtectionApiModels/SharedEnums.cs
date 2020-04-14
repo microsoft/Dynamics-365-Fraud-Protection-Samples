@@ -15,7 +15,8 @@ namespace Microsoft.Dynamics.FraudProtection.Models
         MerchantWallet,
         CashOnDelivery,
         Paytm,
-        CCAvenue
+        CCAvenue,
+        Other
     }
 
     public enum PaymentInstrumentState
