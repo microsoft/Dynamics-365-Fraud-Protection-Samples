@@ -83,6 +83,11 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent
         /// Product associated with this purchase transaction
         /// </summary>
         public List<Product> ProductList { get; set; }
+
+        /// <summary>
+        /// Optional property bag for any custom data to be used in rules
+        /// </summary>
+        public Dictionary<string, object> CustomData { get; set; }
     }
 
     /// <summary>

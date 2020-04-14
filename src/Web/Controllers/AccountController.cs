@@ -17,6 +17,7 @@ using Microsoft.Dynamics.FraudProtection.Models;
 using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
 using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -117,18 +118,19 @@ namespace Contoso.FraudProtection.Web.Controllers
                 {
                     UserType = AccountProtection.UserType.Consumer,
                     Username = model.Email,
-                    PasswordHash = hashedPassword
+                    UserId = model.Email
                 };
 
                 var device = new AccountProtection.DeviceContext()
                 {
-                    SessionId = model.DeviceFingerPrinting.SessionId,
+                    DeviceContextId = model.DeviceFingerPrinting.SessionId,
                     IpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString(),
                     Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
                 };
 
                 var metadata = new AccountProtection.EventMetadataAccountLogin()
                 {
+                    TrackingId = Guid.NewGuid().ToString(),
                     LoginId = Guid.NewGuid().ToString(),
                     CustomerLocalDate = DateTime.Now,
                     MerchantTimeStamp = DateTime.Now
@@ -395,11 +397,6 @@ namespace Contoso.FraudProtection.Web.Controllers
 
         private AccountProtection.SignUp CreateSignupAPEvent(RegisterViewModel model)
         {
-            var applicationUser = new ApplicationUser
-            {
-                UserName = model.User.Email
-            };
-
             var signupUser = new AccountProtection.User()
             {
                 Username = model.User.Email,
@@ -410,7 +407,6 @@ namespace Contoso.FraudProtection.Web.Controllers
                 TimeZone = new TimeSpan(0, 0, -model.DeviceFingerPrinting.ClientTimeZone, 0).ToString(),
                 Language = "EN-US",
                 UserType = AccountProtection.UserType.Consumer,
-                PasswordHash = _userManager.PasswordHasher.HashPassword(applicationUser, model.Password)
             };
 
             var customerEmail = new AccountProtection.CustomerEmail()
@@ -445,16 +441,18 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             var device = new AccountProtection.DeviceContext()
             {
-                SessionId = model.DeviceFingerPrinting.SessionId,
+                DeviceContextId = model.DeviceFingerPrinting.SessionId,
                 IpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString(),
                 Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
             };
 
             var metadata = new AccountProtection.EventMetadataAccountCreate()
             {
+                TrackingId = Guid.NewGuid().ToString(),
                 SignUpId = Guid.NewGuid().ToString(),
                 CustomerLocalDate = DateTime.Now,
-                MerchantTimeStamp = DateTime.Now
+                MerchantTimeStamp = DateTime.Now,
+                AssessmentType = AssessmentType.Evaluate
             };
 
             AccountProtection.SignUp signupEvent = new AccountProtection.SignUp()
@@ -462,9 +460,9 @@ namespace Contoso.FraudProtection.Web.Controllers
                 Name = "AP.AccountCreation",
                 Version = "0.5",
                 User = signupUser,
-                Email = customerEmail,
-                Phone = customerPhone,
-                Address = address,
+                Email = new List<AccountProtection.CustomerEmail>() { customerEmail },
+                Phone = new List<AccountProtection.CustomerPhone>() { customerPhone },
+                Address = new List<AccountProtection.Address>() { address },
                 Device = device,
                 Metadata = metadata
             };
