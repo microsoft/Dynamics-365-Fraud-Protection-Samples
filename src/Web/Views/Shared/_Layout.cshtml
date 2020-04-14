@@ -53,10 +53,6 @@
             if (clientTimeZone) {
                 clientTimeZone.value = today.isDstObserved() ? today.stdTimezoneOffset() : today.getTimezoneOffset();
             }
-            var fingerPrintingDc = document.getElementById('DeviceFingerPrinting_FingerPrintingDC');
-            if (fingerPrintingDc) {
-                fingerPrintingDc.value = dfp.dc;
-            }
         }
     </script>
 </head>

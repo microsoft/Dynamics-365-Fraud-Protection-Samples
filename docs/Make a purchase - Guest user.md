@@ -62,8 +62,7 @@ x-ms-correlation-id: <correlation ID>
   "deviceContext": {
     "deviceContextId": "<Device Fingerprinting ID>",
     "ipAddress": "115.155.53.248",
-    "provider": "DFPFingerPrinting",
-    "deviceContextDC": "uswest"
+    "provider": "DFPFingerPrinting"
   },
   "shippingAddress": {
     "firstName": "Tami",

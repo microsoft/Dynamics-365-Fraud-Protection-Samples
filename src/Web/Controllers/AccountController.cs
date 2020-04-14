@@ -504,7 +504,6 @@ namespace Contoso.FraudProtection.Web.Controllers
             {
                 DeviceContextId = _contextAccessor.GetSessionId(),
                 IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                DeviceContextDC = model.DeviceFingerPrinting.FingerPrintingDC,
                 Provider = DeviceContextProvider.DFPFingerPrinting.ToString(),
             };
 

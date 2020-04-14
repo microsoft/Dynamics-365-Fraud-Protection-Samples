@@ -13,7 +13,6 @@
 <h3>@ViewData["Title"]</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
 <form asp-controller="Manage" method="post" class="form-horizontal" onsubmit="setUpClientDetails()">
-    @Html.HiddenFor(m => m.DeviceFingerPrinting.FingerPrintingDC)
     <div class="row">
         <div asp-validation-summary="All" class="text-danger"></div>
         <section>

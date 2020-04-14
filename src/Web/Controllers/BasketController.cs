@@ -317,7 +317,6 @@ namespace Contoso.FraudProtection.Web.Controllers
             {
                 DeviceContextId = _contextAccessor.GetSessionId(),
                 IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                DeviceContextDC = checkoutDetails.DeviceFingerPrinting.FingerPrintingDC,
                 Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
             };
 

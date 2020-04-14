@@ -8,7 +8,7 @@ These documents are largely based on a sample application developed to demonstra
 ## Contents
 - [Configure the sample site](./Configure&#32;the&#32;sample&#32;site.md)
 - [Authenticate and call Dynamics 365 Fraud Protection](./Authenticate&#32;and&#32;call&#32;Fraud&#32;Protection.md)
-- **Assess account sign up fraud**
+- **Assess account fraud**
   * [Account sign up (Account Protection APIs) - Approved and rejected sign up flows](./Account&#32;sign&#32;up&#32;&#40;Account&#32;Protection&#41;&#32;-&#32;Approved&#32;and&#32;rejected&#32;sign&#32;up&#32;flows.md)
   * [Account sign in (Account Protection APIs) - Approved and rejected sign in flows](./Account&#32;sign&#32;in&#32;&#40;Account&#32;Protection&#41;&#32;-&#32;Approved&#32;and&#32;rejected&#32;sign&#32;in&#32;flows.md)
   * [Account sign up (Purchase Protection APIs) - Approved and rejected sign up flows](./Account&#32;sign&#32;up&#32;&#40;Purchase&#32;Protection&#41;&#32;-&#32;Approved&#32;and&#32;rejected&#32;sign&#32;up&#32;flows.md)

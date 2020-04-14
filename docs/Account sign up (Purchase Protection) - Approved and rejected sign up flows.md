@@ -90,8 +90,7 @@ x-ms-correlation-id: <correlation ID 1>
   "deviceContext": {
     "deviceContextId": "<Device Fingerprinting ID>",
     "ipAddress": "115.155.53.248",
-    "provider": "DFPFingerPrinting",
-    "deviceContextDC": "uswest"
+    "provider": "DFPFingerPrinting"
   },
   "_metadata": {
     "trackingId": "<tracking ID 1>",
