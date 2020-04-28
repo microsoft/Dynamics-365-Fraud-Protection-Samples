@@ -41,7 +41,7 @@ x-ms-correlation-id: <correlation ID 1>
     "PasswordHash": "<Hash of the user's password.  The sample app uses the UserManager.PasswordHasher.HashPassword method to generate this value.>",
     "FirstName": "first",
     "LastName": "last",
-    "Country": "US",
+    "CountryRegion": "US",
     "ZipCode": "98052",
     "TimeZone": "-08:00:00",
     "Language": "EN-US",
@@ -75,7 +75,7 @@ x-ms-correlation-id: <correlation ID 1>
     "State": "WA",
     "District": null,
     "ZipCode": "98052",
-    "Country": "US"
+    "CountryRegion": "US"
   },
   "Device": {
     "SessionId": "<session ID from device fingerprinting>",
