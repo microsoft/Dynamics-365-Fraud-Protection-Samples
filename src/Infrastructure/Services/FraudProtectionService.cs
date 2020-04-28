@@ -36,7 +36,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         private readonly ITokenProvider _tokenProviderService;
         private readonly FraudProtectionSettings _settings;
         private readonly JsonSerializerOptions _requestSerializtionOptions;
-        private readonly JsonSerializerOptions _responseDeserializtionOptions;
+        private readonly JsonSerializerOptions _responseDeserializationOptions;
 
         public FraudProtectionService(IOptions<FraudProtectionSettings> settings, ITokenProvider tokenProviderService)
         {
@@ -48,7 +48,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
                 IgnoreNullValues = true,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            _responseDeserializtionOptions = new JsonSerializerOptions
+            _responseDeserializationOptions = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
@@ -94,7 +94,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             var rawContent = await rawResponse.Content.ReadAsStringAsync();
             rawResponse.Dispose();
 
-            return JsonSerializer.Deserialize<T>(rawContent, _responseDeserializtionOptions);
+            return JsonSerializer.Deserialize<T>(rawContent, _responseDeserializationOptions);
         }
 
         public async Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId = null)
