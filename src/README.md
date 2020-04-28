@@ -5,7 +5,7 @@ The Microsoft Dynamics 365 Fraud Protection sample merchant application demonstr
 Before running the solution, you must install these prerequisites:
 
 - Visual Studio 2019 
-- .Net Core SDK version 2.2 or greater
+- .Net Core SDK version 3.1 or greater
 - (optional) SQL Management Studio, Azure Data Studio, or similar, if you want to view your schema and data during testing/development.
 
 ## Running the application

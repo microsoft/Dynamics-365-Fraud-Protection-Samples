@@ -17,16 +17,15 @@ using Contoso.FraudProtection.Infrastructure.Services;
 using Contoso.FraudProtection.Web.Interfaces;
 using Contoso.FraudProtection.Web.Services;
 using System;
-using System.Text;
+using Microsoft.Extensions.Hosting;
 
 namespace Contoso.FraudProtection.Web
 {
     public class Startup
     {
         private readonly IConfiguration Configuration;
-        private IServiceCollection _services;
 
-        public Startup(IHostingEnvironment env, IConfiguration configuration)
+        public Startup(IWebHostEnvironment env, IConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -106,19 +105,16 @@ namespace Contoso.FraudProtection.Web
 
             services.AddMemoryCache();
 
-            services.AddMvc()
-                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_1);
+            services.AddControllersWithViews();
             services.AddSession();
-            _services = services;
         }
 
         // This method gets called by the runtime.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                ListAllRegisteredServices(app);
                 app.UseDatabaseErrorPage();
             }
             else
@@ -129,47 +125,27 @@ namespace Contoso.FraudProtection.Web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseRouting();
             app.UseAuthentication();
+            app.UseAuthorization();
             app.UseSession();
 
-            app.UseMvc(routes => 
+            app.UseEndpoints(routes => 
             {
-                routes.MapRoute(
+                routes.MapControllerRoute(
                     name: "areaRoute",
-                    template: "{area:exists}/{controller}/{action}/{id?}",
+                    pattern: "{area:exists}/{controller}/{action}/{id?}",
                     defaults: new { action = "Index" });
 
-                routes.MapRoute(
+                routes.MapControllerRoute(
                     name: "default",
-                    template: "{controller}/{action}/{id?}",
+                    pattern: "{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
 
-                routes.MapRoute(
+                routes.MapControllerRoute(
                     name: "api",
-                    template: "{controller}/{id?}");
+                    pattern: "{controller}/{id?}");
             });
-        }
-
-        private void ListAllRegisteredServices(IApplicationBuilder app)
-        {
-            app.Map("/allservices", builder => builder.Run(async context =>
-            {
-                var sb = new StringBuilder();
-                sb.Append("<h1>All Services</h1>");
-                sb.Append("<table><thead>");
-                sb.Append("<tr><th>Type</th><th>Lifetime</th><th>Instance</th></tr>");
-                sb.Append("</thead><tbody>");
-                foreach (var svc in _services)
-                {
-                    sb.Append("<tr>");
-                    sb.Append($"<td>{svc.ServiceType.FullName}</td>");
-                    sb.Append($"<td>{svc.Lifetime}</td>");
-                    sb.Append($"<td>{svc.ImplementationType?.FullName}</td>");
-                    sb.Append("</tr>");
-                }
-                sb.Append("</tbody></table>");
-                await context.Response.WriteAsync(sb.ToString());
-            }));
         }
     }
 }

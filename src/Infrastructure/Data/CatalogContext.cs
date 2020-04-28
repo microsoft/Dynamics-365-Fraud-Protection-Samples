@@ -9,7 +9,6 @@ using Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate;
 
 namespace Contoso.FraudProtection.Infrastructure.Data
 {
-
     public class CatalogContext : DbContext
     {
         public CatalogContext(DbContextOptions<CatalogContext> options) : base(options)
@@ -45,7 +44,7 @@ namespace Contoso.FraudProtection.Infrastructure.Data
             builder.ToTable("Catalog");
 
             builder.Property(ci => ci.Id)
-                .ForSqlServerUseSequenceHiLo("catalog_hilo")
+                .UseHiLo("catalog_hilo")
                 .IsRequired();
 
             builder.Property(ci => ci.Name)
@@ -74,7 +73,7 @@ namespace Contoso.FraudProtection.Infrastructure.Data
             builder.HasKey(ci => ci.Id);
 
             builder.Property(ci => ci.Id)
-               .ForSqlServerUseSequenceHiLo("catalog_brand_hilo")
+               .UseHiLo("catalog_brand_hilo")
                .IsRequired();
 
             builder.Property(cb => cb.Brand)
@@ -89,7 +88,7 @@ namespace Contoso.FraudProtection.Infrastructure.Data
             builder.HasKey(ci => ci.Id);
 
             builder.Property(ci => ci.Id)
-               .ForSqlServerUseSequenceHiLo("catalog_type_hilo")
+               .UseHiLo("catalog_type_hilo")
                .IsRequired();
 
             builder.Property(cb => cb.Type)
@@ -105,12 +104,12 @@ namespace Contoso.FraudProtection.Infrastructure.Data
 
             builder.OwnsOne(o => o.ShipToAddress);
             builder.OwnsOne(o => o.PaymentDetails);
-            builder.Property<string>("RiskPurchaseJson").HasField("_riskPurchase");
-            builder.Property<string>("RiskPurchaseResponseJson").HasField("_riskPurchaseResponse");
-            builder.Property<string>("RiskRefundJson").HasField("_riskRefund");
-            builder.Property<string>("RiskRefundResponseJson").HasField("_riskRefundResponse");
-            builder.Property<string>("RiskChargebackJson").HasField("_riskChargeback");
-            builder.Property<string>("RiskChargebackResponseJson").HasField("_riskChargebackResponse");
+            builder.Property<string>("_riskPurchase").HasColumnName("RiskPurchaseJson");
+            builder.Property<string>("_riskPurchaseResponse").HasColumnName("RiskPurchaseResponseJson");
+            builder.Property<string>("_riskRefund").HasColumnName("RiskRefundJson");
+            builder.Property<string>("_riskRefundResponse").HasColumnName("RiskRefundResponseJson");
+            builder.Property<string>("_riskChargeback").HasColumnName("RiskChargebackJson");
+            builder.Property<string>("_riskChargebackResponse").HasColumnName("RiskChargebackResponseJson");
         }
 
         private void ConfigureOrderItem(EntityTypeBuilder<OrderItem> builder)
