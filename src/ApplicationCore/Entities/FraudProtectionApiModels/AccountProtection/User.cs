@@ -19,7 +19,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 
         public string LastName { get; set; }
 
-        public string Country { get; set; }
+        public string CountryRegion { get; set; }
 
         public string ZipCode { get; set; }
 
