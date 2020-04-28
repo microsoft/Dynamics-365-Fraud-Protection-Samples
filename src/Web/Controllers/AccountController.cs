@@ -402,7 +402,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 Username = model.User.Email,
                 FirstName = model.User.FirstName,
                 LastName = model.User.LastName,
-                Country = model.Address.CountryRegion,
+                CountryRegion = model.Address.CountryRegion,
                 ZipCode = model.Address.ZipCode,
                 TimeZone = new TimeSpan(0, 0, -model.DeviceFingerPrinting.ClientTimeZone, 0).ToString(),
                 Language = "EN-US",
@@ -436,7 +436,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 City = model.Address.City,
                 State = model.Address.State,
                 ZipCode = model.Address.ZipCode,
-                Country = model.Address.CountryRegion
+                CountryRegion = model.Address.CountryRegion
             };
 
             var device = new AccountProtection.DeviceContext()

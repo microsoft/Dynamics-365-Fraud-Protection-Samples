@@ -31,7 +31,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 
         public string ZipCode { get; set; }
 
-        public string Country { get; set; }
+        public string CountryRegion { get; set; }
     }
 
     public enum AddressType
