@@ -2,8 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.Dynamics.FraudProtection.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 
@@ -37,7 +36,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 
         public DateTimeOffset CustomerLocalDate { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public AssessmentType AssessmentType { get; set; }
     }
 }

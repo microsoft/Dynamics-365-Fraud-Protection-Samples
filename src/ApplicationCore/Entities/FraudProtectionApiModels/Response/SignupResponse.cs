@@ -1,13 +1,14 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Newtonsoft.Json;
+
+using System.Text.Json.Serialization;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels
 {
     public class SignupResponse
     {
-        [JsonProperty("resultDetails")]
+        [JsonPropertyName("resultDetails")]
         public SignupResponseDetails ResultDetails { get; set; }
     }
 

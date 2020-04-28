@@ -320,7 +320,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
             };
 
-            Func<string, string> getCategoryFromName = (productName) =>
+            static string getCategoryFromName(string productName)
             {
                 if (productName.Contains("mug", StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -338,7 +338,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 }
 
                 return "Other";
-            };
+            }
 
             var productList = basketViewModel.Items
                 .Select(i => new Product

@@ -150,8 +150,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 var fraudProtectionIO = new FraudProtectionIOModel(signIn, signInResponse, "SignIn");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
 
-                AccountProtection.ResponseSuccess response = signInResponse as AccountProtection.ResponseSuccess;
-                if (response != null)
+                if (signInResponse is AccountProtection.ResponseSuccess response)
                 {
                     rejectSignIn = response.ResultDetails.FirstOrDefault()?.Decision != AccountProtection.DecisionName.Approve;
                 }
@@ -329,8 +328,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
 
                 bool rejectSignup = false;
-                AccountProtection.ResponseSuccess signupResponse = signupAssessment as AccountProtection.ResponseSuccess;
-                if (signupResponse != null)
+                if (signupAssessment is AccountProtection.ResponseSuccess signupResponse)
                 {
                     rejectSignup = signupResponse.ResultDetails.FirstOrDefault()?.Decision != AccountProtection.DecisionName.Approve;
                 }

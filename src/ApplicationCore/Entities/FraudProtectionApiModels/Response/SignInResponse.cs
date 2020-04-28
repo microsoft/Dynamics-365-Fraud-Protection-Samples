@@ -1,13 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text.Json.Serialization;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response
 {
     public class SignInResponse
     {
-        [JsonProperty("resultDetails")]
+        [JsonPropertyName("resultDetails")]
         public SignInResponseDetails ResultDetails { get; set; }
     }
 

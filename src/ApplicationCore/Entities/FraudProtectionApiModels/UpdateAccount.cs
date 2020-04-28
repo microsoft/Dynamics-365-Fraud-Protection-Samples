@@ -1,9 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent
 {
@@ -28,7 +28,7 @@ namespace Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent
         public DeviceContext DeviceContext { get; set; }
 
         // Inlining to avoid multi-inheritance but still take advantage of shared UserDetails
-        [JsonProperty(PropertyName = "_metadata")]
+        [JsonPropertyName("_metadata")]
         public EventMetadata Metadata { get; set; }
     }
 
