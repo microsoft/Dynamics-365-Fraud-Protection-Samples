@@ -10,6 +10,8 @@ namespace Contoso.FraudProtection.Web.ViewModels
     {
         public const string TempDataKey = "FraudProtectionIOData";
 
+        public string CorrelationId { get; set; }
+
         public List<RequestResponsePair> RequestResponsePairs { get; set; } = new List<RequestResponsePair>();
 
         private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
@@ -22,8 +24,9 @@ namespace Contoso.FraudProtection.Web.ViewModels
         /// </summary>
         public FraudProtectionIOModel() { }
 
-        public FraudProtectionIOModel(object request, object response, string name = "")
+        public FraudProtectionIOModel(string correlationId, object request, object response, string name = "")
         {
+            CorrelationId = correlationId;
             Add(request, response, name);
         }
 

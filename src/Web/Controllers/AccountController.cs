@@ -145,9 +145,10 @@ namespace Contoso.FraudProtection.Web.Controllers
                     Metadata = metadata
                 };
 
-                var signInResponse = await _fraudProtectionService.PostSignInAP(signIn, _fraudProtectionService.NewCorrelationId);
+                var correlationId = _fraudProtectionService.NewCorrelationId;
+                var signInResponse = await _fraudProtectionService.PostSignInAP(signIn, correlationId);
 
-                var fraudProtectionIO = new FraudProtectionIOModel(signIn, signInResponse, "SignIn");
+                var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signIn, signInResponse, "SignIn");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
 
                 if (signInResponse is AccountProtection.ResponseSuccess response)
@@ -169,9 +170,10 @@ namespace Contoso.FraudProtection.Web.Controllers
                     CurrentIpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()
                 };
 
-                var signInResponse = await _fraudProtectionService.PostSignIn(signIn);
+                var correlationId = _fraudProtectionService.NewCorrelationId;
+                var signInResponse = await _fraudProtectionService.PostSignIn(signIn, correlationId);
 
-                var fraudProtectionIO = new FraudProtectionIOModel(signIn, signInResponse, "SignIn");
+                var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signIn, signInResponse, "SignIn");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
 
                 //2 out of 3 signIn will be successful
@@ -324,7 +326,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 var signupAssessment = await _fraudProtectionService.PostSignupAP(signupEvent, correlationId);
 
                 //Track Fraud Protection request/response for display only
-                var fraudProtectionIO = new FraudProtectionIOModel(signupEvent, signupAssessment, "Signup");
+                var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signupEvent, signupAssessment, "Signup");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
 
                 bool rejectSignup = false;
@@ -346,7 +348,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 var signupAssessment = await _fraudProtectionService.PostSignup(signupEvent, correlationId);
 
                 //Track Fraud Protection request/response for display only
-                var fraudProtectionIO = new FraudProtectionIOModel(signupEvent, signupAssessment, "Signup");
+                var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signupEvent, signupAssessment, "Signup");
 
                 //2 out of 3 signups will succeed on average. Adjust if you want more or less signups blocked for tesing purposes.
                 var rejectSignup = new Random().Next(0, 3) != 0;
