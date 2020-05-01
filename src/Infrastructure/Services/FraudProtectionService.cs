@@ -82,7 +82,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
                serializedContent,
                new Dictionary<string, string>
                {
-                    { Constants.CORRELATION_ID, correlationId ?? Guid.NewGuid().ToString() },
+                    { Constants.CORRELATION_ID, correlationId },
                     { Constants.AUTHORIZATION, $"{Constants.BEARER} {authToken}" }
                });
         }
@@ -100,49 +100,49 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             return JsonSerializer.Deserialize<T>(content, _responseDeserializationOptions);
         }
 
-        public async Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId = null)
+        public async Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId)
         {
             var response = await PostAsync(_settings.Endpoints.Purchase, purchase, correlationId);
             return await Read<PurchaseResponse>(response);
         }
 
-        public async Task<FraudProtectionResponse> PostRefund(Refund refund, string correlationId = null)
+        public async Task<FraudProtectionResponse> PostRefund(Refund refund, string correlationId)
         {
             var response = await PostAsync(_settings.Endpoints.Refund, refund, correlationId);
             return await Read<FraudProtectionResponse>(response);
         }
 
-        public async Task<FraudProtectionResponse> PostUser(User userAccount, string correlationId = null)
+        public async Task<FraudProtectionResponse> PostUser(User userAccount, string correlationId)
         {
             var response = await PostAsync(_settings.Endpoints.UpdateAccount, userAccount, correlationId);
             return await Read<FraudProtectionResponse>(response);
         }
 
-        public async Task<FraudProtectionResponse> PostBankEvent(BankEvent bankEvent, string correlationId = null)
+        public async Task<FraudProtectionResponse> PostBankEvent(BankEvent bankEvent, string correlationId)
         {
             var response = await PostAsync(_settings.Endpoints.BankEvent, bankEvent, correlationId);
             return await Read<FraudProtectionResponse>(response);
         }
 
-        public async Task<FraudProtectionResponse> PostChargeback(Chargeback chargeback, string correlationId = null)
+        public async Task<FraudProtectionResponse> PostChargeback(Chargeback chargeback, string correlationId)
         {
             var response = await PostAsync(_settings.Endpoints.Chargeback, chargeback, correlationId);
             return await Read<FraudProtectionResponse>(response);
         }
 
-        public async Task<FraudProtectionResponse> PostPurchaseStatus(PurchaseStatusEvent purchaseStatus, string correlationId = null)
+        public async Task<FraudProtectionResponse> PostPurchaseStatus(PurchaseStatusEvent purchaseStatus, string correlationId)
         {
             var response = await PostAsync(_settings.Endpoints.PurchaseStatus, purchaseStatus, correlationId);
             return await Read<FraudProtectionResponse>(response);
         }
 
-        public async Task<SignupResponse> PostSignup(SignUp signup, string correlationId = null)
+        public async Task<SignupResponse> PostSignup(SignUp signup, string correlationId)
         {
             var response = await PostAsync(_settings.Endpoints.Signup, signup, correlationId);
             return await Read<SignupResponse>(response);
         }
 
-        public async Task<AccountProtection.Response> PostSignupAP(AccountProtection.SignUp signup, string correlationId = null)
+        public async Task<AccountProtection.Response> PostSignupAP(AccountProtection.SignUp signup, string correlationId)
         {
             string endpoint = string.Format(_settings.Endpoints.SignupAP, signup.Metadata.SignUpId);
 
@@ -150,25 +150,25 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             return await Read<AccountProtection.ResponseSuccess>(response);
         }
 
-        public async Task<FraudProtectionResponse> PostSignupStatus(SignupStatusEvent signupStatus, string correlationId = null)
+        public async Task<FraudProtectionResponse> PostSignupStatus(SignupStatusEvent signupStatus, string correlationId)
         {
             var response = await PostAsync(_settings.Endpoints.SignupStatus, signupStatus, correlationId);
             return await Read<FraudProtectionResponse>(response);
         }
 
-        public async Task<FraudProtectionResponse> PostLabel(Label label, string correlationId = null)
+        public async Task<FraudProtectionResponse> PostLabel(Label label, string correlationId)
         {
             var response = await PostAsync(_settings.Endpoints.Label, label, correlationId);
             return await Read<FraudProtectionResponse>(response);
         }
 
-        public async Task<SignInResponse> PostSignIn(SignIn signIn, string correlationId = null)
+        public async Task<SignInResponse> PostSignIn(SignIn signIn, string correlationId)
         {
             var response = await PostAsync(_settings.Endpoints.SignIn, signIn, correlationId);
             return await Read<SignInResponse>(response);
         }
 
-        public async Task<AccountProtection.Response> PostSignInAP(AccountProtection.SignIn signIn, string correlationId = null)
+        public async Task<AccountProtection.Response> PostSignInAP(AccountProtection.SignIn signIn, string correlationId)
         {
             string endpoint = string.Format(_settings.Endpoints.SignInAP, signIn.Metadata.LoginId);
 

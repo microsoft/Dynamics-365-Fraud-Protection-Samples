@@ -90,9 +90,10 @@ namespace Contoso.FraudProtection.Web.Controllers
                     UserId = order.RiskPurchase.User.UserId,
                 };
 
-                var response = await _fraudProtectionService.PostRefund(refund);
+                var correlationId = _fraudProtectionService.NewCorrelationId;
+                var response = await _fraudProtectionService.PostRefund(refund, correlationId);
 
-                var fraudProtectionIO = new FraudProtectionIOModel(refund, response, "Refund");
+                var fraudProtectionIO = new FraudProtectionIOModel(correlationId, refund, response, "Refund");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
                 #endregion
 
@@ -120,9 +121,11 @@ namespace Contoso.FraudProtection.Web.Controllers
                     PurchaseId = order.RiskPurchase.PurchaseId,
                     UserId = order.RiskPurchase.User.UserId,
                 };
-                var response = await _fraudProtectionService.PostChargeback(chargeback);
 
-                var fraudProtectionIO = new FraudProtectionIOModel(chargeback, response, "Chargeback");
+                var correlationId = _fraudProtectionService.NewCorrelationId;
+                var response = await _fraudProtectionService.PostChargeback(chargeback, correlationId);
+
+                var fraudProtectionIO = new FraudProtectionIOModel(correlationId, chargeback, response, "Chargeback");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
                 #endregion
 
@@ -184,9 +187,10 @@ namespace Contoso.FraudProtection.Web.Controllers
                 label.Currency = order.RiskPurchase?.Currency;
             }
 
-            var response = await _fraudProtectionService.PostLabel(label);
+            var correlationId = _fraudProtectionService.NewCorrelationId;
+            var response = await _fraudProtectionService.PostLabel(label, correlationId);
 
-            var fraudProtectionIO = new FraudProtectionIOModel(label, response, "Label");
+            var fraudProtectionIO = new FraudProtectionIOModel(correlationId, label, response, "Label");
             TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
             #endregion
 

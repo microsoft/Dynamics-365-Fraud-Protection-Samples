@@ -23,29 +23,29 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
     {
         string NewCorrelationId { get; }
 
-        Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId = null);
+        Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId);
 
-        Task<SignupResponse> PostSignup(SignUp signup, string correlationId = null);
+        Task<SignupResponse> PostSignup(SignUp signup, string correlationId);
 
-        Task<AccountProtection.Response> PostSignupAP(AccountProtection.SignUp signup, string correlationId = null);
+        Task<AccountProtection.Response> PostSignupAP(AccountProtection.SignUp signup, string correlationId);
 
-        Task<FraudProtectionResponse> PostRefund(Refund refund, string correlationId = null);
+        Task<FraudProtectionResponse> PostRefund(Refund refund, string correlationId);
 
-        Task<FraudProtectionResponse> PostUser(User userAccount, string correlationId = null);
+        Task<FraudProtectionResponse> PostUser(User userAccount, string correlationId);
 
-        Task<FraudProtectionResponse> PostBankEvent(BankEvent bankEvent, string correlationId = null);
+        Task<FraudProtectionResponse> PostBankEvent(BankEvent bankEvent, string correlationId);
 
-        Task<FraudProtectionResponse> PostChargeback(Chargeback chargeback, string correlationId = null);
+        Task<FraudProtectionResponse> PostChargeback(Chargeback chargeback, string correlationId);
 
-        Task<FraudProtectionResponse> PostPurchaseStatus(PurchaseStatusEvent purchaseStatus, string correlationId = null);
+        Task<FraudProtectionResponse> PostPurchaseStatus(PurchaseStatusEvent purchaseStatus, string correlationId);
 
-        Task<FraudProtectionResponse> PostSignupStatus(SignupStatusEvent signupStatus, string correlationId = null);
+        Task<FraudProtectionResponse> PostSignupStatus(SignupStatusEvent signupStatus, string correlationId);
 
-        Task<FraudProtectionResponse> PostLabel(Label label, string correlationId = null);
+        Task<FraudProtectionResponse> PostLabel(Label label, string correlationId);
 
-        Task<SignInResponse> PostSignIn(SignIn request, string correlationId = null);
+        Task<SignInResponse> PostSignIn(SignIn request, string correlationId);
 
-        Task<AccountProtection.Response> PostSignInAP(AccountProtection.SignIn request, string correlationId = null);
+        Task<AccountProtection.Response> PostSignInAP(AccountProtection.SignIn request, string correlationId);
     }
 
     #endregion

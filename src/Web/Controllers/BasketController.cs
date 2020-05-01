@@ -179,7 +179,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             var correlationId = _fraudProtectionService.NewCorrelationId;
             var result = await _fraudProtectionService.PostPurchase(purchase, correlationId);
 
-            var fraudProtectionIO = new FraudProtectionIOModel(purchase, result, "Purchase");
+            var fraudProtectionIO = new FraudProtectionIOModel(correlationId, purchase, result, "Purchase");
 
             //Check the risk score that was returned and possibly complete the purchase.
             var status = await ApproveOrRejectPurchase(
