@@ -36,7 +36,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         private readonly HttpClient _httpClient;
         private readonly ITokenProvider _tokenProviderService;
         private readonly FraudProtectionSettings _settings;
-        private readonly JsonSerializerOptions _requestSerializtionOptions;
+        private readonly JsonSerializerOptions _requestSerializationOptions;
         private readonly JsonSerializerOptions _responseDeserializationOptions;
 
         public FraudProtectionService(IOptions<FraudProtectionSettings> settings, ITokenProvider tokenProviderService)
@@ -44,7 +44,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             _httpClient = new HttpClient();
             _settings = settings.Value;
             _tokenProviderService = tokenProviderService;
-            _requestSerializtionOptions = new JsonSerializerOptions
+            _requestSerializationOptions = new JsonSerializerOptions
             {
                 IgnoreNullValues = true,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -74,7 +74,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
 
             var authToken = await _tokenProviderService.AcquireTokenAsync();
             var url = $"{_settings.ApiBaseUrl}{endpoint}";
-            var serializedObject = JsonSerializer.Serialize(content, _requestSerializtionOptions);
+            var serializedObject = JsonSerializer.Serialize(content, _requestSerializationOptions);
             var serializedContent = new StringContent(serializedObject, Encoding.UTF8, "application/json");
 
             return await _httpClient.PostWithHeadersAsync(
