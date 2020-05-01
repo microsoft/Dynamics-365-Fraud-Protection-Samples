@@ -3,6 +3,7 @@
 
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response;
+using Contoso.FraudProtection.ApplicationCore.Exceptions;
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Microsoft.Dynamics.FraudProtection.Models;
 using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
@@ -76,7 +77,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             var serializedObject = JsonSerializer.Serialize(content, _requestSerializtionOptions);
             var serializedContent = new StringContent(serializedObject, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostWithHeadersAsync(
+            return await _httpClient.PostWithHeadersAsync(
                url,
                serializedContent,
                new Dictionary<string, string>
@@ -84,17 +85,19 @@ namespace Contoso.FraudProtection.Infrastructure.Services
                     { Constants.CORRELATION_ID, correlationId ?? Guid.NewGuid().ToString() },
                     { Constants.AUTHORIZATION, $"{Constants.BEARER} {authToken}" }
                });
-
-            return response;
         }
 
-        private async Task<T> Read<T>(HttpResponseMessage rawResponse) where T : new()
+        private async Task<T> Read<T>(HttpResponseMessage response) where T : new()
         {
-            rawResponse.EnsureSuccessStatusCode();
-            var rawContent = await rawResponse.Content.ReadAsStringAsync();
-            rawResponse.Dispose();
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new FraudProtectionApiException(response);
+            }
+            
+            var content = await response.Content.ReadAsStringAsync();
+            response.Dispose();
 
-            return JsonSerializer.Deserialize<T>(rawContent, _responseDeserializationOptions);
+            return JsonSerializer.Deserialize<T>(content, _responseDeserializationOptions);
         }
 
         public async Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId = null)
