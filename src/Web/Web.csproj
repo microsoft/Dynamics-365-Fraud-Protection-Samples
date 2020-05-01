@@ -1,21 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>Contoso.FraudProtection.Web</RootNamespace>
-    <UserSecretsId>95ed0ac6-6749-4920-aaf4-6f92323204d4</UserSecretsId>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BuildBundlerMinifier" Version="2.9.406" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.3" />
-    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.3.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.4" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="2.2.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" PrivateAssets="All" />
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.447" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.5" />
+    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.3" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="3.1.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" PrivateAssets="All" />
     </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Catalog\" />
