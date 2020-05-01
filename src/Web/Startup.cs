@@ -18,6 +18,7 @@ using Contoso.FraudProtection.Web.Interfaces;
 using Contoso.FraudProtection.Web.Services;
 using System;
 using Microsoft.Extensions.Hosting;
+using Contoso.FraudProtection.Web.Middleware;
 
 namespace Contoso.FraudProtection.Web
 {
@@ -112,14 +113,13 @@ namespace Contoso.FraudProtection.Web
         // This method gets called by the runtime.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.ConfigureExceptionHandler();
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
             else
             {
-                app.UseExceptionHandler("/Catalog/Error");
                 app.UseHsts();
             }
 

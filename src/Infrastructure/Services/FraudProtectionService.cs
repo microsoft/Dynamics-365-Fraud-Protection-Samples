@@ -3,6 +3,7 @@
 
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response;
+using Contoso.FraudProtection.ApplicationCore.Exceptions;
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Microsoft.Dynamics.FraudProtection.Models;
 using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
@@ -35,7 +36,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         private readonly HttpClient _httpClient;
         private readonly ITokenProvider _tokenProviderService;
         private readonly FraudProtectionSettings _settings;
-        private readonly JsonSerializerOptions _requestSerializtionOptions;
+        private readonly JsonSerializerOptions _requestSerializationOptions;
         private readonly JsonSerializerOptions _responseDeserializationOptions;
 
         public FraudProtectionService(IOptions<FraudProtectionSettings> settings, ITokenProvider tokenProviderService)
@@ -43,7 +44,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             _httpClient = new HttpClient();
             _settings = settings.Value;
             _tokenProviderService = tokenProviderService;
-            _requestSerializtionOptions = new JsonSerializerOptions
+            _requestSerializationOptions = new JsonSerializerOptions
             {
                 IgnoreNullValues = true,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -73,10 +74,10 @@ namespace Contoso.FraudProtection.Infrastructure.Services
 
             var authToken = await _tokenProviderService.AcquireTokenAsync();
             var url = $"{_settings.ApiBaseUrl}{endpoint}";
-            var serializedObject = JsonSerializer.Serialize(content, _requestSerializtionOptions);
+            var serializedObject = JsonSerializer.Serialize(content, _requestSerializationOptions);
             var serializedContent = new StringContent(serializedObject, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostWithHeadersAsync(
+            return await _httpClient.PostWithHeadersAsync(
                url,
                serializedContent,
                new Dictionary<string, string>
@@ -84,17 +85,19 @@ namespace Contoso.FraudProtection.Infrastructure.Services
                     { Constants.CORRELATION_ID, correlationId },
                     { Constants.AUTHORIZATION, $"{Constants.BEARER} {authToken}" }
                });
-
-            return response;
         }
 
-        private async Task<T> Read<T>(HttpResponseMessage rawResponse) where T : new()
+        private async Task<T> Read<T>(HttpResponseMessage response) where T : new()
         {
-            rawResponse.EnsureSuccessStatusCode();
-            var rawContent = await rawResponse.Content.ReadAsStringAsync();
-            rawResponse.Dispose();
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new FraudProtectionApiException(response);
+            }
+            
+            var content = await response.Content.ReadAsStringAsync();
+            response.Dispose();
 
-            return JsonSerializer.Deserialize<T>(rawContent, _responseDeserializationOptions);
+            return JsonSerializer.Deserialize<T>(content, _responseDeserializationOptions);
         }
 
         public async Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId)
