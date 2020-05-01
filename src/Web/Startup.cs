@@ -26,7 +26,7 @@ namespace Contoso.FraudProtection.Web
     {
         private readonly IConfiguration Configuration;
 
-        public Startup(IWebHostEnvironment env, IConfiguration configuration)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }

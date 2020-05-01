@@ -16,12 +16,11 @@ using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
 using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 using AccountProtection = Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection;
@@ -37,20 +36,22 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         private readonly HttpClient _httpClient;
         private readonly ITokenProvider _tokenProviderService;
         private readonly FraudProtectionSettings _settings;
-        private readonly JsonSerializerSettings _serializerSettings;
+        private readonly JsonSerializerOptions _requestSerializationOptions;
+        private readonly JsonSerializerOptions _responseDeserializationOptions;
 
         public FraudProtectionService(IOptions<FraudProtectionSettings> settings, ITokenProvider tokenProviderService)
         {
             _httpClient = new HttpClient();
             _settings = settings.Value;
             _tokenProviderService = tokenProviderService;
-            _serializerSettings = new JsonSerializerSettings
+            _requestSerializationOptions = new JsonSerializerOptions
             {
-                NullValueHandling = NullValueHandling.Ignore,
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy()
-                }
+                IgnoreNullValues = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            _responseDeserializationOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
             };
         }
 
@@ -73,7 +74,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
 
             var authToken = await _tokenProviderService.AcquireTokenAsync();
             var url = $"{_settings.ApiBaseUrl}{endpoint}";
-            var serializedObject = JsonConvert.SerializeObject(content, _serializerSettings);
+            var serializedObject = JsonSerializer.Serialize(content, _requestSerializationOptions);
             var serializedContent = new StringContent(serializedObject, Encoding.UTF8, "application/json");
 
             return await _httpClient.PostWithHeadersAsync(
@@ -96,7 +97,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             var content = await response.Content.ReadAsStringAsync();
             response.Dispose();
 
-            return JsonConvert.DeserializeObject<T>(content);
+            return JsonSerializer.Deserialize<T>(content, _responseDeserializationOptions);
         }
 
         public async Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId = null)

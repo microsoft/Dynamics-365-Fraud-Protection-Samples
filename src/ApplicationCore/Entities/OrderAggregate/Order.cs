@@ -7,12 +7,12 @@ using Microsoft.Dynamics.FraudProtection.Models.RefundEvent;
 using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Contoso.FraudProtection.ApplicationCore.Services;
 using System.Linq;
+using System.Text.Json;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate
 {
@@ -71,11 +71,11 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate
         {
             get
             {
-                return string.IsNullOrEmpty(_riskPurchase) ? null : JsonConvert.DeserializeObject<Purchase>(_riskPurchase);
+                return string.IsNullOrEmpty(_riskPurchase) ? null : JsonSerializer.Deserialize<Purchase>(_riskPurchase);
             }
             set
             {
-                _riskPurchase = value != null ? JsonConvert.SerializeObject(value) : null;
+                _riskPurchase = value != null ? JsonSerializer.Serialize(value) : null;
             }
         }
 
@@ -84,11 +84,11 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate
         {
             get
             {
-                return string.IsNullOrEmpty(_riskRefund) ? null : JsonConvert.DeserializeObject<Refund>(_riskRefund);
+                return string.IsNullOrEmpty(_riskRefund) ? null : JsonSerializer.Deserialize<Refund>(_riskRefund);
             }
             set
             {
-                _riskRefund = value != null ? JsonConvert.SerializeObject(value) : null;
+                _riskRefund = value != null ? JsonSerializer.Serialize(value) : null;
             }
         }
 
@@ -97,11 +97,11 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate
         {
             get
             {
-                return string.IsNullOrEmpty(_riskRefundResponse) ? null : JsonConvert.DeserializeObject<FraudProtectionResponse>(_riskRefundResponse);
+                return string.IsNullOrEmpty(_riskRefundResponse) ? null : JsonSerializer.Deserialize<FraudProtectionResponse>(_riskRefundResponse);
             }
             set
             {
-                _riskRefundResponse = value != null ? JsonConvert.SerializeObject(value) : null;
+                _riskRefundResponse = value != null ? JsonSerializer.Serialize(value) : null;
             }
         }
 
@@ -110,11 +110,11 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate
         {
             get
             {
-                return string.IsNullOrEmpty(_riskChargeback) ? null : JsonConvert.DeserializeObject<Chargeback>(_riskChargeback);
+                return string.IsNullOrEmpty(_riskChargeback) ? null : JsonSerializer.Deserialize<Chargeback>(_riskChargeback);
             }
             set
             {
-                _riskChargeback = value != null ? JsonConvert.SerializeObject(value) : null;
+                _riskChargeback = value != null ? JsonSerializer.Serialize(value) : null;
             }
         }
 
@@ -123,11 +123,11 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate
         {
             get
             {
-                return string.IsNullOrEmpty(_riskChargebackResponse) ? null : JsonConvert.DeserializeObject<FraudProtectionResponse>(_riskChargebackResponse);
+                return string.IsNullOrEmpty(_riskChargebackResponse) ? null : JsonSerializer.Deserialize<FraudProtectionResponse>(_riskChargebackResponse);
             }
             set
             {
-                _riskChargebackResponse = value != null ? JsonConvert.SerializeObject(value) : null;
+                _riskChargebackResponse = value != null ? JsonSerializer.Serialize(value) : null;
             }
         }
 
@@ -136,11 +136,11 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate
         {
             get
             {
-                return string.IsNullOrEmpty(_riskPurchaseResponse) ? null : JsonConvert.DeserializeObject<PurchaseResponse>(_riskPurchaseResponse);
+                return string.IsNullOrEmpty(_riskPurchaseResponse) ? null : JsonSerializer.Deserialize<PurchaseResponse>(_riskPurchaseResponse);
             }
             set
             {
-                _riskPurchaseResponse = value != null ? JsonConvert.SerializeObject(value) : null;
+                _riskPurchaseResponse = value != null ? JsonSerializer.Serialize(value) : null;
             }
         }
 

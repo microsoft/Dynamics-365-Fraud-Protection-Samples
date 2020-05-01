@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace Contoso.FraudProtection.Web.ViewModels
 {
@@ -10,7 +10,17 @@ namespace Contoso.FraudProtection.Web.ViewModels
     {
         public const string TempDataKey = "FraudProtectionIOData";
 
-        public List<(string Request, string Response, string Name)> RequestResponsePairs = new List<(string Request, string Response, string Name)>();
+        public List<RequestResponsePair> RequestResponsePairs { get; set; } = new List<RequestResponsePair>();
+
+        private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
+        {
+            WriteIndented = true
+        };
+
+        /// <summary>
+        /// For serialization only
+        /// </summary>
+        public FraudProtectionIOModel() { }
 
         public FraudProtectionIOModel(object request, object response, string name = "")
         {
@@ -19,11 +29,18 @@ namespace Contoso.FraudProtection.Web.ViewModels
 
         public void Add(object request, object response, string name = "")
         {
-            RequestResponsePairs.Add((
-                JsonConvert.SerializeObject(request, Formatting.Indented),
-                JsonConvert.SerializeObject(response, Formatting.Indented),
-                name
-            ));
+            RequestResponsePairs.Add(new RequestResponsePair {
+                Request = JsonSerializer.Serialize(request, JsonSerializerOptions),
+                Response = JsonSerializer.Serialize(response, JsonSerializerOptions),
+                Name = name
+            });
         }
+    }
+
+    public class RequestResponsePair
+    {
+        public string Request { get; set; }
+        public string Response { get; set; }
+        public string Name { get; set; }
     }
 }
