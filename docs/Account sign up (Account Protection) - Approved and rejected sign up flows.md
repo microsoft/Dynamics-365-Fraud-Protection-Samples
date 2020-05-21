@@ -26,7 +26,7 @@ After sending Dynamics 365 Fraud Protection a sign up event, use your merchant r
 ## Sign up event
 This example request sends a sign up event to Dynamics 365 Fraud Protection asking for a risk assessment of the sign up.
 ```http
-POST <Merchant API Endpoint>/v0.5/merchantservices/AccountProtection/events/<Merchant Instance ID>/AccountCreation/<Sign Up ID>
+POST <Merchant API Endpoint>/v1.0/action/account/create/<Sign Up ID>
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8

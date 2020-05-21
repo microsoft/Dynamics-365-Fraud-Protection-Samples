@@ -30,7 +30,7 @@ After sending Dynamics 365 Fraud Protection a sign in event, use your merchant r
 ## Sign in event
 This example request sends a sign in event to Dynamics 365 Fraud Protection asking for a risk assessment of the sign in.
 ```http
-POST <Merchant API Endpoint>/v0.5/merchantservices/AccountProtection/events/<Merchant Instance ID>/AccountLogin/<Sign In ID>
+POST <Merchant API Endpoint>/v1.0/action/account/login/<Sign In ID>
 Host: <Merchant API Endpoint>
 Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8
