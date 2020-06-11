@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using AccountProtection = Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection;
 
 namespace Contoso.FraudProtection.Web.Controllers
@@ -71,6 +70,38 @@ namespace Contoso.FraudProtection.Web.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult CustomAssessment()
+        {
+            var model = new CustomAssessmentViewModel();
+            
+            return View(model);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CustomAssessment(CustomAssessmentViewModel model, string returnUrl = null)
+        {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if (_contextAccessor.HttpContext.Connection == null)
+            {
+                throw new Exception(nameof(_contextAccessor.HttpContext.Connection));
+            }
+            
+            return await CallCustomAssessmentApi(model, returnUrl);
         }
 
         [HttpPost]
@@ -272,6 +303,20 @@ namespace Contoso.FraudProtection.Web.Controllers
             }
 
             return await RegisterUser(model, returnUrl, false);
+        }
+
+        private async Task<IActionResult> CallCustomAssessmentApi(CustomAssessmentViewModel model, string returnUrl)
+        {
+            #region Fraud Protection Service
+            var correlationId = _fraudProtectionService.NewCorrelationId;
+            CustomAssessment assessment = new CustomAssessment() { ApiName = model.ApiName, Payload = model.Payload };
+
+            var response = await _fraudProtectionService.PostCustomAssessment(assessment, correlationId);
+            var fraudProtectionIO = new FraudProtectionIOModel(correlationId, model.Payload, response, "Custom Assessment", true);
+            TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
+            #endregion
+
+            return View("CustomAssessment", model);        
         }
 
         private async Task<IActionResult> RegisterUser(RegisterViewModel model, string returnUrl, bool useAP)

@@ -9,45 +9,52 @@
     <section class="col-lg-4 col-md-5 col-xs-12">
         <div class="esh-identity">
             <form asp-area="" asp-controller="Account" asp-action="SignOut" method="post" id="logoutForm" class="navbar-right">
-                <div class="dropdown">
-                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">@Context.User.Identity.Name <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="esh-identity-item"
-                               asp-controller="Order"
-                               asp-action="Index">
-                                <img class="esh-identity-image" src="~/images/my_orders.png">
-                                <span class="esh-identity-name esh-identity-name--upper">My orders</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="esh-identity-item"
-                               asp-controller="Manage"
-                               asp-action="Index">
-                                <img class="esh-identity-image" src="~/images/my_orders.png">
-                                <span class="esh-identity-name esh-identity-name--upper">My account</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="esh-identity-item"
-                               href="javascript:document.getElementById('logoutForm').submit()">
-                                <img class="esh-identity-image" src="~/images/logout.png">
-                                <span class="esh-identity-name esh-identity-name--upper">Log Out</span>
-                            </a>
-                        </li>
-                        @if (Context.User.IsInRole("Manager"))
-                        {
+                <div class="row">
+                    <div class="col-xs-6">
+                        <a asp-controller="Account" asp-action="CustomAssessment" class="text">
+                            Custom Assessment
+                        </a>
+                    </div>
+                    <div class="dropdown col-xs-6">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">@Context.User.Identity.Name <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
                             <li>
                                 <a class="esh-identity-item"
-                                   asp-area="Admin"
+                                   asp-controller="Order"
+                                   asp-action="Index">
+                                    <img class="esh-identity-image" src="~/images/my_orders.png">
+                                    <span class="esh-identity-name esh-identity-name--upper">My orders</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="esh-identity-item"
                                    asp-controller="Manage"
                                    asp-action="Index">
                                     <img class="esh-identity-image" src="~/images/my_orders.png">
-                                    <span class="esh-identity-name esh-identity-name--upper">Admin</span>
+                                    <span class="esh-identity-name esh-identity-name--upper">My account</span>
                                 </a>
                             </li>
-                        }
-                    </ul>
+                            <li>
+                                <a class="esh-identity-item"
+                                   href="javascript:document.getElementById('logoutForm').submit()">
+                                    <img class="esh-identity-image" src="~/images/logout.png">
+                                    <span class="esh-identity-name esh-identity-name--upper">Log Out</span>
+                                </a>
+                            </li>
+                            @if (Context.User.IsInRole("Manager"))
+                            {
+                                <li>
+                                    <a class="esh-identity-item"
+                                       asp-area="Admin"
+                                       asp-controller="Manage"
+                                       asp-action="Index">
+                                        <img class="esh-identity-image" src="~/images/my_orders.png">
+                                        <span class="esh-identity-name esh-identity-name--upper">Admin</span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 </div>
             </form>
         </div>
@@ -59,14 +66,21 @@
 }
 else
 {
-    <section class="col-lg-2 col-lg-offset-3 col-md-4 col-xs-7">
+    <section class="col-lg-4 col-lg-offset-3 col-md-6 col-xs-8">
         <div class="esh-identity">
             <section class="esh-identity-section">
                 <div class="esh-identity-item">
+                    <a asp-controller="Account" asp-action="CustomAssessment" class="text">
+                        Custom Assessment
+                    </a>
+                    &nbsp;
                     <a asp-area="" asp-controller="Account" asp-action="SignIn" class="esh-identity-name esh-identity-name--upper">
                         Login
                     </a>
-                    &nbsp; <a asp-controller="Account" asp-action="Register" class="text">Register</a>
+                    &nbsp;
+                    <a asp-controller="Account" asp-action="Register" class="text">
+                        Register
+                    </a>
                 </div>
             </section>
         </div>
