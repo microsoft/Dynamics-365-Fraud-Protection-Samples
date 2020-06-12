@@ -24,16 +24,16 @@ namespace Contoso.FraudProtection.Web.ViewModels
         /// </summary>
         public FraudProtectionIOModel() { }
 
-        public FraudProtectionIOModel(string correlationId, object request, object response, string name = "")
+        public FraudProtectionIOModel(string correlationId, object request, object response, string name = "", bool skipSerialization = false)
         {
             CorrelationId = correlationId;
-            Add(request, response, name);
+            Add(request, response, name, skipSerialization);
         }
 
-        public void Add(object request, object response, string name = "")
+        public void Add(object request, object response, string name = "", bool skipSerialization = false)
         {
             RequestResponsePairs.Add(new RequestResponsePair {
-                Request = JsonSerializer.Serialize(request, JsonSerializerOptions),
+                Request = skipSerialization ? request as string : JsonSerializer.Serialize(request, JsonSerializerOptions),
                 Response = JsonSerializer.Serialize(response, JsonSerializerOptions),
                 Name = name
             });

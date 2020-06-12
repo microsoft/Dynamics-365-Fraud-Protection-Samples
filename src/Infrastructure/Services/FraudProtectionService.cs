@@ -60,7 +60,8 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         private async Task<HttpResponseMessage> PostAsync<T>(
             string endpoint,
             T content,
-            string correlationId)
+            string correlationId,
+            bool skipSerialization = false)
         {
             if (content is IBaseFraudProtectionEvent purchaseEventContent)
             {
@@ -74,7 +75,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
 
             var authToken = await _tokenProviderService.AcquireTokenAsync();
             var url = $"{_settings.ApiBaseUrl}{endpoint}";
-            var serializedObject = JsonSerializer.Serialize(content, _requestSerializationOptions);
+            var serializedObject = skipSerialization ? content as string : JsonSerializer.Serialize(content, _requestSerializationOptions);
             var serializedContent = new StringContent(serializedObject, Encoding.UTF8, "application/json");
 
             return await _httpClient.PostWithHeadersAsync(
@@ -173,6 +174,14 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             string endpoint = string.Format(_settings.Endpoints.SignInAP, signIn.Metadata.LoginId);
 
             var response = await PostAsync(endpoint, signIn, correlationId);
+            return await Read<AccountProtection.ResponseSuccess>(response);
+        }
+
+        public async Task<AccountProtection.Response> PostCustomAssessment(CustomAssessment assessment, string correlationId)
+        {
+            string endpoint = string.Format(_settings.Endpoints.CustomAssessment, assessment.ApiName);
+
+            var response = await PostAsync(endpoint, assessment.Payload, correlationId, true);
             return await Read<AccountProtection.ResponseSuccess>(response);
         }
     }

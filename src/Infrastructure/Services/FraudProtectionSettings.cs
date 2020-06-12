@@ -25,6 +25,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         public string UpdateAccount { get; set; }
         public string SignIn { get; set; }
         public string SignInAP { get; set; }
+        public string CustomAssessment { get; set; }
     }
 
     public class TokenProviderServiceSettings

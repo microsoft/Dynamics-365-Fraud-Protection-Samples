@@ -46,6 +46,8 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
         Task<SignInResponse> PostSignIn(SignIn request, string correlationId);
 
         Task<AccountProtection.Response> PostSignInAP(AccountProtection.SignIn request, string correlationId);
+        
+        Task<AccountProtection.Response> PostCustomAssessment(CustomAssessment assessment, string correlationId);
     }
 
     #endregion
