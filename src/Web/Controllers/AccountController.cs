@@ -95,11 +95,6 @@ namespace Contoso.FraudProtection.Web.Controllers
             {
                 return View(model);
             }
-
-            if (_contextAccessor.HttpContext.Connection == null)
-            {
-                throw new Exception(nameof(_contextAccessor.HttpContext.Connection));
-            }
             
             return await CallCustomAssessmentApi(model, returnUrl);
         }
@@ -309,7 +304,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         {
             #region Fraud Protection Service
             var correlationId = _fraudProtectionService.NewCorrelationId;
-            CustomAssessment assessment = new CustomAssessment() { ApiName = model.ApiName, Payload = model.Payload };
+            var assessment = new CustomAssessment { ApiName = model.ApiName, Payload = model.Payload };
 
             var response = await _fraudProtectionService.PostCustomAssessment(assessment, correlationId);
             var fraudProtectionIO = new FraudProtectionIOModel(correlationId, model.Payload, response, "Custom Assessment", true);
