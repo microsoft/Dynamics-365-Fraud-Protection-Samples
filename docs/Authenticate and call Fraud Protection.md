@@ -1,7 +1,7 @@
 # Microsoft Dynamics 365 Fraud Protection - API examples
 ## Authenticate and call Dynamics 365 Fraud Protection
 
-You must send an authentication token with Dynamics 365 Fraud Protection API calls. See the following example for one way to do that. It then walks you through the process of creating a request and handling the response.
+You must send an authentication token with Dynamics 365 Fraud Protection API calls. See the following example for one way to do acquire a token. Sample API requests and responses are shown afterwards.
 
 ## Helpful links
 - [API contracts](https://apidocs.microsoft.com/services/dynamics365fraudprotection)
@@ -10,64 +10,26 @@ You must send an authentication token with Dynamics 365 Fraud Protection API cal
 - [Integrate real-time APIs](https://go.microsoft.com/fwlink/?linkid=2085128)
 
 ## Authenticate with Dynamics 365 Fraud Protection API
-This C# example below assumes you have already [configured the sample site](./Configure&#32;the&#32;sample&#32;site.md).
+Assuming you have [configured the sample site](./Configure&#32;the&#32;sample&#32;site.md), it will automatically acquire API tokens to use to call Dynamics 365 Fraud Protection APIs.
 
-```csharp
-public class TokenProviderService : ITokenProvider
-{
-    private readonly TokenProviderServiceSettings _settings;
-
-    public TokenProviderService(IOptions<TokenProviderServiceSettings> settings)
-    {
-        _settings = settings.Value;
-    }
-
-    public async Task<string> AcquireTokenAsync()
-    {
-        //error handling elided for documentation
-
-        return _settings.CertificateThumbprint != "" ?
-            await AcquireTokenWithCertificateAsync(resource) :
-            await AcquireTokenWithSecretAsync(resource);
-    }
-
-    private async Task<string> AcquireTokenWithCertificateAsync(string resource)
-    {
-        var x509Cert = CertificateUtility.GetByThumbprint(_settings.CertificateThumbprint);
-        var clientAssertion = new ClientAssertionCertificate(_settings.ClientId, x509Cert);
-        var context = new AuthenticationContext(_settings.Authority);
-        var authenticationResult = await context.AcquireTokenAsync(_settings.Resource, clientAssertion);
-
-        return authenticationResult.AccessToken;
-    }
-
-    private async Task<string> AcquireTokenWithSecretAsync(string resource)
-    {
-        var clientAssertion = new ClientCredential(_settings.ClientId, _settings.ClientSecret);
-        var context = new AuthenticationContext(_settings.Authority);
-        var authenticationResult = await context.AcquireTokenAsync(_settings.Resource, clientAssertion);
-
-        return authenticationResult.AccessToken;
-    }
-}
-```
-
-Behind the scenes, the code above generates an HTTP request and receives a response like below in the case of authenticating with a certificate:
+The [token provider service](../src/Infrastructure/Services/TokenProviderService.cs) acquires tokens using MSAL in C#. It generates an HTTP request and receives a response like below in the case of authenticating with a secret:
 
 ### Request
 ```http
-POST <authority>/oauth2/token HTTP/1.1
+POST <authority>/oauth2/v2.0/token HTTP/1.1
+
 Accept: application/json
 Content-Type: application/x-www-form-urlencoded
 Content-Length: <content length>
 Host: login.microsoftonline.com
 
-resource=https://api.dfp.microsoft.com
-&client_id=<Azure Active Directory client app ID>
-&client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
-&client_assertion=<client secret; in this case a JWT token signed by the private cert>
+client_id=<Azure Active Directory client app ID>
+&client_info=1
+&client_secret=<Azure Active Directory client app secret>
+&scope=https://api.dfp.microsoft.com/.default
 &grant_type=client_credentials
 ```
+
 ### Response
 ```http
 HTTP/1.1 200 OK
@@ -79,18 +41,15 @@ Content-Length: <content length>
   "token_type":"Bearer",
   "expires_in":"3599",
   "ext_expires_in":"3599",
-  "expires_on":"<date timestamp>",
-  "not_before":"<date timestamp>",
-  "resource":"https://api.dfp.microsoft.com",
   "access_token":"<your access token; e.g.: eyJ0eXA...NFLCQ>"
 }
 ```
 
 ## Token refreshing
-Ensure your application gets a new access token as needed. For instance, when your existing one is about to expire. Many frameworks, including .NET Core seen in the C# sample above, handle this for you automatically by caching your access token and only getting a new one as needed.  
+Ensure your application gets a new access token as needed. For instance, when your existing one is about to expire. Many frameworks, including .NET Core seen in the C# sample above, handle this for you automatically by caching your access token and only getting a new one as needed.
 
 ## Send events to Dynamics 365 Fraud Protection
-All events sent to Dynamics 365 Fraud Protection follow the same JSON model:
+As an example, all Purchase Protection related events sent to Dynamics 365 Fraud Protection follow the same JSON model:
 ```
 {
     "property 1": <value 1>,
