@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using System;
-
 namespace Contoso.FraudProtection.Infrastructure.Services
 {
     #region Fraud Protection Service
@@ -32,7 +30,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
 
     public class TokenProviderServiceSettings
     {
-        public Uri Resource { get; set; }
+        public string Resource { get; set; }
         public string ClientId { get; set; }
         public string Authority { get; set; }
         public string CertificateThumbprint { get; set; }
