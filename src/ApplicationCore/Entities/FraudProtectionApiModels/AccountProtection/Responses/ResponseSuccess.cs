@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection.Responses;
 using System.Collections.Generic;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection
@@ -8,5 +9,9 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
     public class ResponseSuccess : Response
     {
         public List<ResultDetail> ResultDetails { get; set; }
+
+        public string TransactionReferenceId { get; set; }
+
+        public Enrichment Enrichment { get; set; }
     }
 }
