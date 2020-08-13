@@ -12,6 +12,6 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 
         public string TransactionReferenceId { get; set; }
 
-        public Enrichment Enrichment { get; set; }
+        public Enrichments Enrichments { get; set; }
     }
 }

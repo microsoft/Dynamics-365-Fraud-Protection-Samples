@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection.Responses
 {
-    public class Enrichment
+    public class Enrichments
     {
         public DeviceAttributes DeviceAttributes { get; set; }
 
