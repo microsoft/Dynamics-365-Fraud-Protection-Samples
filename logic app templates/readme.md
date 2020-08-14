@@ -1,6 +1,9 @@
 # DFP Event Tracing Event Hubs Logic App Templates
 ## Overview
-These are a set of Logic App templates that work specifically with DFP events received inside Event Hubs that will get you started quickly with working with DFP data. 
+These are a set of Logic App templates that work specifically with DFP events received inside Event Hubs for getting started quickly with working with DFP data. 
+
+## Reference Links
+[DFP Event Tracing Documentation](https://docs.microsoft.com/en-us/dynamics365/fraud-protection/event-tracing)
 
 ## Setup
 
