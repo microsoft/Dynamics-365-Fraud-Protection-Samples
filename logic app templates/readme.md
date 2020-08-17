@@ -16,6 +16,20 @@ For help setting up the above, check the documentation in **Reference Links** be
 
 [Dynamics 365 Fraud Protection Event Tracing Documentation](https://docs.microsoft.com/en-us/dynamics365/fraud-protection/event-tracing)
 
+## Setup Initial Event Hubs API Connection
+
+We must first create a dummy Logic App to setup our initial Event Hubs API connection.
+
+1. Navigate to [Azure Portal](https://portal.azure.com).
+2. Search for `logic apps` in the search bar and select the **Logic Apps** result.
+3. Create a new **Logic App** with a blank template and open it.
+4. Navigate to **Logic app designer** in the sidebar.
+5. For the trigger/first step of the **Logic app**, search for `event hubs` and select the following trigger: ![when events are available in event hubs](https://i.ibb.co/kQKqHxX/Clean-Shot-2020-08-17-at-09-53-53.png)
+6. Set a connection name of your choosing (eg. `eventhubs-connection`) and select the **Event Hubs Namespace** you would like to use. Click **Next**.
+7. Select `RootManageSharedAccessKey` as the **Event Hubs policy** then click **Create**.
+
+We have successfully setup an Event Hubs API Connection for our Azure account. We do not need this Logic App any longer as it was only needed for setup. You may delete it if you like.
+
 ## Getting started with the templates
 
 **Audit Events**:
