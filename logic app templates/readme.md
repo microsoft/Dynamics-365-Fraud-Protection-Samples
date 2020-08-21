@@ -11,7 +11,10 @@ These are a set of Logic App templates that work specifically with Dynamics 365 
 - Event Hub(s)
 - Dynamics 365 Fraud Protection event tracing subscriptions connected to your Event Hub(s)
 
-For help setting up the above, check the documentation in **Reference Links** below.
+For help setting up the above, check the documentation in **Reference Links** in the following section.
+
+> **Note**:  
+> It is highly advised to have a _separate_ **Event Hub** for each event _type_ subscription. For example, you have a `audit-events` **Event Hub** setup with a Fraud Protection Event Tracing subscription sending **Audit Events** and another separate `latency-events` **Event Hub** setup with another subscription sending **Latency Events**. They can be under the same namespace.
 
 ## Reference Links
 
