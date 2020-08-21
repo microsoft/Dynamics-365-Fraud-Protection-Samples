@@ -1,0 +1,205 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "Event Hubs Namespace Connection String": {
+      "defaultValue": "",
+      "type": "String"
+    },
+    "Event Hub Name": {
+      "defaultValue": "",
+      "type": "String"
+    },
+    "Logic App Name": {
+      "defaultValue": "parse-dfp-audit-events-template",
+      "type": "String"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Web/connections",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
+      "name": "eventhubs",
+      "properties": {
+        "displayName": "eventhubs-connection",
+        "parameterValues": {
+          "connectionString": "[parameters('Event Hubs Namespace Connection String')]"
+        },
+        "api": {
+          "id": "[concat('subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/eventhubs')]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Logic/workflows",
+      "dependsOn": ["[resourceId('Microsoft.Web/connections', 'eventhubs')]"],
+      "apiVersion": "2017-07-01",
+      "name": "[parameters('Logic App Name')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "state": "Enabled",
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "When_events_are_available_in_Event_Hub": {
+              "recurrence": {
+                "frequency": "Minute",
+                "interval": 1
+              },
+              "splitOn": "@triggerBody()",
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['eventhubs']['connectionId']"
+                  }
+                },
+                "method": "get",
+                "path": "[concat('/', parameters('Event Hub Name'), '/events/batch/head')]",
+                "queries": {
+                  "consumerGroupName": "$Default",
+                  "contentType": "application/json"
+                }
+              }
+            }
+          },
+          "actions": {
+            "GetEvent": {
+              "runAfter": {
+                "ParseContent": ["Succeeded"]
+              },
+              "type": "Compose",
+              "inputs": "@body('ParseContent')[0]"
+            },
+            "ParseContent": {
+              "runAfter": {},
+              "type": "ParseJson",
+              "inputs": {
+                "content": "@triggerBody()?['ContentData']",
+                "schema": {
+                  "items": {
+                    "properties": {
+                      "audit": {
+                        "properties": {
+                          "entityId": {
+                            "type": "string"
+                          },
+                          "entityName": {
+                            "type": "string"
+                          },
+                          "entityType": {
+                            "type": "string"
+                          },
+                          "operationName": {
+                            "type": "string"
+                          },
+                          "userId": {
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "metadata": {
+                        "properties": {
+                          "tenantId": {
+                            "type": "string"
+                          },
+                          "timestamp": {
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "version": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["audit", "name", "version", "metadata"],
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "ParseEvent": {
+              "runAfter": {
+                "GetEvent": ["Succeeded"]
+              },
+              "type": "ParseJson",
+              "inputs": {
+                "content": "@outputs('GetEvent')",
+                "schema": {
+                  "properties": {
+                    "audit": {
+                      "properties": {
+                        "entityId": {
+                          "type": "string"
+                        },
+                        "entityName": {
+                          "type": "string"
+                        },
+                        "entityType": {
+                          "type": "string"
+                        },
+                        "operationName": {
+                          "type": "string"
+                        },
+                        "userId": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "metadata": {
+                      "properties": {
+                        "tenantId": {
+                          "type": "string"
+                        },
+                        "timestamp": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["audit", "name", "version", "metadata"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "outputs": {}
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "eventhubs": {
+                "connectionId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Web/connections/eventhubs')]",
+                "connectionName": "eventhubs",
+                "id": "[concat('/subscriptions/', subscription().subscriptionId,'/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/eventhubs')]"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
