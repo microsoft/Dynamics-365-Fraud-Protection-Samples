@@ -30,7 +30,7 @@ For help setting up the above, check the documentation in **Reference Links** in
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2FDynamics-365-Fraud-Protection-Samples%2Fmaster%2Flogic%2520app%2520templates%2Flatency-events-template.json)
 
-1. Click one of the above quick deploy buttons to begin. Each deployment is associated with a specific _type_ of event, so ensure that the event tracing subscriptions you set up match with the template types you use here.
+1. Open one of the above quick deploy buttons in a **New Tab** to begin. Each deployment is associated with a specific _type_ of event, so ensure that the event tracing subscriptions you set up match with the template types you use here.
    For example, you can have an **Event Hub** called `audit-events` that is connected to the Fraud Protection portal subscription sending **Audit Events**, and use the **Audit Events** Logic App template above.
 2. Select your **Subscription** and **Resource Group** using the dropdown.
 3. Set the **Logic App Name** to one of your choosing.
