@@ -261,3 +261,4 @@ src/Web/wwwroot/js/bundle/
 # bower restored dependencies.
 src/Web/wwwroot/lib
 
+.DS_STORE
