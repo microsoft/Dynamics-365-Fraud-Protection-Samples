@@ -100,7 +100,7 @@ namespace Contoso.FraudProtection.Web
             services.AddTransient<IEmailSender, EmailSender>();
             
             services.Configure<TokenProviderServiceSettings>(Configuration.GetSection("FraudProtectionSettings:TokenProviderConfig"));
-            services.AddScoped<ITokenProvider, TokenProviderService>();
+            services.AddSingleton<ITokenProvider, TokenProviderService>();
             services.Configure<FraudProtectionSettings>(Configuration.GetSection("FraudProtectionSettings"));
             services.AddScoped<IFraudProtectionService, FraudProtectionService>();
 
