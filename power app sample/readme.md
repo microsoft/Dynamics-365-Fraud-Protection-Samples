@@ -1,3 +1,5 @@
+![banner](https://i.ibb.co/QQCVq4m/banner.png)
+
 # Dynamics 365 Fraud Protection Event Tracing Power App Sample
 
 ## Overview
