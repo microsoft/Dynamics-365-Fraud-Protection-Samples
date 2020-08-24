@@ -1,7 +1,5 @@
 ![banner](https://i.ibb.co/QQCVq4m/banner.png)
 
-# Dynamics 365 Fraud Protection Event Tracing Power App Sample
-
 ## Overview
 
 This is a fully packaged solution for the **D365 Fraud Protection Portal Admin App** that serves multiple purposes:
@@ -72,3 +70,7 @@ Start with the [Logic App Templates](https://github.com/microsoft/Dynamics-365-F
    ![cds data](https://i.ibb.co/ZxdhMRT/Clean-Shot-2020-08-19-at-11-06-19.png)
 
    Note: You may not see data immediately as your Logic Apps must take time to receive events, process them, and save them to CDS.
+
+## Edit or Run Power App
+
+On the [Power Apps Portal](https://make.preview.powerapps.com/), navigate to **Apps** on the left sidebar, select the `D365 Fraud Protection Portal Admin App`, and click either **Edit** to modify the app in **Power Apps Studio** or click **Play** to launch the app. Note, you may have to verify and authenticate certain connections (such as that to your CDS entities for `Audit Events` and `Latency Events`).
