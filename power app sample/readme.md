@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a fully packaged solution for the **D365 Fraud Protection Portal Admin App** that serves multiple purposes:
+This is a fully packaged solution for the **Dynamics 365 Fraud Protection Portal Admin App** that serves multiple purposes:
 
 - Demonstrate the extensibility capabilities of Fraud Protection Event Tracing and provide an open-source reference for those creating their own custom Power App.
 - Provide IT Engineers and Fraud Managers with a toolset for actively monitoring latency measurements for their Fraud Protection instance as well as maintaining an interactive audit log of Fraud Protection portal related events.
@@ -31,7 +31,7 @@ For help setting up the above, check the documentation in **Reference Links** in
 4. Click **Next**. Then, click **Import**.
 5. Upon completion, you will have imported the following:
 
-- `D365 Fraud Protection Portal Admin App` Power App
+- `Dynamics 365 Fraud Protection Portal Admin App` Power App
 - `Audit Event` Common Data Service (CDS) Entity
 - `Latency Event` Common Data Service (CDS) Entity
 - `Setting` Common Data Service (CDS) Entity
