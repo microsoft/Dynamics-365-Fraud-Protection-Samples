@@ -16,6 +16,7 @@ The app will work directly with Fraud Protection **Audit Events** and **Latency 
 - Two Event Hubs
 - Dynamics 365 Fraud Protection event tracing subscriptions connected to your two Event Hubs (one for **Audit Events**, one for **Latency Events**)
 - Power Apps subscription
+- Privileges to create new entities inside CDS (check you can do so at the [Power Apps Portal](https://make.preview.powerapps.com/) under Data > Entities)
 
 For help setting up the above, check the documentation in **Reference Links** in the following section.
 
