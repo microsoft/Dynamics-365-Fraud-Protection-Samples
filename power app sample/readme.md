@@ -65,7 +65,7 @@ Start with the [Logic App Templates](https://github.com/microsoft/Dynamics-365-F
 
 **Confirm data is being saved successfully**:
 
-1. Confirm that your **Logic App**s are running properly by going to **Overview** in the sidebar and checking the **Runs history**:
+1. Confirm that a **Logic App** is running properly by going to **Overview** in the sidebar and checking the **Runs history**:
    ![runs history](https://i.ibb.co/zF0Hrns/Clean-Shot-2020-08-19-at-11-03-43.png).
 2. Confirm that event data is being stored in CDS properly by checking the **Data** section of your entity inside of the [Power Apps Portal](https://make.preview.powerapps.com/). Be sure to toggle the view to `Custom fields`. Check this for both the `Audit Event` and the `Latency Event` entities.
    ![cds data](https://i.ibb.co/ZxdhMRT/Clean-Shot-2020-08-19-at-11-06-19.png)
