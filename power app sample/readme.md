@@ -25,7 +25,7 @@ For help setting up the above, check the documentation in **Reference Links** in
 
 ## Import Solution
 
-1. Download and save the `D365FraudProtectionPortalAdminPowerAppSolution.zip` file in this repository to your computer.
+1. Download and save the [D365FraudProtectionPortalAdminPowerAppSolution.zip](https://github.com/microsoft/Dynamics-365-Fraud-Protection-Samples/raw/master/power%20app%20sample/D365FraudProtectionPortalAdminPowerAppSolution.zip) file in this repository to your computer.
 2. In the [Power Apps Portal](https://make.preview.powerapps.com/), navigate to the **Solutions** page in the left sidebar.
 3. Click **Import**, and in the window that is opened, click **Choose File** and load the `D365FraudProtectionPortalAdminPowerAppSolution.zip` file.
 4. Click **Next**. Then, click **Import**.
