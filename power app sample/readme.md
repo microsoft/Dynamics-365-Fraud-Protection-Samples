@@ -46,7 +46,7 @@ Start with the [Logic App Templates](https://github.com/microsoft/Dynamics-365-F
 1. Start with the **Audit Events** Logic App template.
 2. Add a **New Action** (after `ParseEvent` on the list) from **Common Data Service (CDS)** for **Create a new record**.
    ![create new record](https://i.ibb.co/dmsDcdB/Clean-Shot-2020-08-24-at-11-30-14.png).
-3. Setup the fields _exactly_ as below:  
+3. Setup the fields _exactly_ as below. Click **Add new parameter** to add new field:  
    ![audit fields](https://i.ibb.co/Y3Tv06W/Clean-Shot-2020-08-24-at-11-30-35.png)  
    Note: You may have to click **See more** when loading in dynamic content.
 
