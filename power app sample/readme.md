@@ -37,7 +37,7 @@ The entities are required for the functionality of the Power App, because Fraud 
 
 ## Setup Logic Apps to Save Event Data to Common Data Service
 
-We must setup two **Logic Apps** to save **Audit Event** and **Latency Event** data from your Fraud Protection portal to CDS as they arrive in **Event Hubs**.
+We must setup two **Logic Apps** to save **Audit Event** and **Latency Event** data from your Fraud Protection portal to CDS as they arrive in **Event Hubs**. CDS setup with your event data only needs to be done _once_ and can be used across **Power BI**, **Power Apps**, **Power Automate**, etc.
 
 Start with the [Logic App Templates](https://github.com/microsoft/Dynamics-365-Fraud-Protection-Samples/tree/master/logic%20app%20templates) to quickly setup the base steps required for our two **Logic App** flows - one for **Audit Events**, and one for **Latency Events**.
 
@@ -46,7 +46,7 @@ Start with the [Logic App Templates](https://github.com/microsoft/Dynamics-365-F
 1. Start with the **Audit Events** Logic App template.
 2. Add a **New Action** (after `ParseEvent` on the list) from **Common Data Service (CDS)** for **Create a new record**.
    ![create new record](https://i.ibb.co/dmsDcdB/Clean-Shot-2020-08-24-at-11-30-14.png).
-3. Setup the fields _exactly_ as below:  
+3. Setup the fields _exactly_ as below. Click **Add new parameter** to add new field:  
    ![audit fields](https://i.ibb.co/Y3Tv06W/Clean-Shot-2020-08-24-at-11-30-35.png)  
    Note: You may have to click **See more** when loading in dynamic content.
 
