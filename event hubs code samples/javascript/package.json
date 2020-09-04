@@ -1,0 +1,21 @@
+{
+  "name": "eventhubstest",
+  "version": "1.0.0",
+  "dependencies": {
+    "@azure/event-hubs": "^5.2.2",
+    "@azure/eventhubs-checkpointstore-blob": "^1.0.0",
+    "@azure/storage-blob": "^12.1.2",
+    "dotenv": "^8.2.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KhaVNguyen/ms-event-hubs-send-receive-javascript.git"
+  },
+  "author": "Kha Nguyen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KhaVNguyen/ms-event-hubs-send-receive-javascript/issues"
+  },
+  "homepage": "https://github.com/KhaVNguyen/ms-event-hubs-send-receive-javascript#readme"
+}
