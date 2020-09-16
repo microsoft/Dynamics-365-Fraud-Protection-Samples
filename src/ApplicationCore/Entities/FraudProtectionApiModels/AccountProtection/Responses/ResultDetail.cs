@@ -3,6 +3,7 @@
 
 using System.Text.Json.Serialization;
 using System.Collections.Generic;
+using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection.Responses;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection
 {
@@ -22,6 +23,8 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         public Dictionary<string, object> Other { get; set; }
 
         public List<Score> Scores { get; set; }
+
+        public IEnumerable<RuleEvaluation> RuleEvaluations { get; set; }
     }
 
     public enum DecisionName
