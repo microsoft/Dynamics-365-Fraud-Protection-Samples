@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection.Responses
+namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels
 {
     public class Enrichments
     {
