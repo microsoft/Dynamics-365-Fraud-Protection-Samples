@@ -18,6 +18,8 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 
         public string Rule { get; set; }
 
+        public string ClauseName { get; set; }
+
         public string[] SupportMessages { get; set; }
 
         public Dictionary<string, object> Other { get; set; }
