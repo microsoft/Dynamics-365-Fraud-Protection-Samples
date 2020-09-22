@@ -4,11 +4,11 @@
 
 using System.Collections.Generic;
 
-namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection.Responses
+namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels
 {
     public class RuleEvaluation
     {
-        public string RuleSetName { get; set; }
+        public string Rule { get; set; }
 
         public IEnumerable<string> ClauseNames { get; set; }
     }
