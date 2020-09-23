@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response;
 using System.Collections.Generic;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels
@@ -10,7 +11,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         public string MerchantRuleDecision { get; set; }
         public int RiskScore { get; set; }
         public string ReasonCodes { get; set; }
-        public IEnumerable<string> RuleEvaluations { get; set; }
+        public IEnumerable<RuleEvaluation> RuleEvaluations { get; set; }
         public string ClauseName { get; set; }
         public DeviceAttributes DeviceAttributes { get; set; }
     }
