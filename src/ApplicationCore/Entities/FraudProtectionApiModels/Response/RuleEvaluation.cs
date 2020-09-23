@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 
-namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels
+namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response
 {
     public class RuleEvaluation
     {

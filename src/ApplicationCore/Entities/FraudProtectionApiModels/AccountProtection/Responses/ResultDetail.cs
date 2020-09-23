@@ -3,6 +3,7 @@
 
 using System.Text.Json.Serialization;
 using System.Collections.Generic;
+using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection
 {
