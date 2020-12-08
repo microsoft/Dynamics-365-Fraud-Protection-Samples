@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System;
+
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response
 {
     public class Enrichments
@@ -45,6 +47,18 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         public string UserAgentBrowser { get; set; }
 
         public string UserAgentOperatingSystem { get; set; }
+
+        public string ProxyIp { get; set; }
+
+        public string RealtimeTimezoneOffset { get; set; }
+
+        public string TimeZone { get; set; }
+
+        public string Sld { get; set; }
+
+        public string ProxyLastDetected { get; set; }
+
+        public string ProxyType { get; set; }
     }
 
     public class CalculatedFeatures
