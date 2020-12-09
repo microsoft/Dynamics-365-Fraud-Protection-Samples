@@ -1,7 +1,11 @@
 # Microsoft Dynamics 365 Fraud Protection - Sample merchant application
-The Microsoft Dynamics 365 Fraud Protection sample merchant application demonstrates how to call the [Dynamics 365 Fraud Protection APIs](https://apidocs.microsoft.com/services/dynamics365fraudprotection) in the context of an online merchant who sells clothing and other goods. This sample may be useful if you are integrating with the Dynamics 365 Fraud Protection APIs, or if you want to see how to integrate new API endpoints/features when there are new API versions.
+The Microsoft Dynamics 365 Fraud Protection sample merchant application demonstrates how to call the [Dynamics 365 Fraud Protection APIs](https://apidocs.microsoft.com/services/dynamics365fraudprotection). It happens to be in the context of an online merchant who sells clothing and other goods. This sample may be useful if you are integrating with the Dynamics 365 Fraud Protection APIs, or if you want to see how to integrate new API endpoints/features when there are new API versions.
 
-It demonstrates the primary uses of the Dynamics 365 Fraud Protection APIs:
+# Quick Start
+Follow the guide to [configure this sample application and run it](./docs/Configure&#32;the&#32;sample&#32;site).
+
+# Sample site functionality
+
 - Requesting a Dynamics 365 Fraud Protection risk recommendation for purchases and using the recommendation to decide whether to charge the customer.
 - Requesting a Dynamics 365 Fraud Protection risk recommendation for account sign ups and using the recommendation to decide whether to allow the customer to register for an account.
 - Managing users and their associated information in the Dynamics 365 Fraud Protection system (for example, basic info, payment methods, addresses, and so on).
@@ -13,7 +17,7 @@ The solution in the root of the repo shows how to call the APIs using .NET Core 
 ## Specific eCommerce platform samples
 This repo also has examples showing how to integrate Dynamics 365 Fraud Protection in common eCommerce platforms:
 
-- [Adobe Magento](./eCommerce&#32;platforms/Adobe&#32;Magento)
+- [Adobe Magento v1.9x](./eCommerce&#32;platforms/Adobe&#32;Magento)
 
 ## Contents
 There are two main sections to the sample application:
