@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Contoso.FraudProtection.Web.Helpers
 {
-    public class HelperFunctions
+    public static class HelperFunctions
     {
         public static List<SelectListItem> CountryRegionList = new List<SelectListItem>
             {
@@ -293,7 +293,6 @@ namespace Contoso.FraudProtection.Web.Helpers
         public static List<SelectListItem> PIYearList = new List<SelectListItem>
             {
                 new SelectListItem { Value = "", Text = "Year" },
-                new SelectListItem { Value = "19", Text = "2019" },
                 new SelectListItem { Value = "20", Text = "2020" },
                 new SelectListItem { Value = "21", Text = "2021" },
                 new SelectListItem { Value = "22", Text = "2022" },
