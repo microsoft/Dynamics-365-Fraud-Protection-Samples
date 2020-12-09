@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
+using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection.Response;
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response;
 using Contoso.FraudProtection.ApplicationCore.Exceptions;
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
@@ -143,12 +144,12 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             return await Read<SignupResponse>(response);
         }
 
-        public async Task<AccountProtection.Response> PostSignupAP(AccountProtection.SignUp signup, string correlationId)
+        public async Task<Response> PostSignupAP(AccountProtection.SignUp signup, string correlationId)
         {
             string endpoint = string.Format(_settings.Endpoints.SignupAP, signup.Metadata.SignUpId);
 
             var response = await PostAsync(endpoint, signup, correlationId);
-            return await Read<AccountProtection.ResponseSuccess>(response);
+            return await Read<ResponseSuccess>(response);
         }
 
         public async Task<FraudProtectionResponse> PostSignupStatus(SignupStatusEvent signupStatus, string correlationId)
@@ -169,20 +170,20 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             return await Read<SignInResponse>(response);
         }
 
-        public async Task<AccountProtection.Response> PostSignInAP(AccountProtection.SignIn signIn, string correlationId)
+        public async Task<Response> PostSignInAP(AccountProtection.SignIn signIn, string correlationId)
         {
             string endpoint = string.Format(_settings.Endpoints.SignInAP, signIn.Metadata.LoginId);
 
             var response = await PostAsync(endpoint, signIn, correlationId);
-            return await Read<AccountProtection.ResponseSuccess>(response);
+            return await Read<ResponseSuccess>(response);
         }
 
-        public async Task<AccountProtection.Response> PostCustomAssessment(CustomAssessment assessment, string correlationId)
+        public async Task<Response> PostCustomAssessment(CustomAssessment assessment, string correlationId)
         {
             string endpoint = string.Format(_settings.Endpoints.CustomAssessment, assessment.ApiName);
 
             var response = await PostAsync(endpoint, assessment.Payload, correlationId, true);
-            return await Read<AccountProtection.ResponseSuccess>(response);
+            return await Read<ResponseSuccess>(response);
         }
     }
     #endregion

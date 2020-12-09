@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels
+namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response
 {
-    public class Enrichments
+    public class Enrichments<TDeviceAttributes> where TDeviceAttributes: DeviceAttributes
     {
-        public DeviceAttributes DeviceAttributes { get; set; }
+        public TDeviceAttributes DeviceAttributes { get; set; }
 
         public CalculatedFeatures CalculatedFeatures { get; set; }
     }
