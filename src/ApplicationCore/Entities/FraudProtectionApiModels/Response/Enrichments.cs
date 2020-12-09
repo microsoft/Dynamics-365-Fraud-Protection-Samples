@@ -3,9 +3,9 @@
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response
 {
-    public class Enrichments
+    public class Enrichments<TDeviceAttributes> where TDeviceAttributes: DeviceAttributes
     {
-        public DeviceAttributes DeviceAttributes { get; set; }
+        public TDeviceAttributes DeviceAttributes { get; set; }
 
         public CalculatedFeatures CalculatedFeatures { get; set; }
     }
@@ -45,18 +45,6 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         public string UserAgentBrowser { get; set; }
 
         public string UserAgentOperatingSystem { get; set; }
-
-        public string ProxyIp { get; set; }
-
-        public string RealtimeTimezoneOffset { get; set; }
-
-        public string TimeZone { get; set; }
-
-        public string Sld { get; set; }
-
-        public string ProxyLastDetected { get; set; }
-
-        public string ProxyType { get; set; }
     }
 
     public class CalculatedFeatures

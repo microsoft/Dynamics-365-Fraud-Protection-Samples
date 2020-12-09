@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection
+namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection.Response
 {
     public class ResponseError : Response
     {

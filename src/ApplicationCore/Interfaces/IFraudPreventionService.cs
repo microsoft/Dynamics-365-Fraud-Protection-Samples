@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
+using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection.Response;
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response;
 using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
 using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
@@ -27,7 +28,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
 
         Task<SignupResponse> PostSignup(SignUp signup, string correlationId);
 
-        Task<AccountProtection.Response> PostSignupAP(AccountProtection.SignUp signup, string correlationId);
+        Task<Response> PostSignupAP(AccountProtection.SignUp signup, string correlationId);
 
         Task<FraudProtectionResponse> PostRefund(Refund refund, string correlationId);
 
@@ -45,9 +46,9 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
 
         Task<SignInResponse> PostSignIn(SignIn request, string correlationId);
 
-        Task<AccountProtection.Response> PostSignInAP(AccountProtection.SignIn request, string correlationId);
+        Task<Response> PostSignInAP(AccountProtection.SignIn request, string correlationId);
         
-        Task<AccountProtection.Response> PostCustomAssessment(CustomAssessment assessment, string correlationId);
+        Task<Response> PostCustomAssessment(CustomAssessment assessment, string correlationId);
     }
 
     #endregion

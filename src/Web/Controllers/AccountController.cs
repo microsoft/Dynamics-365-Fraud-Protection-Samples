@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
+using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection.Response;
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using Contoso.FraudProtection.Infrastructure.Identity;
 using Contoso.FraudProtection.Web.Extensions;
@@ -177,9 +178,9 @@ namespace Contoso.FraudProtection.Web.Controllers
                 var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signIn, signInResponse, "SignIn");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
 
-                if (signInResponse is AccountProtection.ResponseSuccess response)
+                if (signInResponse is ResponseSuccess response)
                 {
-                    rejectSignIn = response.ResultDetails.FirstOrDefault()?.Decision != AccountProtection.DecisionName.Approve;
+                    rejectSignIn = response.ResultDetails.FirstOrDefault()?.Decision != DecisionName.Approve;
                 }
             }
             else
@@ -370,9 +371,9 @@ namespace Contoso.FraudProtection.Web.Controllers
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
 
                 bool rejectSignup = false;
-                if (signupAssessment is AccountProtection.ResponseSuccess signupResponse)
+                if (signupAssessment is ResponseSuccess signupResponse)
                 {
-                    rejectSignup = signupResponse.ResultDetails.FirstOrDefault()?.Decision != AccountProtection.DecisionName.Approve;
+                    rejectSignup = signupResponse.ResultDetails.FirstOrDefault()?.Decision != DecisionName.Approve;
                 }
 
                 if (rejectSignup)

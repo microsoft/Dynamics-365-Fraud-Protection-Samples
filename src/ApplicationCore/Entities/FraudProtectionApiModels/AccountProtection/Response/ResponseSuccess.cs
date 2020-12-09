@@ -4,7 +4,7 @@
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response;
 using System.Collections.Generic;
 
-namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection
+namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection.Response
 {
     public class ResponseSuccess : Response
     {
@@ -12,6 +12,6 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 
         public string TransactionReferenceId { get; set; }
 
-        public Enrichments Enrichments { get; set; }
+        public Enrichments<AccountProtectionDeviceAttributes> Enrichments { get; set; }
     }
 }
