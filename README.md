@@ -2,7 +2,7 @@
 The Microsoft Dynamics 365 Fraud Protection sample merchant application demonstrates how to call the [Dynamics 365 Fraud Protection APIs](https://apidocs.microsoft.com/services/dynamics365fraudprotection). It happens to be in the context of an online merchant who sells clothing and other goods. This sample may be useful if you are integrating with the Dynamics 365 Fraud Protection APIs, or if you want to see how to integrate new API endpoints/features when there are new API versions.
 
 # Quick Start
-Follow the guide to [configure this sample application and run it](./docs/Configure&#32;the&#32;sample&#32;site).
+Follow the guide to [configure this sample application and run it](./docs/Configure%20the%20sample%20site.md).
 
 # Sample site functionality
 
