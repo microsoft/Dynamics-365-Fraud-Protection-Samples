@@ -13,5 +13,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         public string TransactionReferenceId { get; set; }
 
         public Enrichments<AccountProtectionDeviceAttributes> Enrichments { get; set; }
+
+        public IDictionary<string, IList<object>> Diagnostics { get; set; }
     }
 }
