@@ -14,6 +14,6 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 
         public Enrichments<AccountProtectionDeviceAttributes> Enrichments { get; set; }
 
-        public IDictionary<string, IList<object>> Diagnostics { get; set; }
+        public IDictionary<string, IEnumerable<object>> Diagnostics { get; set; }
     }
 }

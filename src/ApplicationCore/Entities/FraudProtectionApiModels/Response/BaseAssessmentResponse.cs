@@ -14,6 +14,6 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         public IEnumerable<RuleEvaluation> RuleEvaluations { get; set; }
         public string ClauseName { get; set; }
         public DeviceAttributes DeviceAttributes { get; set; }
-        public IDictionary<string, IList<object>> Diagnostics { get; set; }
+        public IDictionary<string, IEnumerable<object>> Diagnostics { get; set; }
     }
 }
