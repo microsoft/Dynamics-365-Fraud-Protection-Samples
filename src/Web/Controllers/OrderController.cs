@@ -142,7 +142,9 @@ namespace Contoso.FraudProtection.Web.Controllers
             LabelSource labelSource,
             LabelObjectType labelObjectType,
             LabelState labelStatus,
-            LabelReasonCodes labelReasonCode)
+            LabelReasonCodes labelReasonCode,
+            string effectiveStartDate,
+            string effectiveEndDate)
         {
             var order = await GetOrder(viewModel.OrderNumber);
             if (order == null)
@@ -180,6 +182,24 @@ namespace Contoso.FraudProtection.Web.Controllers
                 EventTimeStamp = DateTimeOffset.Now,
                 Processor = "Fraud Protection sample site",
             };
+
+            if(!String.IsNullOrEmpty(effectiveStartDate) )
+            {
+                DateTime labelEffectiveStartDate;
+                if (DateTime.TryParse(effectiveStartDate, out labelEffectiveStartDate))
+                    {
+                    label.EffectiveStartDate = labelEffectiveStartDate;
+                }
+            }
+
+            if (!String.IsNullOrEmpty(effectiveEndDate))
+            {
+                DateTime labelEffectiveEndDate;
+                if (DateTime.TryParse(effectiveEndDate, out labelEffectiveEndDate))
+                    {
+                    label.EffectiveEndDate = labelEffectiveEndDate;
+                }
+            }
 
             if (labelObjectType == LabelObjectType.Purchase)
             {
