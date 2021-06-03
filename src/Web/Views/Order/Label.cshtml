@@ -108,18 +108,18 @@
             </div>
             <div class="row">
                 <div class="form-group">
-                    <label for="LabelReasonCode" class="col-md-2 control-label">Effective Start Date</label>
+                    <label for="EffectiveStartDate" class="col-md-2 control-label">Effective Start Date</label>
                     <div class="col-md-3">
-                        @Html.TextBox("EffectiveStartDate", String.Format("{0:MM/dd/yyyy}", DateTime.Now.ToString()), new { @class = "form-control" })
+                        @Html.TextBox("EffectiveStartDate", String.Format("{0:MM/dd/yyyy}", DateTimeOffset.Now.ToString()), new { @class = "form-control" })
                         
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group">
-                    <label for="LabelReasonCode" class="col-md-2 control-label">Effective End Date</label>
+                    <label for="EffectiveEndDate" class="col-md-2 control-label">Effective End Date</label>
                     <div class="col-md-3">
-                        @Html.TextBox("EffectiveEndDate", String.Format("{0:MM/dd/yyyy}", DateTime.Now.AddYears(1).ToString()), new { @class = "form-control" })
+                        @Html.TextBox("EffectiveEndDate", String.Format("{0:MM/dd/yyyy}", DateTimeOffset.Now.AddYears(1).ToString()), new { @class = "form-control" })
                     </div>
                 </div>
             </div>

@@ -185,8 +185,8 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             if(!String.IsNullOrEmpty(effectiveStartDate) )
             {
-                DateTime labelEffectiveStartDate;
-                if (DateTime.TryParse(effectiveStartDate, out labelEffectiveStartDate))
+                DateTimeOffset labelEffectiveStartDate;
+                if (DateTimeOffset.TryParse(effectiveStartDate, out labelEffectiveStartDate))
                     {
                     label.EffectiveStartDate = labelEffectiveStartDate;
                 }
@@ -194,8 +194,8 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             if (!String.IsNullOrEmpty(effectiveEndDate))
             {
-                DateTime labelEffectiveEndDate;
-                if (DateTime.TryParse(effectiveEndDate, out labelEffectiveEndDate))
+                DateTimeOffset labelEffectiveEndDate;
+                if (DateTimeOffset.TryParse(effectiveEndDate, out labelEffectiveEndDate))
                     {
                     label.EffectiveEndDate = labelEffectiveEndDate;
                 }
