@@ -35,6 +35,7 @@ Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8
 Content-Length: <content length>
 x-ms-correlation-id: <correlation ID>
+x-ms-dfpenvid: <enviroment ID>
 
 {
   "labelObjectType": "Purchase",
@@ -62,6 +63,7 @@ Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8
 Content-Length: <content length>
 x-ms-correlation-id: <correlation ID>
+x-ms-dfpenvid: <enviroment ID>
 
 {
   "labelObjectType": "Account",

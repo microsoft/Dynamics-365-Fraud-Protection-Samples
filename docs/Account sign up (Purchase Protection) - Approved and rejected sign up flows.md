@@ -46,6 +46,7 @@ Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8
 Content-Length: <content length>
 x-ms-correlation-id: <correlation ID 1>
+x-ms-dfpenvid: <enviroment ID>
 
 {
   "signUpId": "<merchant mastered sign up event ID>",
@@ -108,6 +109,7 @@ Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8
 Content-Length: <content length>
 x-ms-correlation-id: <correlation ID 2>
+x-ms-dfpenvid: <enviroment ID>
 
 {
   "signUpId": "<related sign up ID>",
@@ -133,6 +135,7 @@ Authorization: bearer <token>
 Content-Type: application/json; charset=utf-8
 Content-Length: <content length>
 x-ms-correlation-id: <correlation ID 2>
+x-ms-dfpenvid: <enviroment ID>
 
 {
   "signUpId": "<related sign up ID>",
