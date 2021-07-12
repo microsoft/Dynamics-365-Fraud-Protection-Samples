@@ -85,7 +85,8 @@ namespace Contoso.FraudProtection.Infrastructure.Services
                new Dictionary<string, string>
                {
                     { Constants.CORRELATION_ID, correlationId },
-                    { Constants.AUTHORIZATION, $"{Constants.BEARER} {authToken}" }
+                    { Constants.AUTHORIZATION, $"{Constants.BEARER} {authToken}" },
+                    { Constants.ENVIRONMENT_ID, _settings.InstanceId },
                });
         }
 
