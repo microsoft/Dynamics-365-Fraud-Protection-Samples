@@ -4,7 +4,7 @@ This section covers how to use Dynamics 365 Fraud Protection Power Apps connecto
 
 ## Obtaining Credentials
 
-This connector supports both user account and service principal authentication. Typical this connector is called from Power Automate and in Power Automate, you need to configure authentication.
+This connector supports both user account and service principal authentication. Typically this connector is called from Power Automate. In Power Automate, you need to configure connector authentication.
 
 ### User Account Authentication
 
@@ -12,7 +12,7 @@ This connector supports both user account and service principal authentication. 
 
 2. Assign the new user to Risk_Api role in Dynamics 365 Fraud Protection Application.
 
-   - Go to "Enterprises applications" in Azure Active Directory. Select "Microsoft Applications" as Application Type and type "Dynamics 365 Fraud Protection" in the search
+   - Go to "Enterprises applications" in Azure Active Directory. Select "Microsoft Applications" as Application Type and type "Dynamics 365 Fraud Protection" in the search.
 
    ![EnterprisesApplications](Images/EnterprisesApplications.png)
 
