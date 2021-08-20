@@ -22,7 +22,7 @@ This connector supports both user account and service principal authentication. 
 
    - Click on "Users and groups" - Click on "Add user/group"
 
-   ![User and Groups](Images/UsersAndGroups-3.png)
+   ![User and Groups](Images/UsersAndGroups.png)
 
    ![Add Assignment](Images/AddAssignment.png)
 
