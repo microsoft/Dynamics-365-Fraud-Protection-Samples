@@ -20,9 +20,11 @@ This connector supports both user account and service principal authentication. 
 
    ![Dynamics365FraudProtection App](Images/Dynamics365FraudProtectionApp.png)
 
-   - Click on "Users and groups" - Click on "Add user/group"
+   - Click on "Users and groups" on the left pane menu
 
    ![User and Groups](Images/UsersAndGroups.png)
+
+   - Click on "Add user/group"
 
    ![Add Assignment](Images/AddAssignment.png)
 
@@ -30,9 +32,11 @@ This connector supports both user account and service principal authentication. 
 
    ![User Select](Images/AddAssignmentUser.png)
 
-   - Click on 'Select a role', click on "Risk_Api role and click on "Select" - Click on Assign
+   - Click on 'Select a role', click on "Risk_Api role and click on "Select"
 
    ![Role Select](Images/AddAssignmentRole.png)
+
+   - Click on Assign
 
    ![Role Assign](Images/AddAssignmentAssign.png)
 
