@@ -168,6 +168,12 @@
             </div>
             <div class="row">
                 <div class="esh-catalog-items row">
+                    <div class="esh-basket-item">
+                        <div class="col-md-10" style="margin-top: 20px">
+                            <label for="environmentId">EnvironmentId</label>
+                            @Html.TextBoxFor(model => model.EnvironmentId, new { @class = "form-control" })
+                        </div>
+                    </div>
                     <section class="esh-basket-item col-xs-push-8 col-xs-4">
                         <input type="submit" asp-action="CheckoutDetails"
                                class="btn esh-basket-checkout"

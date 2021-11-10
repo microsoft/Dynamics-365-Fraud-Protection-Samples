@@ -18,5 +18,7 @@ namespace Contoso.FraudProtection.Web.ViewModels
         public CreditCardViewModel CreditCard { get; set; }
 
         public int NumberItems { get; set; }
+
+        public string EnvironmentId { get; set; }
     }
 }

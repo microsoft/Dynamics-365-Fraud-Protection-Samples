@@ -62,7 +62,8 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             string endpoint,
             T content,
             string correlationId,
-            bool skipSerialization = false)
+            bool skipSerialization = false,
+            string envId = null)
         {
             if (content is IBaseFraudProtectionEvent purchaseEventContent)
             {
@@ -86,7 +87,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
                {
                     { Constants.CORRELATION_ID, correlationId },
                     { Constants.AUTHORIZATION, $"{Constants.BEARER} {authToken}" },
-                    { Constants.ENVIRONMENT_ID, _settings.InstanceId },
+                    { Constants.ENVIRONMENT_ID, envId ??_settings.InstanceId },
                });
         }
 
@@ -103,9 +104,9 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             return JsonSerializer.Deserialize<T>(content, _responseDeserializationOptions);
         }
 
-        public async Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId)
+        public async Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId, string envId)
         {
-            var response = await PostAsync(_settings.Endpoints.Purchase, purchase, correlationId);
+            var response = await PostAsync(_settings.Endpoints.Purchase, purchase, correlationId, false, envId);
             return await Read<PurchaseResponse>(response);
         }
 

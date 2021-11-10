@@ -24,7 +24,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
     {
         string NewCorrelationId { get; }
 
-        Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId);
+        Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId, string envId);
 
         Task<SignupResponse> PostSignup(SignUp signup, string correlationId);
 

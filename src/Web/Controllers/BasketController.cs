@@ -177,7 +177,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             //This is optional, but can help when troubleshooting bugs or performance issues.
             var purchase = SetupPurchase(checkoutDetails, basketViewModel);
             var correlationId = _fraudProtectionService.NewCorrelationId;
-            var result = await _fraudProtectionService.PostPurchase(purchase, correlationId);
+            var result = await _fraudProtectionService.PostPurchase(purchase, correlationId, checkoutDetails.EnvironmentId);
 
             var fraudProtectionIO = new FraudProtectionIOModel(correlationId, purchase, result, "Purchase");
 
