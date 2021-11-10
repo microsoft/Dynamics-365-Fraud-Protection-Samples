@@ -49,7 +49,7 @@ namespace Contoso.FraudProtection.Web
         /// </summary>
         public void ConfigureProductionServices(IServiceCollection services)
         {
-            UseProductionDBs(services);
+            ConfigureInMemoryDBs(services);
 
             ConfigureServices(services);
         }
