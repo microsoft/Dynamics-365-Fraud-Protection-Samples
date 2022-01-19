@@ -11,5 +11,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         public string Rule { get; set; }
 
         public IEnumerable<string> ClauseNames { get; set; }
+        
+        public IEnumerable<string> EnvironmentId { get; set; }
     }
 }
