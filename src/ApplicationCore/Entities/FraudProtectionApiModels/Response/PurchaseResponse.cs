@@ -16,6 +16,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
     {
         public string MIDFlag { get; set; }
         public string PolicyApplied { get; set; }
+        public string PolicyAppliedEnvironmentId { get; set; }
         public string MerchantRuleReason { get; set; }
         public Dictionary<string, Dictionary<string, string>> MerchantRuleOutput { get; set; }
     }
