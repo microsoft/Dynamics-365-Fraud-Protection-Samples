@@ -41,7 +41,8 @@ namespace Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent
         Pending,
         Rejected,
         Failed,
-        Canceled
+        Canceled,
+        Unknown
     }
 
     public enum PurchaseStatusReason

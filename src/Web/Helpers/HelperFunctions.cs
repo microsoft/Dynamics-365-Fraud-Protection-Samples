@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 
 namespace Contoso.FraudProtection.Web.Helpers
@@ -293,12 +294,11 @@ namespace Contoso.FraudProtection.Web.Helpers
         public static List<SelectListItem> PIYearList = new List<SelectListItem>
             {
                 new SelectListItem { Value = "", Text = "Year" },
-                new SelectListItem { Value = "20", Text = "2020" },
-                new SelectListItem { Value = "21", Text = "2021" },
-                new SelectListItem { Value = "22", Text = "2022" },
-                new SelectListItem { Value = "23", Text = "2023" },
-                new SelectListItem { Value = "24", Text = "2024" },
-                new SelectListItem { Value = "25", Text = "2025" },
+                new SelectListItem { Value = DateTimeOffset.Now.Year.ToString().Substring(2, 2), Text = DateTimeOffset.Now.Year.ToString() },
+                new SelectListItem { Value = DateTimeOffset.Now.AddYears(1).ToString() , Text = DateTimeOffset.Now.AddYears(1).Year.ToString() },
+                new SelectListItem { Value = DateTimeOffset.Now.AddYears(2).ToString() , Text = DateTimeOffset.Now.AddYears(2).Year.ToString() },
+                new SelectListItem { Value = DateTimeOffset.Now.AddYears(3).ToString() , Text = DateTimeOffset.Now.AddYears(3).Year.ToString() },
+                new SelectListItem { Value = DateTimeOffset.Now.AddYears(4).ToString() , Text = DateTimeOffset.Now.AddYears(4).Year.ToString() },
             };
     }
 }
