@@ -202,8 +202,9 @@ namespace Contoso.FraudProtection.Web.Controllers
         #region Fraud Protection Service
         /// <summary>
         /// Checks the purchase's risk score.
-        ///    If the purchase is not approved, submit a REJECTED purchase status.
+        ///    If the purchase is rejected, submit a REJECTED purchase status.
         ///    If the purchase is approved, submit the bank AUTH, bank CHARGE, and purchase status (approved if the bank also approves the auth and charge, or rejected otherwise).
+        ///    If the purchase is in review, submit unknown bank AUTH and unknown purchase status (so that case management case is still created)
         /// </summary>
         private async Task<OrderStatus> ApproveOrRejectPurchase(string merchantRuleDecision, string cardNumber, string purchaseId, string correlationId, FraudProtectionIOModel fraudProtectionIO)
         {
@@ -223,44 +224,54 @@ namespace Contoso.FraudProtection.Web.Controllers
                 };
             }
 
-            if (!merchantRuleDecision.StartsWith("APPROVE", StringComparison.OrdinalIgnoreCase) &&
-                !creditCardBankResponse.IgnoreFraudRiskRecommendation)
+            var isApproved = merchantRuleDecision.StartsWith("APPROVE", StringComparison.OrdinalIgnoreCase);
+            var inReview = merchantRuleDecision.StartsWith("REVIEW", StringComparison.OrdinalIgnoreCase);
+            if (isApproved || inReview || creditCardBankResponse.IgnoreFraudRiskRecommendation)
             {
-                purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Rejected);
-                status = OrderStatus.Rejected;
-            }
-            else
-            {
-                //Auth
                 if (!creditCardBankResponse.IsAuthApproved)
                 {
-                    //Auth Rejected
+                    //Auth - Rejected
                     auth = SetupBankEvent(BankEventType.Auth, DateTimeOffset.Now, purchaseId, BankEventStatus.Declined);
-                    //Purchase Status - Rejected
+                    //Purchase status - Rejected
                     purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Rejected);
                     status = OrderStatus.Rejected;
                 }
                 else
                 {
-                    //Auth Approved
-                    auth = SetupBankEvent(BankEventType.Auth, DateTimeOffset.Now, purchaseId, BankEventStatus.Approved);
+                    //Auth - Approved/Unknown
+                    var authStatus = inReview ? BankEventStatus.Unknown : BankEventStatus.Approved;
+                    auth = SetupBankEvent(BankEventType.Auth, DateTimeOffset.Now, purchaseId, authStatus);
+
                     //Charge
-                    if (creditCardBankResponse.IsChargeApproved)
+                    var chargeStatus = creditCardBankResponse.IsChargeApproved ? BankEventStatus.Approved : BankEventStatus.Declined;
+                    if (!inReview)
                     {
-                        //Charge - Approved
-                        charge = SetupBankEvent(BankEventType.Charge, DateTimeOffset.Now, purchaseId, BankEventStatus.Approved);
-                        //Purchase Status Approved
+                        charge = SetupBankEvent(BankEventType.Charge, DateTimeOffset.Now, purchaseId, chargeStatus);
+                    }
+
+                    if (inReview)
+                    {
+                        //Purchase status - Unknown
+                        purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Unknown);
+                        status = OrderStatus.InReview;
+                    }
+                    else if (creditCardBankResponse.IsChargeApproved)
+                    {
+                        //Purchase status - Approved
                         purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Approved);
                     }
                     else
                     {
-                        //Charge - Rejected
-                        charge = SetupBankEvent(BankEventType.Charge, DateTimeOffset.Now, purchaseId, BankEventStatus.Declined);
-                        //Purchase status Rejected
+                        //Purchase status - Rejected
                         purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Rejected);
                         status = OrderStatus.Rejected;
                     }
                 }
+            }
+            else
+            {
+                purchaseStatus = SetupPurchaseStatus(purchaseId, PurchaseStatusType.Rejected);
+                status = OrderStatus.Rejected;
             }
 
             if (auth != null)
@@ -316,6 +327,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             var device = new DeviceContext
             {
                 DeviceContextId = _contextAccessor.GetSessionId(),
+                ExternalDeviceId = Guid.NewGuid().ToString(),
                 IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
                 Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
             };
@@ -401,7 +413,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             };
 
             Product mostExpensiveProduct = productList.FirstOrDefault();
-            foreach( var product in productList)
+            foreach (var product in productList)
             {
                 if ((product.SalesPrice / product.Quantity) > (mostExpensiveProduct.SalesPrice / mostExpensiveProduct.Quantity))
                 {

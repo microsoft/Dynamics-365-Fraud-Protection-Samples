@@ -12,8 +12,8 @@ namespace Contoso.FraudProtection.Web.ViewModels.Shared
         public string CardType { get; set; }
 
         [Required]
-        [Display(Name = "Card Number")]
-        [RegularExpression("[0-9]{4}-?[0-9]{4}-?[0-9]{4}-?[0-9]{4}", ErrorMessage = "Card number must be 16 digits long. Dashes are optional.")]
+        [Display(Name = "Card Number (dashes optional)")]
+        [RegularExpression("^[0-9]{4}-?[0-9]{4}-?[0-9]{4}-?[0-9]{4}$", ErrorMessage = "Card number must be 16 digits long. Dashes are optional.")]
         public string CardNumber { get; set; }
 
         [Required]
@@ -25,7 +25,7 @@ namespace Contoso.FraudProtection.Web.ViewModels.Shared
         public string ExpirationYear { get; set; }
 
         [Required]
-        [RegularExpression("([0-9]{3})|([0-9]{4})", ErrorMessage = "CVV must be 3 or 4 digits long")]
+        [RegularExpression(@"^\d{3,4}$", ErrorMessage = "CVV must be 3 or 4 digits")]
         public string CVV { get; set; }
 
         [Required]
