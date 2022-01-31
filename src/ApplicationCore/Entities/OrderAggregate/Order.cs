@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Ardalis.GuardClauses;
 using Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent;
 using Microsoft.Dynamics.FraudProtection.Models.RefundEvent;
 using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
@@ -11,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Contoso.FraudProtection.ApplicationCore.Services;
-using System.Linq;
 using System.Text.Json;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate
@@ -25,26 +23,24 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate
 
         public Order(
             string buyerId,
-            Address shipToAddress, 
+            Address shipToAddress,
             PaymentInfo paymentDetails,
-            List<OrderItem> items, 
+            List<OrderItem> items,
             OrderStatus status,
-            Purchase purchase, 
+            Purchase purchase,
             PurchaseResponse purchaseResponse,
             OrderTotals totals)
         {
-            Guard.Against.NullOrEmpty(buyerId, nameof(buyerId));
-            Guard.Against.Null(shipToAddress, nameof(shipToAddress));
-            Guard.Against.Null(items, nameof(items));
-            Guard.Against.Null(paymentDetails, nameof(paymentDetails));
-            Guard.Against.Null(purchase, nameof(purchase));
+            if (string.IsNullOrEmpty(buyerId))
+                throw new ArgumentNullException(nameof(buyerId));
+
+            ShipToAddress = shipToAddress ?? throw new ArgumentNullException(nameof(shipToAddress));
+            PaymentDetails = paymentDetails ?? throw new ArgumentNullException(nameof(paymentDetails));
+            RiskPurchase = purchase ?? throw new ArgumentNullException(nameof(purchase));
+            _orderItems = items ?? throw new ArgumentNullException(nameof(items));
 
             BuyerId = buyerId;
-            ShipToAddress = shipToAddress;
-            PaymentDetails = paymentDetails;
             Status = status;
-            _orderItems = items;
-            RiskPurchase = purchase;
             RiskPurchaseResponse = purchaseResponse;
             SubTotal = totals.SubTotal;
             Tax = totals.Tax;
