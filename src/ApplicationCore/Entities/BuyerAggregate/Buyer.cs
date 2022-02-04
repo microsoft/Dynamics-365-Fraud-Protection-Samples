@@ -2,8 +2,8 @@
 // Licensed under the MIT license.
 
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
-using Ardalis.GuardClauses;
 using System.Collections.Generic;
+using System;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.BuyerAggregate
 {
@@ -22,7 +22,9 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.BuyerAggregate
 
         public Buyer(string identity) : this()
         {
-            Guard.Against.NullOrEmpty(identity, nameof(identity));
+            if (string.IsNullOrEmpty(identity))
+                throw new ArgumentNullException(identity);
+
             IdentityGuid = identity;
         }
     }

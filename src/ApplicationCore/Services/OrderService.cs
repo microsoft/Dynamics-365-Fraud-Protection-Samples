@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Ardalis.GuardClauses;
 using Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent;
 using Contoso.FraudProtection.ApplicationCore.Entities;
 using Contoso.FraudProtection.ApplicationCore.Entities.BasketAggregate;
@@ -11,6 +10,7 @@ using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using Contoso.FraudProtection.ApplicationCore.Exceptions;
 
 namespace Contoso.FraudProtection.ApplicationCore.Services
 {
@@ -32,14 +32,16 @@ namespace Contoso.FraudProtection.ApplicationCore.Services
         public async Task CreateOrderAsync(
             int basketId,
             Entities.OrderAggregate.Address shippingAddress,
-            PaymentInfo paymentDetails, 
+            PaymentInfo paymentDetails,
             OrderStatus status,
-            Purchase purchase, 
+            Purchase purchase,
             PurchaseResponse purchaseResponse)
         {
             var basket = await _basketRepository.GetByIdAsync(basketId);
-            
-            Guard.Against.NullBasket(basketId, basket);
+
+            if (basket == null)
+                throw new BasketNotFoundException(basketId);
+
             var items = new List<OrderItem>();
             var pricesAndQuantities = new List<Tuple<decimal, int>>();
             foreach (var item in basket.Items)
@@ -58,7 +60,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Services
                 paymentDetails,
                 items,
                 status,
-                purchase, 
+                purchase,
                 purchaseResponse,
                 totals);
 

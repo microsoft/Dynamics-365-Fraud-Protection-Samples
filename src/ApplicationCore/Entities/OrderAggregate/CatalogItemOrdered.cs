@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-using Ardalis.GuardClauses;
+using System;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate
 {
@@ -13,9 +13,12 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate
     {
         public CatalogItemOrdered(int catalogItemId, string productName, string pictureUri)
         {
-            Guard.Against.OutOfRange(catalogItemId, nameof(catalogItemId), 1, int.MaxValue);
-            Guard.Against.NullOrEmpty(productName, nameof(productName));
-            Guard.Against.NullOrEmpty(pictureUri, nameof(pictureUri));
+            if (catalogItemId < 1)
+                throw new ArgumentOutOfRangeException(nameof(catalogItemId));
+            if (string.IsNullOrEmpty(pictureUri))
+                throw new ArgumentNullException(nameof(pictureUri));
+            if (string.IsNullOrEmpty(productName))
+                throw new ArgumentNullException(nameof(productName));
 
             CatalogItemId = catalogItemId;
             ProductName = productName;
