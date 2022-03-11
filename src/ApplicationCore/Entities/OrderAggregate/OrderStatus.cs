@@ -25,6 +25,8 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.OrderAggregate
         [Description("Return is completed")]
         ReturnCompleted = 8,
         [Description("Charge back")]
-        ChargeBack = 9
+        ChargeBack = 9,
+        [Description("Order is being reviewed")]
+        InReview = 10,
     }
 }

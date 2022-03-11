@@ -5,29 +5,23 @@ using Contoso.FraudProtection.ApplicationCore.Interfaces;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Contoso.FraudProtection.ApplicationCore.Specifications;
-using Contoso.FraudProtection.ApplicationCore.Entities;
 using System.Linq;
-using Ardalis.GuardClauses;
 using Contoso.FraudProtection.ApplicationCore.Entities.BasketAggregate;
+using System;
+using Contoso.FraudProtection.ApplicationCore.Exceptions;
 
 namespace Contoso.FraudProtection.ApplicationCore.Services
 {
     public class BasketService : IBasketService
     {
         private readonly IAsyncRepository<Basket> _basketRepository;
-        private readonly IUriComposer _uriComposer;
         private readonly IAppLogger<BasketService> _logger;
-        private readonly IRepository<CatalogItem> _itemRepository;
 
         public BasketService(IAsyncRepository<Basket> basketRepository,
-            IRepository<CatalogItem> itemRepository,
-            IUriComposer uriComposer,
             IAppLogger<BasketService> logger)
         {
             _basketRepository = basketRepository;
-            _uriComposer = uriComposer;
             _logger = logger;
-            _itemRepository = itemRepository;
         }
 
         public async Task AddItemToBasket(int basketId, int catalogItemId, decimal price, int quantity)
@@ -48,7 +42,9 @@ namespace Contoso.FraudProtection.ApplicationCore.Services
 
         public async Task<int> GetBasketItemCountAsync(string userName)
         {
-            Guard.Against.NullOrEmpty(userName, nameof(userName));
+            if (string.IsNullOrEmpty(userName))
+                throw new ArgumentNullException(nameof(userName));
+
             var basket = await GetBasketByUsername(userName);
             if (basket == null)
             {
@@ -68,9 +64,12 @@ namespace Contoso.FraudProtection.ApplicationCore.Services
 
         public async Task SetQuantities(int basketId, Dictionary<string, int> quantities)
         {
-            Guard.Against.Null(quantities, nameof(quantities));
+            if (quantities == null)
+                throw new ArgumentNullException(nameof(quantities));
+
             var basket = await _basketRepository.GetByIdAsync(basketId);
-            Guard.Against.NullBasket(basketId, basket);
+            if (basket == null)
+                throw new BasketNotFoundException(basketId);
 
             var itemsToDelete = new List<BasketItem>();
             foreach (var item in basket.Items)
@@ -98,8 +97,10 @@ namespace Contoso.FraudProtection.ApplicationCore.Services
 
         public async Task TransferBasketAsync(string anonymousId, string userName)
         {
-            Guard.Against.NullOrEmpty(anonymousId, nameof(anonymousId));
-            Guard.Against.NullOrEmpty(userName, nameof(userName));
+            if (string.IsNullOrEmpty(anonymousId))
+                throw new ArgumentNullException(nameof(anonymousId));
+            if (string.IsNullOrEmpty(userName))
+                throw new ArgumentNullException(nameof(userName));
 
             var anonymousBasket = await GetBasketByUsername(anonymousId);
             if (anonymousBasket == null)

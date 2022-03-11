@@ -29,7 +29,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-md-10">
-                        <label for="cardNumber">Card Number</label>
+                        @Html.LabelFor(model => model.CreditCard.CardNumber)
                         @Html.TextBoxFor(model => model.CreditCard.CardNumber, new { @class = "form-control", @placeholder = "XXXX-XXXX-XXXX-XXXX", autocomplete = "off" })
                     </div>
                 </div>
