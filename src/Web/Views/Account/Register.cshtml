@@ -103,6 +103,12 @@
                                 @Html.DropDownListFor(model => model.Address.CountryRegion, HelperFunctions.CountryRegionList, new { @class = "form-control" })
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div class="col-md-10">
+                                <label for="EnvironmentId">Environment Id</label>
+                                @Html.TextBoxFor(model => model.EnvironmentId, new { @class = "form-control" })
+                            </div>
+                        </div>
                     </div>
                 </section>
                 <div class="row">

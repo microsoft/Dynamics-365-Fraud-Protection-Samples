@@ -28,17 +28,17 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
 
         Task<SignupResponse> PostSignup(SignUp signup, string correlationId);
 
-        Task<Response> PostSignupAP(AccountProtection.SignUp signup, string correlationId);
+        Task<Response> PostSignupAP(AccountProtection.SignUp signup, string correlationId, string envId);
 
         Task<FraudProtectionResponse> PostRefund(Refund refund, string correlationId);
 
         Task<FraudProtectionResponse> PostUser(User userAccount, string correlationId);
 
-        Task<FraudProtectionResponse> PostBankEvent(BankEvent bankEvent, string correlationId);
+        Task<FraudProtectionResponse> PostBankEvent(BankEvent bankEvent, string correlationId, string envId);
 
         Task<FraudProtectionResponse> PostChargeback(Chargeback chargeback, string correlationId);
 
-        Task<FraudProtectionResponse> PostPurchaseStatus(PurchaseStatusEvent purchaseStatus, string correlationId);
+        Task<FraudProtectionResponse> PostPurchaseStatus(PurchaseStatusEvent purchaseStatus, string correlationId, string envId);
 
         Task<FraudProtectionResponse> PostSignupStatus(SignupStatusEvent signupStatus, string correlationId);
 
@@ -46,7 +46,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
 
         Task<SignInResponse> PostSignIn(SignIn request, string correlationId);
 
-        Task<Response> PostSignInAP(AccountProtection.SignIn request, string correlationId);
+        Task<Response> PostSignInAP(AccountProtection.SignIn request, string correlationId, string envId);
         
         Task<Response> PostCustomAssessment(CustomAssessment assessment, string correlationId);
     }

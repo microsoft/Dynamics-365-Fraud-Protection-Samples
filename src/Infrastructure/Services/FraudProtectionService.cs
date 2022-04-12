@@ -122,9 +122,9 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             return await Read<FraudProtectionResponse>(response);
         }
 
-        public async Task<FraudProtectionResponse> PostBankEvent(BankEvent bankEvent, string correlationId)
+        public async Task<FraudProtectionResponse> PostBankEvent(BankEvent bankEvent, string correlationId, string envId)
         {
-            var response = await PostAsync(_settings.Endpoints.BankEvent, bankEvent, correlationId);
+            var response = await PostAsync(_settings.Endpoints.BankEvent, bankEvent, correlationId, false, envId);
             return await Read<FraudProtectionResponse>(response);
         }
 
@@ -134,9 +134,9 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             return await Read<FraudProtectionResponse>(response);
         }
 
-        public async Task<FraudProtectionResponse> PostPurchaseStatus(PurchaseStatusEvent purchaseStatus, string correlationId)
+        public async Task<FraudProtectionResponse> PostPurchaseStatus(PurchaseStatusEvent purchaseStatus, string correlationId, string envId)
         {
-            var response = await PostAsync(_settings.Endpoints.PurchaseStatus, purchaseStatus, correlationId);
+            var response = await PostAsync(_settings.Endpoints.PurchaseStatus, purchaseStatus, correlationId, false, envId);
             return await Read<FraudProtectionResponse>(response);
         }
 
@@ -146,11 +146,11 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             return await Read<SignupResponse>(response);
         }
 
-        public async Task<Response> PostSignupAP(AccountProtection.SignUp signup, string correlationId)
+        public async Task<Response> PostSignupAP(AccountProtection.SignUp signup, string correlationId, string envId )
         {
             string endpoint = string.Format(_settings.Endpoints.SignupAP, signup.Metadata.SignUpId);
 
-            var response = await PostAsync(endpoint, signup, correlationId);
+            var response = await PostAsync(endpoint, signup, correlationId, false, envId);
             return await Read<ResponseSuccess>(response);
         }
 
@@ -172,11 +172,11 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             return await Read<SignInResponse>(response);
         }
 
-        public async Task<Response> PostSignInAP(AccountProtection.SignIn signIn, string correlationId)
+        public async Task<Response> PostSignInAP(AccountProtection.SignIn signIn, string correlationId, string envId)
         {
             string endpoint = string.Format(_settings.Endpoints.SignInAP, signIn.Metadata.LoginId);
 
-            var response = await PostAsync(endpoint, signIn, correlationId);
+            var response = await PostAsync(endpoint, signIn, correlationId, false, envId);
             return await Read<ResponseSuccess>(response);
         }
 

@@ -173,7 +173,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 };
 
                 var correlationId = _fraudProtectionService.NewCorrelationId;
-                var signInResponse = await _fraudProtectionService.PostSignInAP(signIn, correlationId);
+                var signInResponse = await _fraudProtectionService.PostSignInAP(signIn, correlationId, model.EnvironmentId);
 
                 var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signIn, signInResponse, "SignIn");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
@@ -364,7 +364,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             {
                 AccountProtection.SignUp signupEvent = CreateSignupAPEvent(model);
 
-                var signupAssessment = await _fraudProtectionService.PostSignupAP(signupEvent, correlationId);
+                var signupAssessment = await _fraudProtectionService.PostSignupAP(signupEvent, correlationId, model.EnvironmentId);
 
                 //Track Fraud Protection request/response for display only
                 var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signupEvent, signupAssessment, "Signup");

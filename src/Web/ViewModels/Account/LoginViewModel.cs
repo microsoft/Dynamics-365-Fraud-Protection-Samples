@@ -20,6 +20,8 @@ namespace Contoso.FraudProtection.Web.ViewModels.Account
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
 
+        public string EnvironmentId { get; set; }
+
         public DeviceFingerPrintingViewModel DeviceFingerPrinting { get; set; }
     }
 }

@@ -187,7 +187,8 @@ namespace Contoso.FraudProtection.Web.Controllers
                 checkoutDetails.CreditCard.UnformattedCardNumber,
                 purchase.PurchaseId,
                 correlationId,
-                fraudProtectionIO);
+                fraudProtectionIO,
+                checkoutDetails.EnvironmentId);
 
             TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
             #endregion
@@ -206,7 +207,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         ///    If the purchase is approved, submit the bank AUTH, bank CHARGE, and purchase status (approved if the bank also approves the auth and charge, or rejected otherwise).
         ///    If the purchase is in review, submit unknown bank AUTH and unknown purchase status (so that case management case is still created)
         /// </summary>
-        private async Task<OrderStatus> ApproveOrRejectPurchase(string merchantRuleDecision, string cardNumber, string purchaseId, string correlationId, FraudProtectionIOModel fraudProtectionIO)
+        private async Task<OrderStatus> ApproveOrRejectPurchase(string merchantRuleDecision, string cardNumber, string purchaseId, string correlationId, FraudProtectionIOModel fraudProtectionIO, string environmentId)
         {
             var status = OrderStatus.Received;
             BankEvent auth = null;
@@ -276,17 +277,17 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             if (auth != null)
             {
-                var response = await _fraudProtectionService.PostBankEvent(auth, correlationId);
+                var response = await _fraudProtectionService.PostBankEvent(auth, correlationId, environmentId);
                 fraudProtectionIO.Add(auth, response, "BankEvent Auth");
             }
             if (charge != null)
             {
-                var response = await _fraudProtectionService.PostBankEvent(charge, correlationId);
+                var response = await _fraudProtectionService.PostBankEvent(charge, correlationId, environmentId);
                 fraudProtectionIO.Add(charge, response, "BankEvent Charge");
             }
             if (purchaseStatus != null)
             {
-                var response = await _fraudProtectionService.PostPurchaseStatus(purchaseStatus, correlationId);
+                var response = await _fraudProtectionService.PostPurchaseStatus(purchaseStatus, correlationId, environmentId);
                 fraudProtectionIO.Add(purchaseStatus, response, "PurchaseStatus");
             }
 
