@@ -78,7 +78,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         public IActionResult CustomAssessment()
         {
             var model = new CustomAssessmentViewModel();
-            
+
             return View(model);
         }
 
@@ -96,8 +96,8 @@ namespace Contoso.FraudProtection.Web.Controllers
             {
                 return View(model);
             }
-            
-            return await CallCustomAssessmentApi(model, returnUrl);
+
+            return await CallCustomAssessmentApi(model, returnUrl, HttpContext.Session.GetString("envId"));
         }
 
         [HttpPost]
@@ -173,7 +173,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 };
 
                 var correlationId = _fraudProtectionService.NewCorrelationId;
-                var signInResponse = await _fraudProtectionService.PostSignInAP(signIn, correlationId);
+                var signInResponse = await _fraudProtectionService.PostSignInAP(signIn, correlationId, HttpContext.Session.GetString("envId"));
 
                 var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signIn, signInResponse, "SignIn");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
@@ -198,7 +198,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 };
 
                 var correlationId = _fraudProtectionService.NewCorrelationId;
-                var signInResponse = await _fraudProtectionService.PostSignIn(signIn, correlationId);
+                var signInResponse = await _fraudProtectionService.PostSignIn(signIn, correlationId, HttpContext.Session.GetString("envId"));
 
                 var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signIn, signInResponse, "SignIn");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
@@ -301,18 +301,18 @@ namespace Contoso.FraudProtection.Web.Controllers
             return await RegisterUser(model, returnUrl, false);
         }
 
-        private async Task<IActionResult> CallCustomAssessmentApi(CustomAssessmentViewModel model, string returnUrl)
+        private async Task<IActionResult> CallCustomAssessmentApi(CustomAssessmentViewModel model, string returnUrl, string envId)
         {
             #region Fraud Protection Service
             var correlationId = _fraudProtectionService.NewCorrelationId;
             var assessment = new CustomAssessment { ApiName = model.ApiName, Payload = model.Payload };
 
-            var response = await _fraudProtectionService.PostCustomAssessment(assessment, correlationId);
+            var response = await _fraudProtectionService.PostCustomAssessment(assessment, correlationId, envId);
             var fraudProtectionIO = new FraudProtectionIOModel(correlationId, model.Payload, response, "Custom Assessment", true);
             TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
             #endregion
 
-            return View("CustomAssessment", model);        
+            return View("CustomAssessment", model);
         }
 
         private async Task<IActionResult> RegisterUser(RegisterViewModel model, string returnUrl, bool useAP)
@@ -364,7 +364,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             {
                 AccountProtection.SignUp signupEvent = CreateSignupAPEvent(model);
 
-                var signupAssessment = await _fraudProtectionService.PostSignupAP(signupEvent, correlationId);
+                var signupAssessment = await _fraudProtectionService.PostSignupAP(signupEvent, correlationId, HttpContext.Session.GetString("envId"));
 
                 //Track Fraud Protection request/response for display only
                 var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signupEvent, signupAssessment, "Signup");
@@ -386,7 +386,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             {
                 SignUp signupEvent = CreateSignupEvent(model);
 
-                var signupAssessment = await _fraudProtectionService.PostSignup(signupEvent, correlationId);
+                var signupAssessment = await _fraudProtectionService.PostSignup(signupEvent, correlationId, HttpContext.Session.GetString("envId"));
 
                 //Track Fraud Protection request/response for display only
                 var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signupEvent, signupAssessment, "Signup");
@@ -408,7 +408,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                     signupStatus.User = new SignupStatusUser { UserId = model.User.Email };
                 }
 
-                var signupStatusResponse = await _fraudProtectionService.PostSignupStatus(signupStatus, correlationId);
+                var signupStatusResponse = await _fraudProtectionService.PostSignupStatus(signupStatus, correlationId, HttpContext.Session.GetString("envId"));
 
                 fraudProtectionIO.Add(signupStatus, signupStatusResponse, "Signup Status");
 

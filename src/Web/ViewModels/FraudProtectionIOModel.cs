@@ -12,6 +12,8 @@ namespace Contoso.FraudProtection.Web.ViewModels
 
         public string CorrelationId { get; set; }
 
+        public string EnvironmentId { get; set; }
+
         public List<RequestResponsePair> RequestResponsePairs { get; set; } = new List<RequestResponsePair>();
 
         private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
@@ -32,7 +34,8 @@ namespace Contoso.FraudProtection.Web.ViewModels
 
         public void Add(object request, object response, string name = "", bool skipSerialization = false)
         {
-            RequestResponsePairs.Add(new RequestResponsePair {
+            RequestResponsePairs.Add(new RequestResponsePair
+            {
                 Request = skipSerialization ? request as string : JsonSerializer.Serialize(request, JsonSerializerOptions),
                 Response = JsonSerializer.Serialize(response, JsonSerializerOptions),
                 Name = name

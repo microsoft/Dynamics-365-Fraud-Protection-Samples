@@ -21,7 +21,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(int? brandFilterApplied, int? typesFilterApplied, int? page)
         {
-            var itemsPage = 10;           
+            var itemsPage = 10;
             var catalogModel = await _catalogService.GetCatalogItems(page ?? 0, itemsPage, brandFilterApplied, typesFilterApplied);
             return View(catalogModel);
         }

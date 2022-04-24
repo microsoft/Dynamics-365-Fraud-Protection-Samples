@@ -177,7 +177,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             //This is optional, but can help when troubleshooting bugs or performance issues.
             var purchase = SetupPurchase(checkoutDetails, basketViewModel);
             var correlationId = _fraudProtectionService.NewCorrelationId;
-            var result = await _fraudProtectionService.PostPurchase(purchase, correlationId);
+            var result = await _fraudProtectionService.PostPurchase(purchase, correlationId, HttpContext.Session.GetString("envId"));
 
             var fraudProtectionIO = new FraudProtectionIOModel(correlationId, purchase, result, "Purchase");
 
@@ -276,17 +276,17 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             if (auth != null)
             {
-                var response = await _fraudProtectionService.PostBankEvent(auth, correlationId);
+                var response = await _fraudProtectionService.PostBankEvent(auth, correlationId, HttpContext.Session.GetString("envId"));
                 fraudProtectionIO.Add(auth, response, "BankEvent Auth");
             }
             if (charge != null)
             {
-                var response = await _fraudProtectionService.PostBankEvent(charge, correlationId);
+                var response = await _fraudProtectionService.PostBankEvent(charge, correlationId, HttpContext.Session.GetString("envId"));
                 fraudProtectionIO.Add(charge, response, "BankEvent Charge");
             }
             if (purchaseStatus != null)
             {
-                var response = await _fraudProtectionService.PostPurchaseStatus(purchaseStatus, correlationId);
+                var response = await _fraudProtectionService.PostPurchaseStatus(purchaseStatus, correlationId, HttpContext.Session.GetString("envId"));
                 fraudProtectionIO.Add(purchaseStatus, response, "PurchaseStatus");
             }
 

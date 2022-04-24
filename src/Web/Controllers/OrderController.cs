@@ -8,6 +8,7 @@ using Contoso.FraudProtection.Infrastructure.Identity;
 using Contoso.FraudProtection.Web.Extensions;
 using Contoso.FraudProtection.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
@@ -91,7 +92,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 };
 
                 var correlationId = _fraudProtectionService.NewCorrelationId;
-                var response = await _fraudProtectionService.PostRefund(refund, correlationId);
+                var response = await _fraudProtectionService.PostRefund(refund, correlationId, HttpContext.Session.GetString("envId"));
 
                 var fraudProtectionIO = new FraudProtectionIOModel(correlationId, refund, response, "Refund");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
@@ -123,7 +124,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 };
 
                 var correlationId = _fraudProtectionService.NewCorrelationId;
-                var response = await _fraudProtectionService.PostChargeback(chargeback, correlationId);
+                var response = await _fraudProtectionService.PostChargeback(chargeback, correlationId, HttpContext.Session.GetString("envId"));
 
                 var fraudProtectionIO = new FraudProtectionIOModel(correlationId, chargeback, response, "Chargeback");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
@@ -183,11 +184,11 @@ namespace Contoso.FraudProtection.Web.Controllers
                 Processor = "Fraud Protection sample site",
             };
 
-            if(!String.IsNullOrEmpty(effectiveStartDate) )
+            if (!String.IsNullOrEmpty(effectiveStartDate))
             {
                 DateTimeOffset labelEffectiveStartDate;
                 if (DateTimeOffset.TryParse(effectiveStartDate, out labelEffectiveStartDate))
-                    {
+                {
                     label.EffectiveStartDate = labelEffectiveStartDate;
                 }
             }
@@ -196,7 +197,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             {
                 DateTimeOffset labelEffectiveEndDate;
                 if (DateTimeOffset.TryParse(effectiveEndDate, out labelEffectiveEndDate))
-                    {
+                {
                     label.EffectiveEndDate = labelEffectiveEndDate;
                 }
             }
@@ -208,7 +209,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             }
 
             var correlationId = _fraudProtectionService.NewCorrelationId;
-            var response = await _fraudProtectionService.PostLabel(label, correlationId);
+            var response = await _fraudProtectionService.PostLabel(label, correlationId, HttpContext.Session.GetString("envId"));
 
             var fraudProtectionIO = new FraudProtectionIOModel(correlationId, label, response, "Label");
             TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);

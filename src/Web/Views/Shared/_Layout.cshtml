@@ -4,11 +4,13 @@
 *@
 
 @using Contoso.FraudProtection.Web.Extensions;
-@using Microsoft.Extensions.Configuration
+@using Microsoft.Extensions.Configuration;
+@using Microsoft.AspNetCore.Http;
 
 @inject IConfiguration Configuration
 @{
     var apiBaseUrl = Configuration.GetSection("FraudProtectionSettings")["ApiBaseUrl"];
+    var data = @Context.Session.GetString("envId") ?? Configuration.GetSection("FraudProtectionSettings")["InstanceId"];
 }
 
 <!DOCTYPE html>
@@ -60,19 +62,26 @@
     <header class="navbar navbar-light navbar-static-top">
         <div class="container">
             <article class="row">
-                <section class="col-lg-6 col-md-5 col-xs-11">
+                <section class="col-lg-2 col-md-4 col-xs-11">
                     <a asp-area="" asp-controller="Catalog" asp-action="Index" class="navbar-brand">
                         <img src="~/images/brand.png" alt="Microsoft Fraud Protection Merchant Application" title="@apiBaseUrl" />
                     </a>
                 </section>
                 <partial name="_LoginPartial" />
+                @using (Html.BeginForm("Update", "Environment", FormMethod.Post, new { id = "environmentupdate" }))    
+                {
+                    <div class="form-group">
+                        <label for="env">Environment Id: </label>
+                        <input type="text" value="@data" id="endvironmentId" name="env" title="@data"/>
+                        <input type="submit" value="Update" />
+                    </div>
+                }
             </article>
         </div>
     </header>
     <section class="esh-top-banner">
         @RenderSection("TopBanner", required: false)
     </section>
-
     @RenderBody()
 
     <partial name="_FraudProtectionIO" model="TempData.Get<FraudProtectionIOModel>(FraudProtectionIOModel.TempDataKey)" />
