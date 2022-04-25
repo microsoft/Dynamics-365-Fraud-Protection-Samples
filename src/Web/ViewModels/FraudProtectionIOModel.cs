@@ -12,8 +12,6 @@ namespace Contoso.FraudProtection.Web.ViewModels
 
         public string CorrelationId { get; set; }
 
-        public string EnvironmentId { get; set; }
-
         public List<RequestResponsePair> RequestResponsePairs { get; set; } = new List<RequestResponsePair>();
 
         private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions

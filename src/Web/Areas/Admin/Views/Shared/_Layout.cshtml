@@ -3,8 +3,12 @@
     // Licensed under the MIT license.
 *@
 
-@using Contoso.FraudProtection.Web.Extensions;
-
+@using Microsoft.Extensions.Configuration;
+@using Microsoft.AspNetCore.Http;
+@inject IConfiguration Configuration
+@{
+    var envId = @Context.Session.GetString("envId") ?? Configuration.GetSection("FraudProtectionSettings")["InstanceId"];
+}
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,6 +41,14 @@
                     </a>
                 </section>
                 <partial name="_LoginPartial" />
+                @using (Html.BeginForm("Update", "Environment", FormMethod.Post))    
+                {
+                    <div class="form-group">
+                        <label for="env">Environment Id: </label>
+                        <input type="text" value="@envId" name="env" title="@envId"/>
+                        <input type="submit" value="Update" />
+                    </div>
+                }
             </article>
         </div>
     </header>
