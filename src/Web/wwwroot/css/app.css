@@ -33,6 +33,18 @@ select::-ms-expand {
     }
 }
 
+.navbar-brand {
+    margin-right: initial;
+}
+
+.form-group {
+    margin-bottom: initial;
+}
+
+.dropdown-toggle {
+    overflow-wrap: break-word;
+}
+
 .form-input {
     border-radius: 0;
     height: 45px;
