@@ -32,7 +32,8 @@ namespace Contoso.FraudProtection.Web.ViewModels
 
         public void Add(object request, object response, string name = "", bool skipSerialization = false)
         {
-            RequestResponsePairs.Add(new RequestResponsePair {
+            RequestResponsePairs.Add(new RequestResponsePair
+            {
                 Request = skipSerialization ? request as string : JsonSerializer.Serialize(request, JsonSerializerOptions),
                 Response = JsonSerializer.Serialize(response, JsonSerializerOptions),
                 Name = name

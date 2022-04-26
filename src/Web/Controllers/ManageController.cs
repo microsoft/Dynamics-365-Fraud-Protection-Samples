@@ -168,7 +168,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 };
 
                 var correlationId = _fraudProtectionService.NewCorrelationId;
-                var response = await _fraudProtectionService.PostUser(fraudProtectionUser, correlationId);
+                var response = await _fraudProtectionService.PostUser(fraudProtectionUser, correlationId, HttpContext.Session.GetString("envId"));
 
                 var fraudProtectionIO = new FraudProtectionIOModel(correlationId, fraudProtectionUser, response, "UpdateAccount");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
@@ -292,7 +292,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 };
 
                 var correlationId = _fraudProtectionService.NewCorrelationId;
-                var response = await _fraudProtectionService.PostUser(fraudProtectionUser, correlationId);
+                var response = await _fraudProtectionService.PostUser(fraudProtectionUser, correlationId, HttpContext.Session.GetString("envId"));
 
                 var fraudProtectionIO = new FraudProtectionIOModel(correlationId, fraudProtectionUser, response, "UpdateAccount");
                 TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
