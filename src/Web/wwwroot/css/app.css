@@ -37,6 +37,12 @@ select::-ms-expand {
     margin-right: initial;
 }
 
+.navbar article {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .form-group {
     margin-bottom: initial;
 }
@@ -73,7 +79,7 @@ select::-ms-expand {
 .esh-top-banner {
     background-image: url("../../images/main_banner.png");
     background-size: cover;
-    height: 260px;
+    height: 205px;
     width: 100%;
 }
 
@@ -86,8 +92,8 @@ a:visited {
     transition: color 0.35s;
 }
 
-    a:hover,
-    a:active {
-        color: #75B918;
-        transition: color 0.35s;
-    }
+a:hover,
+a:active {
+    color: #75B918;
+    transition: color 0.35s;
+}
