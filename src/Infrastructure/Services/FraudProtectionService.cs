@@ -3,10 +3,8 @@
 
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection.Response;
-using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response;
 using Contoso.FraudProtection.ApplicationCore.Exceptions;
 using Contoso.FraudProtection.ApplicationCore.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Dynamics.FraudProtection.Models;
 using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
 using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
@@ -14,7 +12,6 @@ using Microsoft.Dynamics.FraudProtection.Models.LabelEvent;
 using Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent;
 using Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent;
 using Microsoft.Dynamics.FraudProtection.Models.RefundEvent;
-using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
 using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent;
 using Microsoft.Extensions.Options;
@@ -141,13 +138,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             return await Read<FraudProtectionResponse>(response);
         }
 
-        public async Task<SignupResponse> PostSignup(SignUp signup, string correlationId, string envId)
-        {
-            var response = await PostAsync(_settings.Endpoints.Signup, signup, correlationId, envId);
-            return await Read<SignupResponse>(response);
-        }
-
-        public async Task<Response> PostSignupAP(AccountProtection.SignUp signup, string correlationId, string envId)
+        public async Task<Response> PostSignup(AccountProtection.SignUp signup, string correlationId, string envId)
         {
             string endpoint = string.Format(_settings.Endpoints.SignupAP, signup.Metadata.SignUpId);
 
@@ -167,13 +158,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             return await Read<FraudProtectionResponse>(response);
         }
 
-        public async Task<SignInResponse> PostSignIn(SignIn signIn, string correlationId, string envId)
-        {
-            var response = await PostAsync(_settings.Endpoints.SignIn, signIn, correlationId, envId);
-            return await Read<SignInResponse>(response);
-        }
-
-        public async Task<Response> PostSignInAP(AccountProtection.SignIn signIn, string correlationId, string envId)
+        public async Task<Response> PostSignIn(AccountProtection.SignIn signIn, string correlationId, string envId)
         {
             string endpoint = string.Format(_settings.Endpoints.SignInAP, signIn.Metadata.LoginId);
 

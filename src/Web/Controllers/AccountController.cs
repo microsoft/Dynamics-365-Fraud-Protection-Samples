@@ -15,8 +15,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Dynamics.FraudProtection.Models;
-using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
-using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,7 +101,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignInAP(LoginViewModel model, string returnUrl = null)
+        public async Task<IActionResult> SignIn(LoginViewModel model, string returnUrl = null)
         {
             if (!ModelState.IsValid)
             {
@@ -111,100 +109,53 @@ namespace Contoso.FraudProtection.Web.Controllers
             }
             ViewData["ReturnUrl"] = returnUrl;
 
-            return await SignInUser(model, returnUrl, true);
+            return await SignInUser(model, returnUrl);
         }
 
-        // POST: /Account/SignIn
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignIn(LoginViewModel model, string returnUrl = null)
+        private async Task<IActionResult> SignInUser(LoginViewModel model, string returnUrl)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-            ViewData["ReturnUrl"] = returnUrl;
-
-            return await SignInUser(model, returnUrl, false);
-        }
-
-        private async Task<IActionResult> SignInUser(LoginViewModel model, string returnUrl, bool useAP)
-        {
-            var applicationUser = new ApplicationUser
-            {
-                UserName = model.Email
-            };
-            string hashedPassword = _userManager.PasswordHasher.HashPassword(applicationUser, model.Password);
-
             bool rejectSignIn = false;
 
-            if (useAP)
+            var user = new AccountProtection.User()
             {
-                var user = new AccountProtection.User()
-                {
-                    UserType = AccountProtection.UserType.Consumer,
-                    Username = model.Email,
-                    UserId = model.Email
-                };
+                UserType = AccountProtection.UserType.Consumer,
+                Username = model.Email,
+                UserId = model.Email
+            };
 
-                var device = new AccountProtection.DeviceContext()
-                {
-                    DeviceContextId = model.DeviceFingerPrinting.SessionId,
-                    IpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString(),
-                    Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
-                };
-
-                var metadata = new AccountProtection.EventMetadataAccountLogin()
-                {
-                    TrackingId = Guid.NewGuid().ToString(),
-                    LoginId = Guid.NewGuid().ToString(),
-                    CustomerLocalDate = DateTime.Now,
-                    MerchantTimeStamp = DateTime.Now
-                };
-
-                var signIn = new AccountProtection.SignIn()
-                {
-                    Name = "AP.AccountLogin",
-                    Version = "0.5",
-                    Device = device,
-                    User = user,
-                    Metadata = metadata
-                };
-
-                var correlationId = _fraudProtectionService.NewCorrelationId;
-                var signInResponse = await _fraudProtectionService.PostSignInAP(signIn, correlationId, HttpContext.Session.GetString("envId"));
-
-                var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signIn, signInResponse, "SignIn");
-                TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
-
-                if (signInResponse is ResponseSuccess response)
-                {
-                    rejectSignIn = response.ResultDetails.FirstOrDefault()?.Decision != DecisionName.Approve;
-                }
-            }
-            else
+            var device = new AccountProtection.DeviceContext()
             {
-                var signIn = new SignIn
-                {
-                    SignInId = Guid.NewGuid().ToString(),
-                    PasswordHash = hashedPassword,
-                    MerchantLocalDate = DateTimeOffset.Now,
-                    CustomerLocalDate = model.DeviceFingerPrinting.ClientDate,
-                    UserId = model.Email,
-                    DeviceContextId = model.DeviceFingerPrinting.SessionId,
-                    AssessmentType = AssessmentType.Protect.ToString(),
-                    CurrentIpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()
-                };
+                DeviceContextId = model.DeviceFingerPrinting.SessionId,
+                IpAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString(),
+                Provider = DeviceContextProvider.DFPFingerPrinting.ToString()
+            };
 
-                var correlationId = _fraudProtectionService.NewCorrelationId;
-                var signInResponse = await _fraudProtectionService.PostSignIn(signIn, correlationId, HttpContext.Session.GetString("envId"));
+            var metadata = new AccountProtection.EventMetadataAccountLogin()
+            {
+                TrackingId = Guid.NewGuid().ToString(),
+                LoginId = Guid.NewGuid().ToString(),
+                CustomerLocalDate = DateTime.Now,
+                MerchantTimeStamp = DateTime.Now
+            };
 
-                var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signIn, signInResponse, "SignIn");
-                TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
+            var signIn = new AccountProtection.SignIn()
+            {
+                Name = "AP.AccountLogin",
+                Version = "0.5",
+                Device = device,
+                User = user,
+                Metadata = metadata
+            };
 
-                //2 out of 3 signIn will be successful
-                rejectSignIn = new Random().Next(0, 3) != 0;
+            var correlationId = _fraudProtectionService.NewCorrelationId;
+            var signInResponse = await _fraudProtectionService.PostSignIn(signIn, correlationId, HttpContext.Session.GetString("envId"));
+
+            var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signIn, signInResponse, "SignIn");
+            TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
+
+            if (signInResponse is ResponseSuccess response)
+            {
+                rejectSignIn = response.ResultDetails.FirstOrDefault()?.Decision != DecisionName.Approve;
             }
 
             if (!rejectSignIn)
@@ -258,7 +209,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RegisterAP(RegisterViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
             if (model == null)
             {
@@ -275,30 +226,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 throw new Exception(nameof(_contextAccessor.HttpContext.Connection));
             }
 
-            return await RegisterUser(model, returnUrl, true);
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
-        {
-            if (model == null)
-            {
-                throw new ArgumentNullException(nameof(model));
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            if (_contextAccessor.HttpContext.Connection == null)
-            {
-                throw new Exception(nameof(_contextAccessor.HttpContext.Connection));
-            }
-
-            return await RegisterUser(model, returnUrl, false);
+            return await RegisterUser(model, returnUrl);
         }
 
         private async Task<IActionResult> CallCustomAssessmentApi(CustomAssessmentViewModel model, string returnUrl, string envId)
@@ -315,7 +243,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             return View("CustomAssessment", model);
         }
 
-        private async Task<IActionResult> RegisterUser(RegisterViewModel model, string returnUrl, bool useAP)
+        private async Task<IActionResult> RegisterUser(RegisterViewModel model, string returnUrl)
         {
             //Create the user object and validate it before calling Fraud Protection
             var user = new ApplicationUser
@@ -360,65 +288,24 @@ namespace Contoso.FraudProtection.Web.Controllers
             var correlationId = _fraudProtectionService.NewCorrelationId;
 
             // Ask Fraud Protection to assess this signup/registration before registering the user in our database, etc.
-            if (useAP)
+            AccountProtection.SignUp signupEvent = CreateSignupAPEvent(model);
+
+            var signupAssessment = await _fraudProtectionService.PostSignup(signupEvent, correlationId, HttpContext.Session.GetString("envId"));
+
+            //Track Fraud Protection request/response for display only
+            var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signupEvent, signupAssessment, "Signup");
+            TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
+
+            bool rejectSignup = false;
+            if (signupAssessment is ResponseSuccess signupResponse)
             {
-                AccountProtection.SignUp signupEvent = CreateSignupAPEvent(model);
-
-                var signupAssessment = await _fraudProtectionService.PostSignupAP(signupEvent, correlationId, HttpContext.Session.GetString("envId"));
-
-                //Track Fraud Protection request/response for display only
-                var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signupEvent, signupAssessment, "Signup");
-                TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
-
-                bool rejectSignup = false;
-                if (signupAssessment is ResponseSuccess signupResponse)
-                {
-                    rejectSignup = signupResponse.ResultDetails.FirstOrDefault()?.Decision != DecisionName.Approve;
-                }
-
-                if (rejectSignup)
-                {
-                    ModelState.AddModelError("", "Signup rejected by Fraud Protection. You can try again as it has a random likelihood of happening in this sample site.");
-                    return View("Register", model);
-                }
+                rejectSignup = signupResponse.ResultDetails.FirstOrDefault()?.Decision != DecisionName.Approve;
             }
-            else
+
+            if (rejectSignup)
             {
-                SignUp signupEvent = CreateSignupEvent(model);
-
-                var signupAssessment = await _fraudProtectionService.PostSignup(signupEvent, correlationId, HttpContext.Session.GetString("envId"));
-
-                //Track Fraud Protection request/response for display only
-                var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signupEvent, signupAssessment, "Signup");
-
-                //2 out of 3 signups will succeed on average. Adjust if you want more or less signups blocked for tesing purposes.
-                var rejectSignup = new Random().Next(0, 3) != 0;
-                var signupStatusType = rejectSignup ? SignupStatusType.Rejected.ToString() : SignupStatusType.Approved.ToString();
-
-                var signupStatus = new SignupStatusEvent
-                {
-                    SignUpId = signupEvent.SignUpId,
-                    StatusType = signupStatusType,
-                    StatusDate = DateTimeOffset.Now,
-                    Reason = "User is " + signupStatusType
-                };
-
-                if (!rejectSignup)
-                {
-                    signupStatus.User = new SignupStatusUser { UserId = model.User.Email };
-                }
-
-                var signupStatusResponse = await _fraudProtectionService.PostSignupStatus(signupStatus, correlationId, HttpContext.Session.GetString("envId"));
-
-                fraudProtectionIO.Add(signupStatus, signupStatusResponse, "Signup Status");
-
-                TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
-
-                if (rejectSignup)
-                {
-                    ModelState.AddModelError("", "Signup rejected by Fraud Protection. You can try again as it has a random likelihood of happening in this sample site.");
-                    return View("Register", model);
-                }
+                ModelState.AddModelError("", "Signup rejected by Fraud Protection. You can try again as it has a random likelihood of happening in this sample site.");
+                return View("Register", model);
             }
             #endregion
 
@@ -506,72 +393,6 @@ namespace Contoso.FraudProtection.Web.Controllers
                 Address = new List<AccountProtection.Address>() { address },
                 Device = device,
                 Metadata = metadata
-            };
-            return signupEvent;
-        }
-
-        private SignUp CreateSignupEvent(RegisterViewModel model)
-        {
-            var signupAddress = new AddressDetails
-            {
-                FirstName = model.User.FirstName,
-                LastName = model.User.LastName,
-                PhoneNumber = model.User.Phone,
-                Street1 = model.Address.Address1,
-                Street2 = model.Address.Address2,
-                City = model.Address.City,
-                State = model.Address.State,
-                ZipCode = model.Address.ZipCode,
-                Country = model.Address.CountryRegion
-            };
-
-            var signupUser = new SignupUser
-            {
-                CreationDate = DateTimeOffset.Now,
-                UpdateDate = DateTimeOffset.Now,
-                FirstName = model.User.FirstName,
-                LastName = model.User.LastName,
-                Country = model.Address.CountryRegion,
-                ZipCode = model.Address.ZipCode,
-                TimeZone = new TimeSpan(0, 0, -model.DeviceFingerPrinting.ClientTimeZone, 0).ToString(),
-                Language = "EN-US",
-                PhoneNumber = model.User.Phone,
-                Email = model.User.Email,
-                ProfileType = UserProfileType.Consumer.ToString(),
-                Address = signupAddress
-            };
-
-            var deviceContext = new DeviceContext
-            {
-                DeviceContextId = _contextAccessor.GetSessionId(),
-                IPAddress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(),
-                Provider = DeviceContextProvider.DFPFingerPrinting.ToString(),
-            };
-
-            var marketingContext = new MarketingContext
-            {
-                Type = MarketingType.Direct.ToString(),
-                IncentiveType = MarketingIncentiveType.None.ToString(),
-                IncentiveOffer = "Integrate with Fraud Protection"
-            };
-
-            var storefrontContext = new StoreFrontContext
-            {
-                StoreName = "Fraud Protection Sample Site",
-                Type = StorefrontType.Web.ToString(),
-                Market = "US"
-            };
-
-            var signupEvent = new SignUp
-            {
-                SignUpId = Guid.NewGuid().ToString(),
-                AssessmentType = AssessmentType.Protect.ToString(),
-                User = signupUser,
-                MerchantLocalDate = DateTimeOffset.Now,
-                CustomerLocalDate = model.DeviceFingerPrinting.ClientDate,
-                MarketingContext = marketingContext,
-                StoreFrontContext = storefrontContext,
-                DeviceContext = deviceContext,
             };
             return signupEvent;
         }
