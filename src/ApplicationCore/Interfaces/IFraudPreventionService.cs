@@ -3,14 +3,12 @@
 
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection.Response;
-using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response;
 using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
 using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
 using Microsoft.Dynamics.FraudProtection.Models.LabelEvent;
 using Microsoft.Dynamics.FraudProtection.Models.PurchaseEvent;
 using Microsoft.Dynamics.FraudProtection.Models.PurchaseStatusEvent;
 using Microsoft.Dynamics.FraudProtection.Models.RefundEvent;
-using Microsoft.Dynamics.FraudProtection.Models.SignupEvent;
 using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent;
 using System.Threading.Tasks;
@@ -26,9 +24,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
 
         Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId, string envId);
 
-        Task<SignupResponse> PostSignup(SignUp signup, string correlationId, string envId);
-
-        Task<Response> PostSignupAP(AccountProtection.SignUp signup, string correlationId, string envId);
+        Task<Response> PostSignup(AccountProtection.SignUp signup, string correlationId, string envId);
 
         Task<FraudProtectionResponse> PostRefund(Refund refund, string correlationId, string envId);
 
@@ -44,9 +40,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
 
         Task<FraudProtectionResponse> PostLabel(Label label, string correlationId, string envId);
 
-        Task<SignInResponse> PostSignIn(SignIn request, string correlationId, string envId);
-
-        Task<Response> PostSignInAP(AccountProtection.SignIn request, string correlationId, string envId);
+        Task<Response> PostSignIn(AccountProtection.SignIn request, string correlationId, string envId);
 
         Task<Response> PostCustomAssessment(CustomAssessment assessment, string correlationId, string envId);
     }
