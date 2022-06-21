@@ -3,7 +3,7 @@
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response
 {
-    public class Enrichments<TDeviceAttributes> where TDeviceAttributes : DeviceAttributes
+    public class Enrichments<TDeviceAttributes>
     {
         public TDeviceAttributes DeviceAttributes { get; set; }
 
@@ -20,8 +20,6 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 
         public string CookieEnabled { get; set; }
 
-        public string DeviceAsn { get; set; }
-
         public string DeviceCity { get; set; }
 
         public string DeviceCountryCode { get; set; }
@@ -33,8 +31,6 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         public string DeviceState { get; set; }
 
         public string FontsCount { get; set; }
-
-        public string IpRoutingType { get; set; }
 
         public string JavaScriptEnabled { get; set; }
 
@@ -50,17 +46,9 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 
         public string ScreenResolution { get; set; }
 
-        public string TcpDistance { get; set; }
-
         public string TimeZoneOffset { get; set; }
 
         public string TrueIp { get; set; }
-
-        public string UserAgentBrowser { get; set; }
-
-        public string UserAgentOperatingSystem { get; set; }
-
-        public string UserAgentPlatform { get; set; }
 
         public string UserAgentType { get; set; }
     }
