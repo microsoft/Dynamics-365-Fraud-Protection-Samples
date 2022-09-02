@@ -42,7 +42,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
 
         Task<Response> PostSignIn(AccountProtection.SignIn request, string correlationId, string envId);
 
-        Task<Response> PostCustomAssessment(CustomAssessment assessment, string correlationId, string envId);
+        Task<Response> PostCustomAssessment(CustomAssessment assessment, string correlationId, string envId, bool useV2);
     }
 
     #endregion

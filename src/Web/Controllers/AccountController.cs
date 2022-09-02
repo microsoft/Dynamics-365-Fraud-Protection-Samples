@@ -234,8 +234,8 @@ namespace Contoso.FraudProtection.Web.Controllers
             #region Fraud Protection Service
             var correlationId = _fraudProtectionService.NewCorrelationId;
             var assessment = new CustomAssessment { ApiName = model.ApiName, Payload = model.Payload };
-
-            var response = await _fraudProtectionService.PostCustomAssessment(assessment, correlationId, envId);
+            var useV2 = model.Version.Equals(EndpointVersion.V2);
+            var response = await _fraudProtectionService.PostCustomAssessment(assessment, correlationId, envId, useV2);
             var fraudProtectionIO = new FraudProtectionIOModel(correlationId, model.Payload, response, "Custom Assessment", true);
             TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
             #endregion
