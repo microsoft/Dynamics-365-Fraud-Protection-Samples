@@ -12,5 +12,16 @@ namespace Contoso.FraudProtection.Web.ViewModels
 
         [Required]
         public string Payload { get; set; }
+
+        [Required]
+        public EndpointVersion Version { get; set; }
+    }
+
+    public enum EndpointVersion
+    {
+        V1,
+        V2,
+        V2Observe,
+        V2Label
     }
 }
