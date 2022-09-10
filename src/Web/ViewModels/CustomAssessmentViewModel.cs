@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using Contoso.FraudProtection.Web.ViewModels.Shared;
 using System.ComponentModel.DataAnnotations;
 
 namespace Contoso.FraudProtection.Web.ViewModels
@@ -15,6 +16,8 @@ namespace Contoso.FraudProtection.Web.ViewModels
 
         [Required]
         public EndpointVersion Version { get; set; }
+
+        public DeviceFingerPrintingViewModel DeviceFingerPrinting { get; set; }
     }
 
     public enum EndpointVersion
