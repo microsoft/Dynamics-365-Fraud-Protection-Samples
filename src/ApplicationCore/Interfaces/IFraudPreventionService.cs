@@ -3,6 +3,7 @@
 
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels;
 using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection.Response;
+using Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response;
 using Microsoft.Dynamics.FraudProtection.Models.BankEventEvent;
 using Microsoft.Dynamics.FraudProtection.Models.ChargebackEvent;
 using Microsoft.Dynamics.FraudProtection.Models.LabelEvent;
@@ -42,7 +43,9 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
 
         Task<Response> PostSignIn(AccountProtection.SignIn request, string correlationId, string envId);
 
-        Task<Response> PostCustomAssessment(CustomAssessment assessment, string correlationId, string envId, bool useV2);
+        Task<Response> PostCustomAssessment(CustomAssessment assessment, string correlationId, string envId);
+
+        Task<AssessmentResponse> PostAssessment(CustomAssessment assessment, string correlationId, string envId);
     }
 
     #endregion

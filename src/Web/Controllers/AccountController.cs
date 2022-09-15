@@ -75,7 +75,13 @@ namespace Contoso.FraudProtection.Web.Controllers
         [AllowAnonymous]
         public IActionResult CustomAssessment()
         {
-            var model = new CustomAssessmentViewModel();
+            var model = new CustomAssessmentViewModel
+            {
+                DeviceFingerPrinting = new DeviceFingerPrintingViewModel
+                {
+                    SessionId = _contextAccessor.GetSessionId()
+                }
+            };
 
             return View(model);
         }
@@ -83,7 +89,7 @@ namespace Contoso.FraudProtection.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CustomAssessment(CustomAssessmentViewModel model, string returnUrl = null)
+        public async Task<IActionResult> CustomAssessment(CustomAssessmentViewModel model)
         {
             if (model == null)
             {
@@ -95,7 +101,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 return View(model);
             }
 
-            return await CallCustomAssessmentApi(model, returnUrl, HttpContext.Session.GetString("envId"));
+            return await CallCustomAssessmentApi(model, HttpContext.Session.GetString("envId"));
         }
 
         [HttpPost]
@@ -229,14 +235,19 @@ namespace Contoso.FraudProtection.Web.Controllers
             return await RegisterUser(model, returnUrl);
         }
 
-        private async Task<IActionResult> CallCustomAssessmentApi(CustomAssessmentViewModel model, string returnUrl, string envId)
+        private async Task<IActionResult> CallCustomAssessmentApi(CustomAssessmentViewModel model, string envId)
         {
             #region Fraud Protection Service
             var correlationId = _fraudProtectionService.NewCorrelationId;
-            var assessment = new CustomAssessment { ApiName = model.ApiName, Payload = model.Payload };
+            var payload = model.Payload
+                .Replace("@deviceContextId", model.DeviceFingerPrinting.SessionId)
+                .Replace("@deviceIpAddress", _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString());
+            var assessment = new CustomAssessment { ApiName = model.ApiName, Payload = payload };
             var useV2 = model.Version.Equals(EndpointVersion.V2);
-            var response = await _fraudProtectionService.PostCustomAssessment(assessment, correlationId, envId, useV2);
-            var fraudProtectionIO = new FraudProtectionIOModel(correlationId, model.Payload, response, "Custom Assessment", true);
+            object response = useV2 ?
+                await _fraudProtectionService.PostAssessment(assessment, correlationId, envId) :
+                await _fraudProtectionService.PostCustomAssessment(assessment, correlationId, envId);
+            var fraudProtectionIO = new FraudProtectionIOModel(correlationId, payload, response, "Custom Assessment", true);
             TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
             #endregion
 
