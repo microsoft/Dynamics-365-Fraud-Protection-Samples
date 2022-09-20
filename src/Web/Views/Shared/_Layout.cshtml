@@ -57,9 +57,12 @@
             }
         }
 
-        document.addEventListener("keydown", myFunction);
-        //window.addEventListener('mousemove',myFunction);
-        document.addEventListener("click", myFunction);
+        const EVENTS_DATA = "eventsData";
+        const START_TIME = "startTime";
+        const KEYBOARD_LISTENERS = ["keydown", "keypress", "keyup"];
+        const MOUSE_LISTENERS = ["click", "contextmenu", "dblclick", "mousedown", "mouseenter",
+            "mouseleave", "mousemove", "mouseout", "mouseover", "mouseup"
+        ];
 
         const events = [];
         var index = 0;
@@ -70,16 +73,32 @@
         var timenow = new Date();
         var now = timenow.getTime();
 
-        if (window.localStorage.getItem("eventsData") == null) {
-            window.localStorage.setItem("eventsData", "");
+        if (window.localStorage.getItem(EVENTS_DATA) == null) {
+            window.localStorage.setItem(EVENTS_DATA, "");
         } else {
-            eventsData = window.localStorage.getItem("eventsData");
+            eventsData = window.localStorage.getItem(EVENTS_DATA);
         }
 
-        if (window.localStorage.getItem("startedTime") == null) {
-            window.localStorage.setItem("startedTime", now);
-        } else {
-            timer = window.localStorage.getItem("startedTime");
+        addListenders();
+
+        function addListenders() {
+            KEYBOARD_LISTENERS.forEach((name) => {
+                document.addEventListener(name, myFunction);
+            });
+
+            MOUSE_LISTENERS.forEach((name) => {
+                document.addEventListener(name, myFunction);
+            });
+        }
+
+        function removeListenders() {
+            KEYBOARD_LISTENERS.forEach((name) => {
+                document.removeEventListener(name, myFunction);
+            });
+
+            MOUSE_LISTENERS.forEach((name) => {
+                document.removeEventListener(name, myFunction);
+            });
         }
 
         function makeTextFile(text) {
@@ -97,17 +116,17 @@
         };
 
         function download(fname) {
-            const url = makeTextFile(window.localStorage.getItem("eventsData"));
+            const url = makeTextFile(window.localStorage.getItem(EVENTS_DATA));
             const link = document.createElement('a');
             link.href = url;
             link.setAttribute('download', fname);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            window.localStorage.removeItem("eventsData");
-            window.localStorage.removeItem("startedTime");
+            window.localStorage.removeItem(EVENTS_DATA);
+            window.localStorage.removeItem(START_TIME);
 
-            // reload so listeners can be re-registered
+            // reload so listeners can be re-added
             window.location.reload();
             return 1;
         }
@@ -123,7 +142,13 @@
             var time = new Date();
             var ctime = time.getTime();
 
-            if (ctime - window.localStorage.getItem("startedTime") < 10000) {
+            if (window.localStorage.getItem(START_TIME) == null) {
+                window.localStorage.setItem(START_TIME, now);
+            } else {
+                timer = window.localStorage.getItem(START_TIME);
+            }
+
+            if (ctime - window.localStorage.getItem(START_TIME) < 10000) {
                 var etype;
                 if (event.type == "click") {
                     etype = buttontype[event.button];
@@ -131,15 +156,13 @@
                 else {
                     etype = event.type;
                 }
+
                 events[index] = index + " " + etype + " " + ctime + " " + event.pageX + " " + event.pageY;
-                window.localStorage.setItem("eventsData", eventsData += events[index] + "\n");
+                window.localStorage.setItem(EVENTS_DATA, eventsData += events[index] + "\n");
                 index++;
             }
             else {
-
-                document.removeEventListener("keydown", myFunction);
-                ////window.addEventListener('mousemove',myFunction);
-                document.removeEventListener("click", myFunction);
+                removeListenders();
 
                 let person = prompt("Please enter your name:", "Harry Potter");
                 var file_name = person + "_mb.txt";
