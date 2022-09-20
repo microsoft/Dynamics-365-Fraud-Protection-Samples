@@ -57,12 +57,16 @@
             }
         }
 
+        // local storage keys
         const EVENTS_DATA = "eventsData";
         const START_TIME = "startTime";
+
         const KEYBOARD_LISTENERS = ["keydown", "keypress", "keyup"];
         const MOUSE_LISTENERS = ["click", "contextmenu", "dblclick", "mousedown", "mouseenter",
             "mouseleave", "mousemove", "mouseout", "mouseover", "mouseup"
         ];
+
+        const DOWNLOAD_DELAY = 50000;
 
         const events = [];
         var index = 0;
@@ -148,7 +152,7 @@
                 timer = window.localStorage.getItem(START_TIME);
             }
 
-            if (ctime - window.localStorage.getItem(START_TIME) < 10000) {
+            if (ctime - window.localStorage.getItem(START_TIME) < DOWNLOAD_DELAY) {
                 var etype;
                 if (event.type == "click") {
                     etype = buttontype[event.button];
