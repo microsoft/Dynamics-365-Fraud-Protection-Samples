@@ -9,107 +9,198 @@
 
 @inject IConfiguration Configuration
 @{
-	var apiBaseUrl = Configuration.GetSection("FraudProtectionSettings")["ApiBaseUrl"];
-	var envId = @Context.Session.GetString("envId") ?? Configuration.GetSection("FraudProtectionSettings")["InstanceId"];
+    var apiBaseUrl = Configuration.GetSection("FraudProtectionSettings")["ApiBaseUrl"];
+    var envId = @Context.Session.GetString("envId") ?? Configuration.GetSection("FraudProtectionSettings")["InstanceId"];
 }
 
 <!DOCTYPE html>
 <html>
 <head>
- <meta charset="utf-8" />
- <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <title>@ViewData["Title"] - Microsoft Fraud Protection Merchant Application</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Microsoft Fraud Protection Merchant Application</title>
 
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" />
- <environment names="Development">
-  <link rel="stylesheet" href="~/css/app.css" />
- </environment>
- <environment names="Staging,Production">
-  <link rel="stylesheet" href="~/css/app.min.css" asp-append-version="true" />
- </environment>
- <link rel="stylesheet" href="~/css/app.component.css" />
- <link rel="stylesheet" href="~/css/basket/basket.component.css" />
- <link rel="stylesheet" href="~/css/catalog/pager.css" />
- <link rel="stylesheet" href="~/css/catalog/catalog.component.css" />
- <link rel="stylesheet" href="~/css/basket/basket-status/basket-status.component.css" />
- <link rel="stylesheet" href="~/css/orders/orders.component.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" />
+    <environment names="Development">
+        <link rel="stylesheet" href="~/css/app.css" />
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="~/css/app.min.css" asp-append-version="true" />
+    </environment>
+    <link rel="stylesheet" href="~/css/app.component.css" />
+    <link rel="stylesheet" href="~/css/basket/basket.component.css" />
+    <link rel="stylesheet" href="~/css/catalog/pager.css" />
+    <link rel="stylesheet" href="~/css/catalog/catalog.component.css" />
+    <link rel="stylesheet" href="~/css/basket/basket-status/basket-status.component.css" />
+    <link rel="stylesheet" href="~/css/orders/orders.component.css" />
 
- <script type="text/javascript">
-  function setUpClientDetails() {
-   Date.prototype.stdTimezoneOffset = function () {
-	var jan = new Date(this.getFullYear(), 0, 1);
-	var jul = new Date(this.getFullYear(), 6, 1);
-	return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
-   }
+    <script type="text/javascript">
+        function setUpClientDetails() {
+            Date.prototype.stdTimezoneOffset = function () {
+                var jan = new Date(this.getFullYear(), 0, 1);
+                var jul = new Date(this.getFullYear(), 6, 1);
+                return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+            }
 
-   Date.prototype.isDstObserved = function () {
-	return this.getTimezoneOffset() < this.stdTimezoneOffset();
-   }
+            Date.prototype.isDstObserved = function () {
+                return this.getTimezoneOffset() < this.stdTimezoneOffset();
+            }
 
-   var today = new Date();
-   var clientDate = document.getElementById('DeviceFingerPrinting_ClientDate');
-   if (clientDate) {
-	clientDate.value = today.toJSON();
-   }
-   var clientTimeZone = document.getElementById('DeviceFingerPrinting_ClientTimeZone');
-   if (clientTimeZone) {
-	clientTimeZone.value = today.isDstObserved() ? today.stdTimezoneOffset() : today.getTimezoneOffset();
-   }
-  }
- </script>
+            var today = new Date();
+            var clientDate = document.getElementById('DeviceFingerPrinting_ClientDate');
+            if (clientDate) {
+                clientDate.value = today.toJSON();
+            }
+            var clientTimeZone = document.getElementById('DeviceFingerPrinting_ClientTimeZone');
+            if (clientTimeZone) {
+                clientTimeZone.value = today.isDstObserved() ? today.stdTimezoneOffset() : today.getTimezoneOffset();
+            }
+        }
+
+        document.addEventListener("keydown", myFunction);
+        //window.addEventListener('mousemove',myFunction);
+        document.addEventListener("click", myFunction);
+
+        const events = [];
+        var index = 0;
+        var textFile = null;
+        var eventsData = "";
+        var timer = 0;
+
+        var timenow = new Date();
+        var now = timenow.getTime();
+
+        if (window.localStorage.getItem("eventsData") == null) {
+            window.localStorage.setItem("eventsData", "");
+        } else {
+            eventsData = window.localStorage.getItem("eventsData");
+        }
+
+        if (window.localStorage.getItem("startedTime") == null) {
+            window.localStorage.setItem("startedTime", now);
+        } else {
+            timer = window.localStorage.getItem("startedTime");
+        }
+
+        function makeTextFile(text) {
+            var data = new Blob([text], { type: 'text/plain' });
+
+            // If we are replacing a previously generated file we need to
+            // manually revoke the object URL to avoid memory leaks.
+            if (textFile !== null) {
+                window.URL.revokeObjectURL(textFile);
+            }
+
+            textFile = window.URL.createObjectURL(data);
+
+            return textFile;
+        };
+
+        function download(fname) {
+            const url = makeTextFile(window.localStorage.getItem("eventsData"));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', fname);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.localStorage.removeItem("eventsData");
+            window.localStorage.removeItem("startedTime");
+
+            // reload so listeners can be re-registered
+            window.location.reload();
+            return 1;
+        }
+
+        function myFunction(event) {
+            const buttontype = {
+                0: "LeftButton",
+                1: "MiddleButton",
+                2: "RightButton",
+                3: "BackButton",
+                4: "ForwardButton"
+            }
+            var time = new Date();
+            var ctime = time.getTime();
+
+            if (ctime - window.localStorage.getItem("startedTime") < 10000) {
+                var etype;
+                if (event.type == "click") {
+                    etype = buttontype[event.button];
+                }
+                else {
+                    etype = event.type;
+                }
+                events[index] = index + " " + etype + " " + ctime + " " + event.pageX + " " + event.pageY;
+                window.localStorage.setItem("eventsData", eventsData += events[index] + "\n");
+                index++;
+            }
+            else {
+
+                document.removeEventListener("keydown", myFunction);
+                ////window.addEventListener('mousemove',myFunction);
+                document.removeEventListener("click", myFunction);
+
+                let person = prompt("Please enter your name:", "Harry Potter");
+                var file_name = person + "_mb.txt";
+                download(file_name);
+            }
+            console.log(index)
+        }
+    </script>
 </head>
 <body>
- <header class="navbar navbar-light navbar-static-top">
-  <div class="container">
-   <article>
-	<section class="col-lg-2 col-md-4 col-xs-11">
-	 <a asp-area="" asp-controller="Catalog" asp-action="Index" class="navbar-brand">
-	  <img src="~/images/brand.png" alt="Microsoft Fraud Protection Merchant Application" title="@apiBaseUrl" />
-	 </a>
-	</section>
-	<partial name="_LoginPartial" />
-	<div>
-		@using (Html.BeginForm("Update", "Environment", FormMethod.Post))
-		{
-			<div>
-				<label for="env">env:</label>
-				<input type="text" value="@envId" name="env" title="@envId" />
-				<input type="submit" value="Update" />
-			</div>
-		}
-	</div>
-   </article>
-  </div>
- </header>
- <section class="esh-top-banner">
-		@RenderSection("TopBanner", required: false)
- </section>
-	@RenderBody()
+    <header class="navbar navbar-light navbar-static-top">
+        <div class="container">
+            <article>
+                <section class="col-lg-2 col-md-4 col-xs-11">
+                    <a asp-area="" asp-controller="Catalog" asp-action="Index" class="navbar-brand">
+                        <img src="~/images/brand.png" alt="Microsoft Fraud Protection Merchant Application" title="@apiBaseUrl" />
+                    </a>
+                </section>
+                <partial name="_LoginPartial" />
+                <div>
+                    @using (Html.BeginForm("Update", "Environment", FormMethod.Post))
+                    {
+                        <div>
+                            <label for="env">env:</label>
+                            <input type="text" value="@envId" name="env" title="@envId" />
+                            <input type="submit" value="Update" />
+                        </div>
+                    }
+                </div>
+            </article>
+        </div>
+    </header>
+    <section class="esh-top-banner">
+        @RenderSection("TopBanner", required: false)
+    </section>
+    @RenderBody()
 
- <partial name="_FraudProtectionIO" model="TempData.Get<FraudProtectionIOModel>(FraudProtectionIOModel.TempDataKey)" />
+    <partial name="_FraudProtectionIO" model="TempData.Get<FraudProtectionIOModel>(FraudProtectionIOModel.TempDataKey)" />
 
- <footer class="esh-app-footer">
-  <div class="container">
-   <article class="row">
-	<section class="col-sm-6"></section>
+    <footer class="esh-app-footer">
+        <div class="container">
+            <article class="row">
+                <section class="col-sm-6"></section>
 
-	<section class="col-sm-6">
-	 <div class="esh-app-footer-text hidden-xs">Microsoft Fraud Protection Merchant Application. All rights reserved</div>
-	</section>
-   </article>
-  </div>
- </footer>
+                <section class="col-sm-6">
+                    <div class="esh-app-footer-text hidden-xs">Microsoft Fraud Protection Merchant Application. All rights reserved</div>
+                </section>
+            </article>
+        </div>
+    </footer>
 
- <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
- <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"></script>
 
- <environment names="Development">
-  <script src="~/js/bundle/bundle.js" asp-append-version="true"></script>
- </environment>
- <environment names="Staging,Production">
-  <script src="~/js/bundle/bundle.min.js" asp-append-version="true"></script>
- </environment>
+    <environment names="Development">
+        <script src="~/js/bundle/bundle.js" asp-append-version="true"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/js/bundle/bundle.min.js" asp-append-version="true"></script>
+    </environment>
 
-	@RenderSection("scripts", required: false)
+    @RenderSection("scripts", required: false)
 </body>
 </html>
