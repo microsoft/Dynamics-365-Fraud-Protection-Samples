@@ -139,6 +139,10 @@
             window.localStorage.removeItem(START_TIME);
         }
 
+        function getFileName() {
+            return "HarryPotter" + window.localStorage.getItem(START_TIME) + "_mb";
+        }
+
         function download() {
             removeListenders();
             if (getDownloadCount() >= MAX_DOWNLOADS_COUNT) {
@@ -152,12 +156,12 @@
             console.log(newCount + ' download(s) so far');
 
             //let person = prompt("Please enter your name:", "Harry Potter");
-            var fname = "Harry Potter" + window.localStorage.getItem(START_TIME) + "_mb.txt";
+           // var fname = "Harry Potter" + window.localStorage.getItem(START_TIME) + "_mb.txt";
 
             const url = makeTextFile(window.localStorage.getItem(EVENTS_DATA));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', fname);
+            link.setAttribute('download', getFileName() + ".txt");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -193,7 +197,7 @@
                     etype = event.type;
                 }
 
-                events[index] = window.localStorage.getItem(USER_ID) + " " + etype + " " + ctime + " " + event.pageX + " " + event.pageY;
+                events[index] = window.localStorage.getItem(USER_ID) + " " + getFileName() + " " + etype + " " + ctime + " " + event.pageX + " " + event.pageY;
                 window.localStorage.setItem(EVENTS_DATA, eventsData += events[index] + "\n");
                 index++;
             } else {
