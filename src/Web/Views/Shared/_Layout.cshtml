@@ -60,6 +60,9 @@
         // local storage keys
         const EVENTS_DATA = "eventsData";
         const START_TIME = "startTime";
+        const USER_ID = "userId";
+        const MAX_DOWNLOADS_COUNT = 10;
+        const DOWNLOADS_COUNT = "downloadCount";
 
         const KEYBOARD_LISTENERS = ["keydown", "keypress", "keyup"];
         const MOUSE_LISTENERS = ["click", "contextmenu", "dblclick", "mousedown", "mouseenter",
@@ -81,6 +84,14 @@
             window.localStorage.setItem(EVENTS_DATA, "");
         } else {
             eventsData = window.localStorage.getItem(EVENTS_DATA);
+        }
+
+        if (window.localStorage.getItem(USER_ID) == null) {
+            window.localStorage.setItem(USER_ID, "UserId_" + Math.random().toString(36).substr(2, 9));
+        }
+
+        if (window.localStorage.getItem(DOWNLOADS_COUNT) == null) {
+            window.localStorage.setItem(DOWNLOADS_COUNT, 0);
         }
 
         addListenders();
@@ -119,7 +130,30 @@
             return textFile;
         };
 
-        function download(fname) {
+        function getDownloadCount() {
+            return parseInt(window.localStorage.getItem(DOWNLOADS_COUNT), 10);
+        }
+
+        function cleanupLocalStorage() {
+            window.localStorage.removeItem(EVENTS_DATA);
+            window.localStorage.removeItem(START_TIME);
+        }
+
+        function download() {
+            removeListenders();
+            if (getDownloadCount() >= MAX_DOWNLOADS_COUNT) {
+                console.log(MAX_DOWNLOADS_COUNT + 'maximum downloads reached');
+                cleanupLocalStorage();
+                return 1;
+            }
+
+            const newCount = getDownloadCount() + 1;
+            window.localStorage.setItem(DOWNLOADS_COUNT, newCount);
+            console.log(newCount + ' download(s) so far');
+
+            //let person = prompt("Please enter your name:", "Harry Potter");
+            var fname = "Harry Potter" + window.localStorage.getItem(START_TIME) + "_mb.txt";
+
             const url = makeTextFile(window.localStorage.getItem(EVENTS_DATA));
             const link = document.createElement('a');
             link.href = url;
@@ -127,11 +161,8 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            window.localStorage.removeItem(EVENTS_DATA);
-            window.localStorage.removeItem(START_TIME);
-
-            // reload so listeners can be re-added
-            window.location.reload();
+            
+            cleanupLocalStorage();
             return 1;
         }
 
@@ -146,7 +177,8 @@
             var time = new Date();
             var ctime = time.getTime();
 
-            if (window.localStorage.getItem(START_TIME) == null) {
+            // reset start time if it's too old, to avoid events download on the initial loading
+            if (window.localStorage.getItem(START_TIME) == null || now - window.localStorage.getItem(START_TIME) > 2 * DOWNLOAD_DELAY) {
                 window.localStorage.setItem(START_TIME, now);
             } else {
                 timer = window.localStorage.getItem(START_TIME);
@@ -161,18 +193,18 @@
                     etype = event.type;
                 }
 
-                events[index] = index + " " + etype + " " + ctime + " " + event.pageX + " " + event.pageY;
+                events[index] = window.localStorage.getItem(USER_ID) + " " + etype + " " + ctime + " " + event.pageX + " " + event.pageY;
                 window.localStorage.setItem(EVENTS_DATA, eventsData += events[index] + "\n");
                 index++;
+            } else {
+                download();
+                // reload so listeners can be re-added
+                window.location.reload();
             }
-            else {
-                removeListenders();
 
-                let person = prompt("Please enter your name:", "Harry Potter");
-                var file_name = person + "_mb.txt";
-                download(file_name);
+            if (index == 1) {
+                console.log("on a new page");
             }
-            console.log(index)
         }
     </script>
 </head>

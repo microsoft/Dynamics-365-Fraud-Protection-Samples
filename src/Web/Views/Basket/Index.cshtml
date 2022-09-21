@@ -18,7 +18,7 @@
 
     @if (Model.Items.Any())
     {
-        <form method="post">
+         <form method="post" onsubmit="download()">
             <article class="esh-basket-titles row">
                 <br />
                 <section class="esh-basket-title col-xs-3">Product</section>
@@ -77,7 +77,7 @@
                 </div>
                 <section class="col-xs-push-6 col-xs-7">
                     <button class="btn esh-basket-checkout" name="continueShoppingButton" asp-action="Index" asp-controller="Catalog">[ Continue Shopping... ]</button>
-                    <button class="btn esh-basket-checkout" name="checkoutButton" type="submit" asp-action="Checkout">[ Checkout ]</button>
+                    <button class="btn esh-basket-checkout" name="checkoutButton" type="submit" asp-action="Index" asp-controller="Catalog">[ Checkout ]</button>
                 </section>
 
             </div>
