@@ -94,9 +94,9 @@
             window.localStorage.setItem(DOWNLOADS_COUNT, 0);
         }
 
-        addListenders();
+        addListeners();
 
-        function addListenders() {
+        function addListeners() {
             KEYBOARD_LISTENERS.forEach((name) => {
                 document.addEventListener(name, myFunction);
             });
@@ -106,7 +106,7 @@
             });
         }
 
-        function removeListenders() {
+        function removeListeners() {
             KEYBOARD_LISTENERS.forEach((name) => {
                 document.removeEventListener(name, myFunction);
             });
@@ -144,7 +144,7 @@
         }
 
         function download() {
-            removeListenders();
+            removeListeners();
             if (getDownloadCount() >= MAX_DOWNLOADS_COUNT) {
                 console.log(MAX_DOWNLOADS_COUNT + 'maximum downloads reached');
                 cleanupLocalStorage();
