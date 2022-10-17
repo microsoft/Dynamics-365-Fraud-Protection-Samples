@@ -1,11 +1,13 @@
 # Microsoft Dynamics 365 Fraud Protection - Sample merchant application
+
 The Microsoft Dynamics 365 Fraud Protection sample merchant application demonstrates how to call the [Dynamics 365 Fraud Protection APIs](https://apidocs.microsoft.com/services/dynamics365fraudprotection) in the context of an online merchant who sells clothing and other goods. This sample may be useful if you are in the process of integrating with the Dynamics 365 Fraud Protection APIs, or if you want to see how new API endpoints/features are integrated when there are new API versions.
 
 ## Local development setup
+
 Before running the solution, you must install these prerequisites:
 
-- Visual Studio 2019 
-- .Net Core SDK version 3.1 or greater
+- Visual Studio 2022
+- .Net Core SDK version 6.0 or greater
 - (optional) SQL Management Studio, Azure Data Studio, or similar, if you want to view your schema and data during testing/development.
 
 ## Running the application
@@ -24,6 +26,7 @@ dotnet ef database update -c appidentitydbcontext -p ../Infrastructure/Infrastru
 ```
 
 These commands populate two databases:
+
 - One stores catalog and shopping cart information.
 - One stores user credential and identity data.
 
@@ -32,21 +35,26 @@ The first time you run the application, it will seed both databases with data su
 ### Additional database updates
 
 The sample site uses .NET Core Entity Framework migrations. To add new migrations, open a command prompt in the src/Web folder, and execute the following commands:
+
 ```
 dotnet ef migrations add <migration name> -c catalogcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
 dotnet ef migrations add <migration name> -c appidentitydbcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Identity/Migrations
 ```
 
 ## Default login credentials
+
 Use these accounts if you want to login without registering a new user account.
 
 Admin:
+
 ```
 User: demoadminuser@microsoft.com
 Password: Pass@word1
 ```
+
 Consumer:
-``` 
+
+```
 User: demouser@microsoft.com
 Password: Pass@word1
 ```
