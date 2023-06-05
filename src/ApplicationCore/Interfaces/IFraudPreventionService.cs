@@ -13,6 +13,7 @@ using Microsoft.Dynamics.FraudProtection.Models.RefundEvent;
 using Microsoft.Dynamics.FraudProtection.Models.SignupStatusEvent;
 using Microsoft.Dynamics.FraudProtection.Models.UpdateAccountEvent;
 using System.Threading.Tasks;
+using System;
 
 using AccountProtection = Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection;
 
@@ -45,7 +46,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
 
         Task<Response> PostCustomAssessment(CustomAssessment assessment, string correlationId, string envId);
 
-        Task<AssessmentResponse> PostAssessment(CustomAssessment assessment, string correlationId, string envId);
+        Task<Object> PostAssessment(CustomAssessment assessment, string correlationId, string envId);
     }
 
     #endregion
