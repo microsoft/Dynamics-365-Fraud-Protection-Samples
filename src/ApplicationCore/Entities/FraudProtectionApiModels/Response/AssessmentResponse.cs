@@ -132,5 +132,4 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         
         public string Reason { get; set; }
     }
-
 }
