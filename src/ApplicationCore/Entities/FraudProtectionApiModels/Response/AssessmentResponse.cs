@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.Response
@@ -11,9 +11,11 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
 
         public List<RuleEvaluation> RuleEvaluations { get; set; }
 
-        public List<AssessmentScores> Scores { get; set; }
+        public AssessmentEnrichments Enrichments { get; set; }
 
         public IDictionary<string, object> CustomProperties { get; set; }
+
+        public IDictionary<string, object> Diagnostics { get; set; }
     }
 
     public class AssessmentMetadata
@@ -52,12 +54,82 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
         public List<string> SupportMessages { get; set; }
     }
 
+    public class AssessmentEnrichments
+    {
+        public AssessmentDeviceAttributes DeviceAttributes { get; set; }
+
+        public AssessmentScores Risk { get; set; }
+
+        public AssessmentScores Bot { get; set; }
+    }
+
+    public class AssessmentDeviceAttributes
+    {
+        public string TrueIp { get; set; }
+
+        public string RealtimeTimezoneOffset { get; set; }
+
+        public string Sld { get; set; }
+        
+        public string TimeZone { get; set; }
+        
+        public string DeviceId { get; set; }
+        
+        public string DeviceCountryCode { get; set; }
+        
+        public string DeviceState { get; set; }
+        
+        public string DeviceCity { get; set; }
+        
+        public string DevicePostalCode { get; set; }
+        
+        public string DeviceAsn { get; set; }
+        
+        public string Platform { get; set; }
+        
+        public string BrowserUserAgentLanguages { get; set; }
+        
+        public string BrowserUserAgent { get; set; }
+        
+        public string TcpDistance { get; set; }
+        
+        public string Carrier { get; set; }
+        
+        public string IpRoutingType { get; set; }
+        
+        public string Proxy { get; set; }
+        
+        public string UserAgentPlatform { get; set; }
+        
+        public string UserAgentBrowser { get; set; }
+        
+        public string UserAgentOperatingSystem { get; set; }
+        
+        public string SdkType { get; set; }
+        
+        public string UserAgentType { get; set; }
+        
+        public string CookieEnabled { get; set; }
+        
+        public string FontsCount { get; set; }
+        
+        public string JavaScriptEnabled { get; set; }
+        
+        public string MimeTypesCount { get; set; }
+        
+        public string PluginsCount { get; set; }
+        
+        public string ScreenResolution { get; set; }
+        
+        public string TimeZoneOffset { get; set; }
+    }
+
     public class AssessmentScores
     {
         public string ScoreType { get; set; }
-
-        public double ScoreValue { get; set; }
-
+        
+        public int ScoreValue { get; set; }
+        
         public string Reason { get; set; }
     }
 }
