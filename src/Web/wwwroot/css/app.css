@@ -97,3 +97,11 @@ a:active {
     color: #75B918;
     transition: color 0.35s;
 }
+
+.card pre {
+    margin: 1rem;
+}
+
+pre b {
+    font-weight: bold;
+}

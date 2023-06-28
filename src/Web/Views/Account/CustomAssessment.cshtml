@@ -24,20 +24,25 @@
                     <h3>Custom Assessment</h3>
                     <div class="form-group">
                         <div class="col-xs-12">
-                            <div>Use <b>@@deviceContextId</b> in your request to have it replaced with the DFP Fingerprinting session ID.</div>
-                            <div>Use <b>@@deviceIpAddress</b> in your request to have it replaced with the client's IP address.</div>
-                            <pre>
- {
-     ...
-     "deviceContext": {
-         "deviceContextId": "@@deviceContextId",
-         "ipAddress": "@@deviceIpAddress",
-         ...
-     }
-     ...
- }
-                            </pre>
+                            <div class="card">
+                                <div class="card-header">
+                                    <div>Use <b>@@deviceFingerprintingId</b> in your request to have it replaced with the DFP Fingerprinting session ID.</div>
+                                    <div>Use <b>@@deviceIpAddress</b> in your request to have it replaced with the client's IP address.</div>
+                                </div>
+                            <div class="card-body">
+                                <pre>
+{
+    ...
+    "deviceFingerprinting": {
+        "id": "<b>@@deviceFingerprintingId</b>",
+        "ipAddress": "<b>@@deviceIpAddress</b>",
+        ...
+    }
+    ...
+}</pre>
+                            </div>
                         </div>
+                    </div>
                     </div>
                     <div class="form-group">
                         <div class="col-xs-12">
