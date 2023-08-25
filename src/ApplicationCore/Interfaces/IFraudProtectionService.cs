@@ -23,29 +23,29 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
     {
         string NewCorrelationId { get; }
 
-        Task<PurchaseResponse> PostPurchase(Purchase purchase, string correlationId, string envId);
+        Task<SampleResponse<PurchaseResponse>> PostPurchase(Purchase purchase, string correlationId, string envId);
 
-        Task<Response> PostSignup(AccountProtection.SignUp signup, string correlationId, string envId);
+        Task<SampleResponse<FraudProtectionResponse>> PostRefund(Refund refund, string correlationId, string envId);
 
-        Task<FraudProtectionResponse> PostRefund(Refund refund, string correlationId, string envId);
+        Task<SampleResponse<FraudProtectionResponse>> PostUser(User userAccount, string correlationId, string envId);
 
-        Task<FraudProtectionResponse> PostUser(User userAccount, string correlationId, string envId);
+        Task<SampleResponse<FraudProtectionResponse>> PostBankEvent(BankEvent bankEvent, string correlationId, string envId);
 
-        Task<FraudProtectionResponse> PostBankEvent(BankEvent bankEvent, string correlationId, string envId);
+        Task<SampleResponse<FraudProtectionResponse>> PostChargeback(Chargeback chargeback, string correlationId, string envId);
 
-        Task<FraudProtectionResponse> PostChargeback(Chargeback chargeback, string correlationId, string envId);
+        Task<SampleResponse<FraudProtectionResponse>> PostPurchaseStatus(PurchaseStatusEvent purchaseStatus, string correlationId, string envId);
 
-        Task<FraudProtectionResponse> PostPurchaseStatus(PurchaseStatusEvent purchaseStatus, string correlationId, string envId);
+        Task<SampleResponse<FraudProtectionResponse>> PostSignupStatus(SignupStatusEvent signupStatus, string correlationId, string envId);
 
-        Task<FraudProtectionResponse> PostSignupStatus(SignupStatusEvent signupStatus, string correlationId, string envId);
+        Task<SampleResponse<FraudProtectionResponse>> PostLabel(Label label, string correlationId, string envId);
 
-        Task<FraudProtectionResponse> PostLabel(Label label, string correlationId, string envId);
+        Task<SampleResponse<Response>> PostSignup(AccountProtection.SignUp signup, string correlationId, string envId);
 
-        Task<Response> PostSignIn(AccountProtection.SignIn request, string correlationId, string envId);
+        Task<SampleResponse<Response>> PostSignIn(AccountProtection.SignIn request, string correlationId, string envId);
 
-        Task<Response> PostCustomAssessment(CustomAssessment assessment, string correlationId, string envId);
+        Task<SampleResponse<Response>> PostCustomAssessment(CustomAssessment assessment, string correlationId, string envId);
 
-        Task<object> PostAssessment(CustomAssessment assessment, string correlationId, string envId);
+        Task<SampleResponse<object>> PostAssessment(CustomAssessment assessment, string correlationId, string envId);
     }
 
     #endregion

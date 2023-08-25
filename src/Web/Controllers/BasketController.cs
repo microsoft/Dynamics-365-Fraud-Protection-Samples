@@ -183,7 +183,7 @@ namespace Contoso.FraudProtection.Web.Controllers
 
             //Check the risk score that was returned and possibly complete the purchase.
             var status = await ApproveOrRejectPurchase(
-                result.ResultDetails.MerchantRuleDecision,
+                result.Data.ResultDetails.MerchantRuleDecision,
                 checkoutDetails.CreditCard.UnformattedCardNumber,
                 purchase.PurchaseId,
                 correlationId,
@@ -192,7 +192,7 @@ namespace Contoso.FraudProtection.Web.Controllers
             TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
             #endregion
 
-            await _orderService.CreateOrderAsync(basketViewModel.Id, address, paymentInfo, status, purchase, result);
+            await _orderService.CreateOrderAsync(basketViewModel.Id, address, paymentInfo, status, purchase, result.Data);
             await _basketService.DeleteBasketAsync(basketViewModel.Id);
 
             ViewData["OrderResult"] = status;
