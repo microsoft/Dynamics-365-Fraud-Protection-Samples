@@ -179,12 +179,12 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             return await Read<Response>(response);
         }
 
-        public async Task<SampleResponse<object>> PostAssessment(CustomAssessment assessment, string correlationId, string envId)
+        public async Task<SampleResponse<AssessmentResponse>> PostAssessment(CustomAssessment assessment, string correlationId, string envId)
         {
             var endpoint = string.Format(_settings.Endpoints.Assessment, assessment.ApiName);
 
             var response = await PostAsync(endpoint, assessment.Payload, correlationId, envId, true);
-            return await Read<object>(response);
+            return await Read<AssessmentResponse>(response);
         }
     }
     #endregion

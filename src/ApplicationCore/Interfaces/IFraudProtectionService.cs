@@ -45,7 +45,7 @@ namespace Contoso.FraudProtection.ApplicationCore.Interfaces
 
         Task<SampleResponse<Response>> PostCustomAssessment(CustomAssessment assessment, string correlationId, string envId);
 
-        Task<SampleResponse<object>> PostAssessment(CustomAssessment assessment, string correlationId, string envId);
+        Task<SampleResponse<AssessmentResponse>> PostAssessment(CustomAssessment assessment, string correlationId, string envId);
     }
 
     #endregion
