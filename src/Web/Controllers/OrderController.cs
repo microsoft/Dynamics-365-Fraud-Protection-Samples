@@ -101,7 +101,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 order.ReturnOrChargebackReason = refundReason.ToString();
                 order.Status = refundStatus == RefundStatus.Approved ? OrderStatus.ReturnCompleted : OrderStatus.ReturnRejected;
                 order.RiskRefund = refund;
-                order.RiskRefundResponse = response;
+                order.RiskRefundResponse = response.Data;
             });
         }
 
@@ -133,7 +133,7 @@ namespace Contoso.FraudProtection.Web.Controllers
                 order.ReturnOrChargebackReason = viewModel.ReturnOrChargebackReason;
                 order.Status = OrderStatus.ChargeBack;
                 order.RiskChargeback = chargeback;
-                order.RiskChargebackResponse = response;
+                order.RiskChargebackResponse = response.Data;
             });
         }
 

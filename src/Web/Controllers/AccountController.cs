@@ -120,8 +120,6 @@ namespace Contoso.FraudProtection.Web.Controllers
 
         private async Task<IActionResult> SignInUser(LoginViewModel model, string returnUrl)
         {
-            bool rejectSignIn = false;
-
             var user = new AccountProtection.User()
             {
                 UserType = AccountProtection.UserType.Consumer,
@@ -159,10 +157,8 @@ namespace Contoso.FraudProtection.Web.Controllers
             var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signIn, signInResponse, "SignIn");
             TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
 
-            if (signInResponse is ResponseSuccess response)
-            {
-                rejectSignIn = response.ResultDetails.FirstOrDefault()?.Decision != DecisionName.Approve;
-            }
+            var decision = signInResponse.Data.ResultDetails?.FirstOrDefault()?.Decision;
+            var rejectSignIn = decision != null && decision != DecisionName.Approve;
 
             if (!rejectSignIn)
             {
@@ -243,11 +239,20 @@ namespace Contoso.FraudProtection.Web.Controllers
                 .Replace("@deviceFingerprintingId", model.DeviceFingerPrinting.SessionId)
                 .Replace("@deviceIpAddress", _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString());
             var assessment = new CustomAssessment { ApiName = model.ApiName, Payload = payload };
+
             var useV2 = model.Version.Equals(EndpointVersion.V2);
-            object response = useV2 ?
-                await _fraudProtectionService.PostAssessment(assessment, correlationId, envId) :
-                await _fraudProtectionService.PostCustomAssessment(assessment, correlationId, envId);
-            var fraudProtectionIO = new FraudProtectionIOModel(correlationId, payload, response, "Custom Assessment", true);
+            FraudProtectionIOModel fraudProtectionIO;
+            if (useV2)
+            {
+                var response = await _fraudProtectionService.PostAssessment(assessment, correlationId, envId);
+                fraudProtectionIO = new FraudProtectionIOModel(correlationId, payload, response, "Custom Assessment", true);
+            }
+            else
+            {
+                var response = await _fraudProtectionService.PostCustomAssessment(assessment, correlationId, envId);
+                fraudProtectionIO = new FraudProtectionIOModel(correlationId, payload, response, "Custom Assessment", true);
+            }
+
             TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
             #endregion
 
@@ -307,11 +312,8 @@ namespace Contoso.FraudProtection.Web.Controllers
             var fraudProtectionIO = new FraudProtectionIOModel(correlationId, signupEvent, signupAssessment, "Signup");
             TempData.Put(FraudProtectionIOModel.TempDataKey, fraudProtectionIO);
 
-            bool rejectSignup = false;
-            if (signupAssessment is ResponseSuccess signupResponse)
-            {
-                rejectSignup = signupResponse.ResultDetails.FirstOrDefault()?.Decision != DecisionName.Approve;
-            }
+            var decision = signupAssessment.Data.ResultDetails?.FirstOrDefault()?.Decision;
+            var rejectSignup = decision != null && decision != DecisionName.Approve;
 
             if (rejectSignup)
             {
