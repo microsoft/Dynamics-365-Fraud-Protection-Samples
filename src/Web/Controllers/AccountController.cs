@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Dynamics.FraudProtection.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using AccountProtection = Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiModels.AccountProtection;
@@ -237,7 +238,9 @@ namespace Contoso.FraudProtection.Web.Controllers
             var correlationId = _fraudProtectionService.NewCorrelationId;
             var payload = model.Payload
                 .Replace("@deviceFingerprintingId", model.DeviceFingerPrinting.SessionId)
-                .Replace("@deviceIpAddress", _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString());
+                .Replace("@deviceIpAddress", _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString())
+                .Replace("@guid", Guid.NewGuid().ToString())
+                .Replace("@timestampNow", DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture));
             var assessment = new CustomAssessment { ApiName = model.ApiName, Payload = payload };
 
             var useV2 = model.Version.Equals(EndpointVersion.V2);
