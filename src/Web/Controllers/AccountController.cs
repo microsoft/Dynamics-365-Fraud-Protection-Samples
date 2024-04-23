@@ -237,7 +237,9 @@ namespace Contoso.FraudProtection.Web.Controllers
             var correlationId = _fraudProtectionService.NewCorrelationId;
             var payload = model.Payload
                 .Replace("@deviceFingerprintingId", model.DeviceFingerPrinting.SessionId)
-                .Replace("@deviceIpAddress", _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString());
+                .Replace("@deviceIpAddress", _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString())
+                .Replace("@guid", Guid.NewGuid().ToString())
+                .Replace("@utcNow", DateTime.UtcNow.ToString("o"));
             var assessment = new CustomAssessment { ApiName = model.ApiName, Payload = payload };
 
             var useV2 = model.Version.Equals(EndpointVersion.V2);
