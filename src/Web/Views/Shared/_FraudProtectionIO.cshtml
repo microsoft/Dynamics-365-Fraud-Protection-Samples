@@ -35,6 +35,12 @@
                         </div>
                     </section>
                 </div>
+                @if (@io.CallTime > 0)
+                {
+                    <div class="row">
+                        <h5>The above call took @io.CallTime ms</h5>
+                    </div>
+                }
             </div>
         </div>
     }
