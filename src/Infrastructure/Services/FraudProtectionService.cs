@@ -92,8 +92,9 @@ namespace Contoso.FraudProtection.Infrastructure.Services
 
         private async Task<SampleResponse<T>> CallAndRead<T>(Func<Task<HttpResponseMessage>> apiCall) where T : new()
         {
-            //timer
-            var response = await apiCall(); 
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var response = await apiCall();
+            watch.Stop();
 
             if (!response.IsSuccessStatusCode)
             {
@@ -107,6 +108,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             {
                 Data = JsonSerializer.Deserialize<T>(content, _responseDeserializationOptions),
                 RawData = JsonSerializer.Deserialize<object>(content, _responseDeserializationOptions),
+                ResponseTime = watch.ElapsedMilliseconds,  
             };
         }
 
@@ -203,7 +205,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
             var endpoint = string.Format(_settings.Endpoints.Assessment, assessment.ApiName);
 
             var response = await PostAsync(endpoint, assessment.Payload, correlationId, envId, true);
-            return await Read<AssessmentResponse>(response);
+            return await CallAndRead<AssessmentResponse>(async () => await PostAsync(endpoint, assessment.Payload, correlationId, envId, true));
         }
     }
     #endregion
