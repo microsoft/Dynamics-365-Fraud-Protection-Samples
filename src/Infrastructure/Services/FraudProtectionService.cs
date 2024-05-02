@@ -90,6 +90,26 @@ namespace Contoso.FraudProtection.Infrastructure.Services
                });
         }
 
+        private async Task<SampleResponse<T>> CallAndRead<T>(Func<Task<HttpResponseMessage>> apiCall) where T : new()
+        {
+            //timer
+            var response = await apiCall(); 
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new FraudProtectionApiException(response);
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            response.Dispose();
+
+            return new SampleResponse<T>
+            {
+                Data = JsonSerializer.Deserialize<T>(content, _responseDeserializationOptions),
+                RawData = JsonSerializer.Deserialize<object>(content, _responseDeserializationOptions),
+            };
+        }
+
         private async Task<SampleResponse<T>> Read<T>(HttpResponseMessage response) where T : new()
         {
             if (!response.IsSuccessStatusCode)
@@ -175,8 +195,7 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         {
             var endpoint = string.Format(_settings.Endpoints.CustomAssessment, assessment.ApiName);
 
-            var response = await PostAsync(endpoint, assessment.Payload, correlationId, envId, true);
-            return await Read<Response>(response);
+            return await CallAndRead<Response>(async () => await PostAsync(endpoint, assessment.Payload, correlationId, envId, true));
         }
 
         public async Task<SampleResponse<AssessmentResponse>> PostAssessment(CustomAssessment assessment, string correlationId, string envId)
