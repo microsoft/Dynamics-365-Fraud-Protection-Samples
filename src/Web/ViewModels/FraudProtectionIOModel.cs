@@ -38,7 +38,7 @@ namespace Contoso.FraudProtection.Web.ViewModels
                 Request = skipSerialization ? request as string : JsonSerializer.Serialize(request, JsonSerializerOptions),
                 Response = JsonSerializer.Serialize(response.RawData, JsonSerializerOptions),
                 Name = name,
-                CallTime = response.ResponseTime
+                ResponseTime = response.ResponseTime
             });
         }
     }
@@ -48,6 +48,6 @@ namespace Contoso.FraudProtection.Web.ViewModels
         public string Request { get; set; }
         public string Response { get; set; }
         public string Name { get; set; }
-        public long CallTime {  get; set; }
+        public long ResponseTime {  get; set; }
     }
 }

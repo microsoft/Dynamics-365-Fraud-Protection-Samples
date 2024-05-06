@@ -25,6 +25,7 @@
                 <div class="col-md-12">
                     <section>
                         @if (io.Name != null) { <h3>@io.Name</h3> }
+                        @if (@io.ResponseTime > 0) { <h5>API call duration: @io.ResponseTime ms</h5> }
                         <div class="col-md-6">
                             <h4>Fraud Protection Request</h4>
                             <pre>@io.Request</pre>
@@ -35,12 +36,7 @@
                         </div>
                     </section>
                 </div>
-                @if (@io.CallTime > 0)
-                {
-                    <div class="row">
-                        <h5>The above call took @io.CallTime ms</h5>
-                    </div>
-                }
+                
             </div>
         </div>
     }
