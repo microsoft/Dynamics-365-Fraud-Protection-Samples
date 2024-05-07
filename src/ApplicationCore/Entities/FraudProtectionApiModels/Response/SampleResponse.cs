@@ -6,6 +6,8 @@ namespace Contoso.FraudProtection.ApplicationCore.Entities.FraudProtectionApiMod
     public class SampleResponseRaw
     {
         public object RawData { get; set; }
+
+        public long ResponseTime { get; set; }
     }
 
     public class SampleResponse<T> : SampleResponseRaw
