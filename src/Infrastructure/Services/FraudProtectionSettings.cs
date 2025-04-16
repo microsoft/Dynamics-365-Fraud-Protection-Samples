@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+using System.Security.Cryptography.X509Certificates;
+
 namespace Contoso.FraudProtection.Infrastructure.Services
 {
     #region Fraud Protection Service
@@ -34,8 +36,10 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         public string Resource { get; set; }
         public string ClientId { get; set; }
         public string Authority { get; set; }
-        public string CertificateThumbprint { get; set; }
         public string ClientSecret { get; set; }
+        public string CertificateThumbprint { get; set; }
+        public StoreLocation CertificateLocation { get; set; }
+        public bool? UseSNI { get; set; }
     }
     #endregion
 }

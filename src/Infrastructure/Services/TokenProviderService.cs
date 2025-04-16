@@ -33,8 +33,8 @@ namespace Contoso.FraudProtection.Infrastructure.Services
 
             if (settings.CertificateThumbprint != "")
             {
-                var x509Cert = CertificateUtility.GetByThumbprint(settings.CertificateThumbprint);
-                builder = builder.WithCertificate(x509Cert);
+                var x509Cert = CertificateUtility.GetByThumbprint(settings.CertificateThumbprint, settings.CertificateLocation);
+                builder = builder.WithCertificate(x509Cert, settings.UseSNI ?? false);
             }
             else
             {
