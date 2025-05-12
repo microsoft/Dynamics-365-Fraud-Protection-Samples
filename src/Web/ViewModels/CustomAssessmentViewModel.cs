@@ -22,9 +22,7 @@ namespace Contoso.FraudProtection.Web.ViewModels
 
     public enum EndpointVersion
     {
-        V1,
         V2,
-        V2Observe,
-        V2Label
+        V1,
     }
 }
