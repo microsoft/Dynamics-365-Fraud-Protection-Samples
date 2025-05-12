@@ -4,12 +4,13 @@
 *@
 
 @using Contoso.FraudProtection.Web.ViewModels.Shared
+@using Microsoft.AspNetCore.Http
 @using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
 @{
     @model DeviceFingerPrintingViewModel
     var fingerprintingDomain = Configuration.GetSection("FraudProtectionSettings")["DeviceFingerprintingDomain"];
-    var fingerprintingCustomerId = Configuration.GetSection("FraudProtectionSettings")["DeviceFingerprintingCustomerId"];
+    var fingerprintingCustomerId = @Context.Session.GetString("envId") ?? Configuration.GetSection("FraudProtectionSettings")["DeviceFingerprintingCustomerId"];
     var fingerprintingSessionId = Model.SessionId;
 }
 

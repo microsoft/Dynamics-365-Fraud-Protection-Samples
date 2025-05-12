@@ -8,9 +8,9 @@ namespace Contoso.FraudProtection.Infrastructure.Utilities
 {
     public static class CertificateUtility
     {
-        public static X509Certificate2 GetCertificateBy<T>(X509FindType findType, T findValue)
+        private static X509Certificate2 GetCertificateBy<T>(X509FindType findType, T findValue, StoreLocation location)
         {
-            var certStore = new X509Store(StoreLocation.CurrentUser);
+            var certStore = new X509Store(location);
             certStore.Open(OpenFlags.ReadOnly);
 
             X509Certificate2Collection certs = certStore.Certificates.Find(findType, findValue, false);
@@ -24,9 +24,9 @@ namespace Contoso.FraudProtection.Infrastructure.Utilities
             }
         }
 
-        public static X509Certificate2 GetByThumbprint(string thumbprint)
+        public static X509Certificate2 GetByThumbprint(string thumbprint, StoreLocation location)
         {
-            return GetCertificateBy(X509FindType.FindByThumbprint, thumbprint);
+            return GetCertificateBy(X509FindType.FindByThumbprint, thumbprint, location);
         }
     }
 }
