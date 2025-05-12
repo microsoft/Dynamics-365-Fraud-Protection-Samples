@@ -108,8 +108,6 @@ namespace Contoso.FraudProtection.Web
 
             services.AddControllersWithViews();
             services.AddSession();
-
-            services.AddDatabaseDeveloperPageExceptionFilter();
         }
 
         // This method gets called by the runtime.
@@ -117,11 +115,7 @@ namespace Contoso.FraudProtection.Web
         {
             app.ConfigureExceptionHandler();
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
+            if (!env.IsDevelopment())
             {
                 app.UseHsts();
             }

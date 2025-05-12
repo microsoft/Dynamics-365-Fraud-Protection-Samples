@@ -19,10 +19,6 @@ namespace Contoso.FraudProtection.ApplicationCore.Exceptions
             Response = response;
         }
 
-        protected FraudProtectionApiException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context)
-        {
-        }
-
         public FraudProtectionApiException(string message) : base(message)
         {
         }
