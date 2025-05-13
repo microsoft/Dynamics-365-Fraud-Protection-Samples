@@ -77,7 +77,7 @@ namespace Contoso.FraudProtection.Web
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromHours(1);
                 options.LoginPath = "/Account/Signin";
-                options.LogoutPath = "/Account/Signout";
+                options.LogoutPath = "/Account/Logout";
                 options.Cookie = new CookieBuilder
                 {
                     IsEssential = true // required for auth to work without explicit user consent; adjust to suit your privacy policy
@@ -98,7 +98,7 @@ namespace Contoso.FraudProtection.Web
 
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
             services.AddTransient<IEmailSender, EmailSender>();
-            
+
             services.Configure<TokenProviderServiceSettings>(Configuration.GetSection("FraudProtectionSettings:TokenProviderConfig"));
             services.AddSingleton<ITokenProvider, TokenProviderService>();
             services.Configure<FraudProtectionSettings>(Configuration.GetSection("FraudProtectionSettings"));
@@ -114,11 +114,8 @@ namespace Contoso.FraudProtection.Web
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.ConfigureExceptionHandler();
-            if (env.IsDevelopment())
-            {
-                app.UseDatabaseErrorPage();
-            }
-            else
+
+            if (!env.IsDevelopment())
             {
                 app.UseHsts();
             }
@@ -130,7 +127,7 @@ namespace Contoso.FraudProtection.Web
             app.UseAuthorization();
             app.UseSession();
 
-            app.UseEndpoints(routes => 
+            app.UseEndpoints(routes =>
             {
                 routes.MapControllerRoute(
                     name: "areaRoute",

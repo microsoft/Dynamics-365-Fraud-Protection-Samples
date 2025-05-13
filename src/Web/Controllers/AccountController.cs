@@ -188,7 +188,7 @@ namespace Contoso.FraudProtection.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> SignOut()
+        public async Task<ActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
 
