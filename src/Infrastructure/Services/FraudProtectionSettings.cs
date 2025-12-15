@@ -38,8 +38,10 @@ namespace Contoso.FraudProtection.Infrastructure.Services
         public string Authority { get; set; }
         public string ClientSecret { get; set; }
         public string CertificateThumbprint { get; set; }
-        public StoreLocation CertificateLocation { get; set; }
+        public StoreLocation? CertificateLocation { get; set; }
         public bool? UseSNI { get; set; }
+        public bool? EnableManagedIdentity { get; set; }
     }
+
     #endregion
 }
