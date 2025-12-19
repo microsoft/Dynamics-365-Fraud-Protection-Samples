@@ -19,17 +19,15 @@ using Contoso.FraudProtection.Web.Services;
 using System;
 using Microsoft.Extensions.Hosting;
 using Contoso.FraudProtection.Web.Middleware;
+using Azure.Core;
+using Azure.Identity;
 
 namespace Contoso.FraudProtection.Web
 {
-    public class Startup
+    public class Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
-        private readonly IConfiguration Configuration;
-
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        private readonly IConfiguration Configuration = configuration;
+        private readonly IWebHostEnvironment Env = env;
 
         /// <summary>
         /// Called automatically by .NET Core if the environment is "Development"
@@ -68,6 +66,11 @@ namespace Contoso.FraudProtection.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            if (!Env.IsDevelopment())
+            {
+                services.AddSingleton<TokenCredential>(new ManagedIdentityCredential());
+            }
+
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppIdentityDbContext>()
                 .AddDefaultTokenProviders();
